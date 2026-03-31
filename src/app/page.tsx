@@ -1,10 +1,15 @@
+"use client";
+
+import { useMemo } from "react";
 import CountdownTimer from "@/components/game/CountdownTimer";
 import ParticipantTracker from "@/components/game/ParticipantTracker";
 
-// Demo: next saga starts in 3 days from now
-const DEMO_SAGA_START = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
-
 export default function Home() {
+  // Countdown calculated at runtime (client-side)
+  const sagaStart = useMemo(
+    () => new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+    []
+  );
   return (
     <div className="relative flex flex-col flex-1 min-h-screen bg-gradient-to-b from-black via-zinc-950 to-black overflow-hidden">
       {/* Background glow effect */}
@@ -63,7 +68,7 @@ export default function Home() {
         {/* Countdown */}
         <div className="mb-10">
           <CountdownTimer
-            targetDate={DEMO_SAGA_START}
+            targetDate={sagaStart}
             label="SAGA DE COLÓN — ZONA COLONIAL, SANTO DOMINGO"
           />
         </div>
