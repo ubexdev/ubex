@@ -1,0 +1,26 @@
+{
+  "name": "UBEX Dev",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:20",
+  "forwardPorts": [3000],
+  "postCreateCommand": "npm install",
+  "postStartCommand": "cp .env.example .env.local 2>/dev/null; echo \"NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=${NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}\" >> .env.local; echo \"GEMINI_API_KEY=${GEMINI_API_KEY}\" >> .env.local",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "bradlc.vscode-tailwindcss",
+        "esbenp.prettier-vscode"
+      ],
+      "settings": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true
+      }
+    }
+  },
+  "portsAttributes": {
+    "3000": {
+      "label": "UBEX Dev Server",
+      "onAutoForward": "openBrowser"
+    }
+  }
+}
