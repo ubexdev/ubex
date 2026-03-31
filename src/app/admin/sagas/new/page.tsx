@@ -3,8 +3,20 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { getSupabaseBrowser } from "@/lib/supabase/client";
-import { ArrowLeft, CircleNotch, FloppyDisk } from "@phosphor-icons/react";
+import {
+  ArrowLeft,
+  CircleNotch,
+  FloppyDisk,
+  Warning,
+} from "@phosphor-icons/react";
 import Link from "next/link";
+
+const difficultyOptions = [
+  { value: "easy", label: "Fácil" },
+  { value: "medium", label: "Media" },
+  { value: "hard", label: "Difícil" },
+  { value: "expert", label: "Experto" },
+];
 
 export default function NewSagaPage() {
   const router = useRouter();
@@ -13,14 +25,12 @@ export default function NewSagaPage() {
 
   const [form, setForm] = useState({
     title: "",
-    subtitle: "",
     description: "",
     city: "",
-    country: "",
-    prize_amount_usd: 0,
-    max_participants: 100,
-    starts_at: "",
-    ends_at: "",
+    country: "DO",
+    difficulty: "medium" as "easy" | "medium" | "hard" | "expert",
+    estimated_duration: 60,
+    cover_image_url: "",
   });
 
   function update(field: string, value: string | number) {
@@ -62,16 +72,14 @@ export default function NewSagaPage() {
       .from("sagas")
       .insert({
         title: form.title.trim(),
-        subtitle: form.subtitle.trim() || null,
         description: form.description.trim() || null,
         city: form.city.trim(),
-        country: form.country.trim() || "México",
-        prize_amount_usd: form.prize_amount_usd,
-        max_participants: form.max_participants,
-        starts_at: form.starts_at || null,
-        ends_at: form.ends_at || null,
+        country: form.country.trim() || "DO",
+        difficulty: form.difficulty,
+        estimated_duration: form.estimated_duration || null,
+        cover_image_url: form.cover_image_url.trim() || null,
         created_by: user.id,
-      })
+      } as any)
       .select("id")
       .single();
 
@@ -109,7 +117,8 @@ export default function NewSagaPage() {
 
       {/* Error */}
       {error && (
-        <div className="rounded-lg border border-red-900 bg-red-950 px-4 py-3 text-sm text-red-300">
+        <div className="rounded-lg border border-red-900 bg-red-950 px-4 py-3 text-sm text-red-300 flex items-center gap-2">
+          <Warning size={18} />
           {error}
         </div>
       )}
@@ -126,18 +135,6 @@ export default function NewSagaPage() {
             value={form.title}
             onChange={(e) => update("title", e.target.value)}
             placeholder="El Tesoro de la Ciudad Perdida"
-            className={inputClass}
-          />
-        </div>
-
-        {/* Subtitle */}
-        <div>
-          <label className={labelClass}>Subtítulo</label>
-          <input
-            type="text"
-            value={form.subtitle}
-            onChange={(e) => update("subtitle", e.target.value)}
-            placeholder="Una aventura por las calles coloniales"
             className={inputClass}
           />
         </div>
@@ -165,7 +162,7 @@ export default function NewSagaPage() {
               type="text"
               value={form.city}
               onChange={(e) => update("city", e.target.value)}
-              placeholder="Ciudad de México"
+              placeholder="Santo Domingo"
               className={inputClass}
             />
           </div>
@@ -175,61 +172,53 @@ export default function NewSagaPage() {
               type="text"
               value={form.country}
               onChange={(e) => update("country", e.target.value)}
-              placeholder="México"
+              placeholder="DO"
               className={inputClass}
             />
           </div>
         </div>
 
-        {/* Prize + Max participants */}
+        {/* Difficulty + Duration */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className={labelClass}>Premio (USD)</label>
+            <label className={labelClass}>Dificultad</label>
+            <select
+              value={form.difficulty}
+              onChange={(e) => update("difficulty", e.target.value)}
+              className={inputClass}
+            >
+              {difficultyOptions.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className={labelClass}>Duración estimada (minutos)</label>
             <input
               type="number"
               min={0}
-              step={1}
-              value={form.prize_amount_usd}
+              step={5}
+              value={form.estimated_duration}
               onChange={(e) =>
-                update("prize_amount_usd", Number(e.target.value))
-              }
-              className={inputClass}
-            />
-          </div>
-          <div>
-            <label className={labelClass}>Máx. participantes</label>
-            <input
-              type="number"
-              min={1}
-              value={form.max_participants}
-              onChange={(e) =>
-                update("max_participants", Number(e.target.value))
+                update("estimated_duration", Number(e.target.value))
               }
               className={inputClass}
             />
           </div>
         </div>
 
-        {/* Dates */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label className={labelClass}>Fecha de inicio</label>
-            <input
-              type="datetime-local"
-              value={form.starts_at}
-              onChange={(e) => update("starts_at", e.target.value)}
-              className={inputClass}
-            />
-          </div>
-          <div>
-            <label className={labelClass}>Fecha de fin</label>
-            <input
-              type="datetime-local"
-              value={form.ends_at}
-              onChange={(e) => update("ends_at", e.target.value)}
-              className={inputClass}
-            />
-          </div>
+        {/* Cover image URL */}
+        <div>
+          <label className={labelClass}>URL imagen de portada</label>
+          <input
+            type="url"
+            value={form.cover_image_url}
+            onChange={(e) => update("cover_image_url", e.target.value)}
+            placeholder="https://ejemplo.com/imagen.jpg"
+            className={inputClass}
+          />
         </div>
 
         {/* Submit */}
