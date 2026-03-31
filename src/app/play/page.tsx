@@ -99,9 +99,8 @@ function IntroScreen({ onStart }: { onStart: (difficulty: Difficulty) => void })
 
   return (
     <div
-      className="intro-screen"
+      className="play-intro"
       style={{
-        minHeight: "100vh",
         background: "#000",
         color: "#ededed",
         display: "flex",
@@ -146,8 +145,8 @@ function IntroScreen({ onStart }: { onStart: (difficulty: Difficulty) => void })
         ← Volver
       </Link>
 
-      <div className="intro-content" style={{ position: "relative", zIndex: 10, maxWidth: 600 }}>
-        <span className="intro-emoji" style={{ fontSize: 72, display: "block", marginBottom: 24 }}>
+      <div className="play-intro-content" style={{ position: "relative", zIndex: 10 }}>
+        <span className="play-intro-emoji" style={{ display: "block", marginBottom: 24 }}>
           {DEMO_SAGA.coverEmoji}
         </span>
 
@@ -188,7 +187,7 @@ function IntroScreen({ onStart }: { onStart: (difficulty: Difficulty) => void })
 
         {/* Stats row */}
         <div
-          className="intro-stats"
+          className="play-intro-stats"
           style={{
             display: "flex",
             justifyContent: "center",
@@ -382,17 +381,6 @@ function IntroScreen({ onStart }: { onStart: (difficulty: Difficulty) => void })
         </p>
       </div>
 
-      <style>{`
-        @supports (min-height: 100dvh) {
-          .intro-screen { min-height: 100dvh !important; }
-        }
-        @media (max-width: 767px) {
-          .intro-screen { padding: 20px 16px !important; }
-          .intro-content { max-width: 90vw !important; }
-          .intro-emoji { font-size: 48px !important; }
-          .intro-stats { gap: 20px !important; }
-        }
-      `}</style>
     </div>
   );
 }
@@ -406,9 +394,8 @@ function WinnerScreen({ totalTime }: { totalTime: number }) {
 
   return (
     <div
-      className="winner-screen"
+      className="play-winner"
       style={{
-        minHeight: "100vh",
         background: "#000",
         color: "#ededed",
         display: "flex",
@@ -434,8 +421,8 @@ function WinnerScreen({ totalTime }: { totalTime: number }) {
         }}
       />
 
-      <div className="winner-content" style={{ position: "relative", zIndex: 10, maxWidth: 500 }}>
-        <span className="winner-emoji" style={{ fontSize: 96, display: "block", marginBottom: 24 }}>🏆</span>
+      <div className="play-winner-content" style={{ position: "relative", zIndex: 10 }}>
+        <span className="play-winner-emoji" style={{ display: "block", marginBottom: 24 }}>🏆</span>
 
         <h1
           style={{
@@ -454,7 +441,7 @@ function WinnerScreen({ totalTime }: { totalTime: number }) {
         </p>
 
         <div
-          className="winner-stats"
+          className="play-winner-stats"
           style={{
             display: "flex",
             justifyContent: "center",
@@ -525,18 +512,6 @@ function WinnerScreen({ totalTime }: { totalTime: number }) {
           </button>
         </div>
       </div>
-
-      <style>{`
-        @supports (min-height: 100dvh) {
-          .winner-screen { min-height: 100dvh !important; }
-        }
-        @media (max-width: 767px) {
-          .winner-screen { padding: 20px 16px !important; }
-          .winner-content { max-width: 90vw !important; }
-          .winner-emoji { font-size: 64px !important; }
-          .winner-stats { gap: 16px !important; }
-        }
-      `}</style>
     </div>
   );
 }
@@ -664,7 +639,7 @@ export default function PlayPage() {
 
   /* ── Render: Game ── */
   return (
-    <div className="game-container" style={{ height: "100vh", display: "flex", flexDirection: "column", background: "#000", color: "#ededed" }}>
+    <div className="play-game" style={{ display: "flex", flexDirection: "column", background: "#000", color: "#ededed" }}>
       {hudMessage && (
         <HudSystemMessage
           key={`${hudMessage.type}-${hudMessage.message}`}
@@ -755,11 +730,10 @@ export default function PlayPage() {
           }}
         >
           <div
+            className="play-sidebar-inner"
             style={{
-              width: isMobile ? "100%" : 380,
               height: "100%",
               overflowY: "auto",
-              padding: isMobile ? "60px 16px 20px" : 24,
               display: "flex",
               flexDirection: "column",
               gap: 20,
@@ -984,9 +958,6 @@ export default function PlayPage() {
         @keyframes blink-dot {
           0%, 100% { opacity: 1; }
           50% { opacity: 0.3; }
-        }
-        @supports (height: 100dvh) {
-          .game-container { height: 100dvh !important; }
         }
       `}</style>
     </div>

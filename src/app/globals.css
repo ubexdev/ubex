@@ -308,3 +308,100 @@ body {
     height: 360px;
   }
 }
+
+/* ═══════════════════════════════════════════════
+   PLAY PAGE — Responsive
+   ═══════════════════════════════════════════════ */
+
+/* ── Game container ── */
+.play-game {
+  min-height: 100vh;
+  height: 100vh;
+}
+@supports (height: 100dvh) {
+  .play-game {
+    min-height: 100dvh;
+    height: 100dvh;
+  }
+}
+
+/* ── Intro screen ── */
+.play-intro {
+  min-height: 100vh;
+}
+@supports (min-height: 100dvh) {
+  .play-intro {
+    min-height: 100dvh;
+  }
+}
+.play-intro-content {
+  max-width: 600px;
+}
+.play-intro-emoji {
+  font-size: 72px;
+}
+
+/* ── Winner screen ── */
+.play-winner {
+  min-height: 100vh;
+}
+@supports (min-height: 100dvh) {
+  .play-winner {
+    min-height: 100dvh;
+  }
+}
+.play-winner-content {
+  max-width: 500px;
+}
+.play-winner-emoji {
+  font-size: 96px;
+}
+
+/* ── Sidebar inner ── */
+.play-sidebar-inner {
+  width: 380px;
+  padding: 24px;
+}
+
+/* ── Mobile overrides (< 768px) ── */
+@media (max-width: 767px) {
+  /* Intro */
+  .play-intro {
+    padding: 20px 16px !important;
+  }
+  .play-intro-content {
+    max-width: 90vw;
+  }
+  .play-intro-emoji {
+    font-size: 48px !important;
+  }
+  .play-intro-stats {
+    gap: 20px !important;
+  }
+
+  /* Winner */
+  .play-winner {
+    padding: 20px 16px !important;
+  }
+  .play-winner-content {
+    max-width: 90vw;
+  }
+  .play-winner-emoji {
+    font-size: 64px !important;
+  }
+  .play-winner-stats {
+    gap: 16px !important;
+  }
+
+  /* Sidebar inner */
+  .play-sidebar-inner {
+    width: 100%;
+    padding: 60px 16px 20px;
+  }
+
+  /* Game layout — stack vertically on small screens when sidebar is closed */
+  .play-game {
+    touch-action: manipulation;
+    -webkit-overflow-scrolling: touch;
+  }
+}
