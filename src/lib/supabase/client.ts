@@ -16,6 +16,14 @@ export function getSupabaseBrowser() {
     return null;
   }
 
-  client = createBrowserClient<Database>(url, key);
+  client = createBrowserClient<Database>(url, key, {
+    auth: {
+      // Bypass navigator.locks which causes hangs with multiple instances
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      lock: async (_name: string, _acquireTimeout: number, fn: () => Promise<any>) => {
+        return await fn();
+      },
+    },
+  });
   return client;
 }

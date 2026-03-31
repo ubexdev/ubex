@@ -68,7 +68,6 @@ export default function SagasPage() {
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [importing, setImporting] = useState(false);
-  const retryCount = useRef(0);
 
   useEffect(() => {
     loadSagas();
@@ -82,20 +81,19 @@ export default function SagasPage() {
       return;
     }
 
-    const { data, error: err } = await supabase
-      .from("sagas")
-      .select("*")
-      .order("created_at", { ascending: false });
+    try {
+      const { data, error: err } = await supabase
+        .from("sagas")
+        .select("*")
+        .order("created_at", { ascending: false });
 
-    if (err) {
-      if ((err.message.includes("Lock") || err.message.includes("stolen")) && retryCount.current < 2) {
-        retryCount.current++;
-        setTimeout(() => loadSagas(), 500);
-        return;
+      if (err) {
+        setError(err.message);
+      } else {
+        setSagas((data ?? []) as unknown as Saga[]);
       }
-      setError(err.message);
-    } else {
-      setSagas((data ?? []) as unknown as Saga[]);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Error cargando sagas");
     }
     setLoading(false);
   }

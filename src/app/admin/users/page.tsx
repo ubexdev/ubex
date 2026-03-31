@@ -108,33 +108,37 @@ export default function UsersPage() {
     setLoading(true);
     setError(null);
 
-    const from = page * PAGE_SIZE;
-    const to = from + PAGE_SIZE - 1;
+    try {
+      const from = page * PAGE_SIZE;
+      const to = from + PAGE_SIZE - 1;
 
-    let query = supabase
-      .from("profiles")
-      .select("*", { count: "exact" })
-      .order("created_at", { ascending: false })
-      .range(from, to);
+      let query = supabase
+        .from("profiles")
+        .select("*", { count: "exact" })
+        .order("created_at", { ascending: false })
+        .range(from, to);
 
-    if (debouncedSearch.trim()) {
-      const q = debouncedSearch.trim();
-      query = query.or(
-        `display_name.ilike.%${q}%,username.ilike.%${q}%`
-      );
-    }
+      if (debouncedSearch.trim()) {
+        const q = debouncedSearch.trim();
+        query = query.or(
+          `display_name.ilike.%${q}%,username.ilike.%${q}%`
+        );
+      }
 
-    if (roleFilter !== "all") {
-      query = query.eq("role", roleFilter);
-    }
+      if (roleFilter !== "all") {
+        query = query.eq("role", roleFilter);
+      }
 
-    const { data, count, error: err } = await query;
+      const { data, count, error: err } = await query;
 
-    if (err) {
-      setError(err.message);
-    } else {
-      setProfiles((data as Profile[]) ?? []);
-      setTotal(count ?? 0);
+      if (err) {
+        setError(err.message);
+      } else {
+        setProfiles((data as Profile[]) ?? []);
+        setTotal(count ?? 0);
+      }
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Error cargando usuarios");
     }
     setLoading(false);
   }, [supabase, page, debouncedSearch, roleFilter]);

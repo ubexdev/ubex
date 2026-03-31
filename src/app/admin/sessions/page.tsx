@@ -61,31 +61,35 @@ export default function SessionsPage() {
     setLoading(true);
     setError(null);
 
-    let query = supabase
-      .from("game_sessions")
-      .select(
+    try {
+      let query = supabase
+        .from("game_sessions")
+        .select(
+          `
+          id, current_level, score, difficulty, status, started_at, completed_at,
+          user:profiles!user_id ( display_name ),
+          saga:sagas!saga_id ( title )
         `
-        id, current_level, score, difficulty, status, started_at, completed_at,
-        user:profiles!user_id ( display_name ),
-        saga:sagas!saga_id ( title )
-      `
-      )
-      .order("started_at", { ascending: false })
-      .limit(100);
+        )
+        .order("started_at", { ascending: false })
+        .limit(100);
 
-    if (statusFilter !== "all") {
-      query = query.eq(
-        "status",
-        statusFilter as "active" | "completed" | "abandoned"
-      );
-    }
+      if (statusFilter !== "all") {
+        query = query.eq(
+          "status",
+          statusFilter as "active" | "completed" | "abandoned"
+        );
+      }
 
-    const { data, error: err } = await query;
+      const { data, error: err } = await query;
 
-    if (err) {
-      setError(err.message);
-    } else {
-      setSessions((data as unknown as GameSession[]) ?? []);
+      if (err) {
+        setError(err.message);
+      } else {
+        setSessions((data as unknown as GameSession[]) ?? []);
+      }
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Error cargando sesiones");
     }
     setLoading(false);
   }, [supabase, statusFilter]);
