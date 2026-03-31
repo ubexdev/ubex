@@ -10,255 +10,165 @@ export default function Home() {
   );
 
   return (
-    <div className="relative min-h-screen bg-black overflow-hidden">
-      {/* ── Background layers ── */}
-      <div className="fixed inset-0 pointer-events-none" aria-hidden="true">
-        <div className="absolute top-[-20%] left-1/2 -translate-x-1/2 w-[900px] h-[900px] bg-amber-500/[0.07] rounded-full blur-[150px]" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-amber-600/[0.04] rounded-full blur-[120px]" />
-        <div className="absolute top-[60%] left-[-10%] w-[400px] h-[400px] bg-amber-400/[0.03] rounded-full blur-[100px]" />
-        {/* Grid pattern */}
-        <div
-          className="absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)",
-            backgroundSize: "60px 60px",
-          }}
-        />
+    <div style={{ background: "#000", color: "#ededed", minHeight: "100vh" }}>
+      {/* ── Background ── */}
+      <div style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0 }} aria-hidden="true">
+        <div style={{ position: "absolute", top: "-20%", left: "50%", transform: "translateX(-50%)", width: 900, height: 900, background: "rgba(245,158,11,0.06)", borderRadius: "50%", filter: "blur(150px)" }} />
+        <div style={{ position: "absolute", bottom: "-10%", right: "-10%", width: 600, height: 600, background: "rgba(217,119,6,0.04)", borderRadius: "50%", filter: "blur(120px)" }} />
       </div>
 
       {/* ── Header ── */}
-      <header className="relative z-20 flex items-center justify-between px-6 lg:px-12 py-5">
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1.5">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center">
-              <span className="text-black font-extrabold text-sm">U</span>
-            </div>
-            <span className="text-xl font-bold tracking-tight text-white">
-              UBEX
-            </span>
+      <header style={{ position: "relative", zIndex: 20, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "20px 24px", maxWidth: 1200, margin: "0 auto" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <div style={{ width: 32, height: 32, borderRadius: 8, background: "linear-gradient(135deg, #fbbf24, #d97706)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <span style={{ color: "#000", fontWeight: 800, fontSize: 14 }}>U</span>
           </div>
-          <span className="text-[10px] tracking-[0.2em] text-white/30 uppercase hidden sm:inline border-l border-white/10 pl-3 ml-1">
+          <span style={{ fontSize: 20, fontWeight: 700, letterSpacing: "-0.02em", color: "#fff" }}>UBEX</span>
+          <span style={{ fontSize: 10, letterSpacing: "0.2em", color: "rgba(255,255,255,0.3)", textTransform: "uppercase", borderLeft: "1px solid rgba(255,255,255,0.1)", paddingLeft: 12, marginLeft: 4 }}>
             Arqueología Digital
           </span>
         </div>
-        <nav className="flex items-center gap-3">
-          <a
-            href="#how-it-works"
-            className="text-sm text-white/50 hover:text-white transition-colors hidden sm:inline"
-          >
-            ¿Cómo funciona?
-          </a>
-          <a
-            href="#"
-            className="text-sm text-white/60 hover:text-white transition-colors px-4 py-2"
-          >
-            Ingresar
-          </a>
-          <a
-            href="#"
-            className="btn-glow px-5 py-2.5 text-sm font-semibold bg-amber-500 hover:bg-amber-400 text-black rounded-lg transition-colors"
-          >
-            Registrarse
-          </a>
+        <nav style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <a href="#how-it-works" style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", textDecoration: "none" }}>¿Cómo funciona?</a>
+          <a href="#" style={{ fontSize: 14, color: "rgba(255,255,255,0.6)", textDecoration: "none", padding: "8px 16px" }}>Ingresar</a>
+          <a href="#" className="btn-glow" style={{ fontSize: 14, fontWeight: 600, background: "#f59e0b", color: "#000", padding: "10px 20px", borderRadius: 8, textDecoration: "none" }}>Registrarse</a>
         </nav>
       </header>
 
-      {/* ── Hero Section ── */}
-      <main className="relative z-10">
-        <section className="flex flex-col items-center justify-center px-6 pt-16 pb-20 lg:pt-24 lg:pb-28 text-center">
-          {/* Globe */}
-          <div className="animate-fade-in-up">
-            <div className="globe-pulse animate-float w-36 h-36 lg:w-44 lg:h-44 mb-10 rounded-full border border-amber-500/20 bg-gradient-to-br from-amber-500/10 via-transparent to-amber-600/5 flex items-center justify-center backdrop-blur-sm">
-              <span className="text-6xl lg:text-7xl select-none">🌍</span>
+      {/* ── Hero ── */}
+      <section style={{ position: "relative", zIndex: 10, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "80px 24px 60px", textAlign: "center" }}>
+        {/* Globe */}
+        <div className="fade-in">
+          <div className="globe-pulse" style={{ width: 160, height: 160, borderRadius: "50%", border: "1px solid rgba(245,158,11,0.2)", background: "linear-gradient(135deg, rgba(245,158,11,0.08), transparent, rgba(217,119,6,0.04))", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 40 }}>
+            <span style={{ fontSize: 72, userSelect: "none" }}>🌍</span>
+          </div>
+        </div>
+
+        <h1 className="fade-in-d1" style={{ fontSize: "clamp(48px, 10vw, 96px)", fontWeight: 800, letterSpacing: "-0.03em", lineHeight: 0.9, marginBottom: 24 }}>
+          <span style={{ display: "block", color: "#fff" }}>EL MUNDO ES</span>
+          <span className="text-shimmer" style={{ display: "block", marginTop: 4 }}>EL TABLERO</span>
+        </h1>
+
+        <p className="fade-in-d2" style={{ maxWidth: 520, fontSize: 17, color: "rgba(255,255,255,0.4)", marginBottom: 48, lineHeight: 1.7 }}>
+          Explora calles reales en Google Street View. Resuelve acertijos de la historia. El primero en encontrar el tesoro gana{" "}
+          <span style={{ color: "#fbbf24", fontWeight: 600 }}>$1,000 USD</span>.
+        </p>
+
+        {/* Countdown */}
+        <div className="fade-in-d3" style={{ marginBottom: 48 }}>
+          <CountdownTimer
+            targetDate={sagaStart}
+            label="SAGA DE COLÓN — ZONA COLONIAL, SANTO DOMINGO"
+          />
+        </div>
+
+        {/* CTAs */}
+        <div className="fade-in-d3" style={{ display: "flex", flexWrap: "wrap", gap: 16, justifyContent: "center" }}>
+          <a href="#" className="btn-glow" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "16px 32px", fontSize: 16, fontWeight: 700, background: "#f59e0b", color: "#000", borderRadius: 12, textDecoration: "none" }}>
+            UNIRSE A LA SAGA
+            <span style={{ color: "rgba(120,53,15,0.5)", fontWeight: 500 }}>$9.99</span>
+            <span style={{ fontSize: 14 }}>→</span>
+          </a>
+          <a href="#how-it-works" style={{ display: "inline-flex", alignItems: "center", padding: "16px 32px", fontSize: 16, fontWeight: 600, border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.7)", borderRadius: 12, textDecoration: "none" }}>
+            ¿Cómo funciona?
+          </a>
+        </div>
+      </section>
+
+      {/* ── Stats ── */}
+      <section style={{ position: "relative", zIndex: 10, borderTop: "1px solid rgba(255,255,255,0.06)", borderBottom: "1px solid rgba(255,255,255,0.06)", background: "rgba(255,255,255,0.015)" }}>
+        <div className="section-inner" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 0, padding: "32px 24px" }}>
+          {[
+            { value: "5,000+", label: "Exploradores por saga" },
+            { value: "12", label: "Niveles por saga" },
+            { value: "$1,000", label: "Premio USD" },
+            { value: "∞", label: "Ciudades del mundo" },
+          ].map((stat) => (
+            <div key={stat.label} style={{ textAlign: "center", padding: "0 16px" }}>
+              <div style={{ fontSize: 28, fontWeight: 700, color: "#fff", fontVariantNumeric: "tabular-nums" }}>{stat.value}</div>
+              <div style={{ fontSize: 11, color: "rgba(255,255,255,0.3)", marginTop: 4, textTransform: "uppercase", letterSpacing: "0.1em" }}>{stat.label}</div>
             </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── How it works ── */}
+      <section id="how-it-works" style={{ position: "relative", zIndex: 10, padding: "96px 0" }}>
+        <div className="section-inner">
+          <div style={{ textAlign: "center", marginBottom: 64 }}>
+            <p style={{ color: "rgba(251,191,36,0.5)", fontSize: 11, letterSpacing: "0.25em", textTransform: "uppercase", fontWeight: 500, marginBottom: 12 }}>
+              Mecánica del juego
+            </p>
+            <h2 style={{ fontSize: "clamp(28px, 5vw, 48px)", fontWeight: 800, letterSpacing: "-0.02em" }}>
+              <span style={{ color: "#fff" }}>12 Niveles </span>
+              <span style={{ color: "rgba(255,255,255,0.3)" }}>de Historia</span>
+            </h2>
           </div>
 
-          {/* Heading */}
-          <h1 className="animate-fade-in-up-delay-1 text-5xl sm:text-6xl lg:text-8xl font-extrabold tracking-tight leading-[0.9] mb-6">
-            <span className="block text-white">EL MUNDO ES</span>
-            <span className="block text-shimmer mt-1">EL TABLERO</span>
-          </h1>
-
-          {/* Subheading */}
-          <p className="animate-fade-in-up-delay-2 max-w-lg text-base lg:text-lg text-white/40 mb-12 leading-relaxed">
-            Explora calles reales en Google Street View. Resuelve acertijos
-            de la historia. El primero en encontrar el tesoro gana{" "}
-            <span className="text-amber-400 font-semibold">$1,000 USD</span>.
-          </p>
-
-          {/* Countdown */}
-          <div className="animate-fade-in-up-delay-3 mb-12">
-            <CountdownTimer
-              targetDate={sagaStart}
-              label="SAGA DE COLÓN — ZONA COLONIAL, SANTO DOMINGO"
-            />
-          </div>
-
-          {/* CTAs */}
-          <div className="animate-fade-in-up-delay-3 flex flex-col sm:flex-row gap-4">
-            <a
-              href="#"
-              className="btn-glow group relative px-8 py-4 text-base font-bold bg-amber-500 hover:bg-amber-400 text-black rounded-xl transition-all active:scale-95"
-            >
-              <span className="relative z-10 flex items-center gap-2">
-                UNIRSE A LA SAGA
-                <span className="text-amber-800/60 font-medium">$9.99</span>
-                <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </svg>
-              </span>
-            </a>
-            <a
-              href="#how-it-works"
-              className="group px-8 py-4 text-base font-semibold border border-white/10 hover:border-white/30 text-white/70 hover:text-white rounded-xl transition-all"
-            >
-              ¿Cómo funciona?
-            </a>
-          </div>
-        </section>
-
-        {/* ── Stats bar ── */}
-        <section className="relative border-y border-white/[0.06] bg-white/[0.02] backdrop-blur-sm">
-          <div className="max-w-5xl mx-auto px-6 py-8 grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-0 lg:divide-x divide-white/[0.06]">
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 20 }}>
             {[
-              { value: "5,000+", label: "Exploradores por saga" },
-              { value: "12", label: "Niveles por saga" },
-              { value: "$1,000", label: "Premio USD" },
-              { value: "∞", label: "Ciudades del mundo" },
-            ].map((stat) => (
-              <div key={stat.label} className="text-center lg:px-8">
-                <div className="text-2xl lg:text-3xl font-bold text-white font-tabular">
-                  {stat.value}
-                </div>
-                <div className="text-xs text-white/30 mt-1 uppercase tracking-wider">
-                  {stat.label}
-                </div>
+              { step: "01", icon: "🔐", title: "Suscríbete", desc: "Elige tu plan, paga con PayPal y recibe tu membresía con usuario y contraseña por email." },
+              { step: "02", icon: "⏱️", title: "Espera la señal", desc: "El temporizador global sincronizado marca cuándo se revelan las pistas. Todos arrancan al mismo tiempo." },
+              { step: "03", icon: "🗺️", title: "Explora", desc: "Recorre calles reales en Google Street View. Encuentra el dato exacto que pide cada pista." },
+              { step: "04", icon: "🏆", title: "Gana el tesoro", desc: "El primer explorador en completar los 12 niveles se lleva $1,000 USD. Solo uno gana." },
+            ].map((step) => (
+              <div key={step.step} className="card-hover" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 16, padding: 28, position: "relative", overflow: "hidden" }}>
+                <span style={{ position: "absolute", top: 12, right: 16, fontSize: 64, fontWeight: 800, lineHeight: 1, color: "rgba(255,255,255,0.025)", userSelect: "none" }}>{step.step}</span>
+                <span style={{ fontSize: 32, display: "block", marginBottom: 20 }}>{step.icon}</span>
+                <h3 style={{ fontSize: 16, fontWeight: 700, color: "#fff", marginBottom: 8 }}>{step.title}</h3>
+                <p style={{ fontSize: 14, color: "rgba(255,255,255,0.35)", lineHeight: 1.6 }}>{step.desc}</p>
               </div>
             ))}
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* ── How it works ── */}
-        <section id="how-it-works" className="py-24 px-6">
-          <div className="max-w-5xl mx-auto">
-            <div className="text-center mb-16">
-              <p className="text-amber-400/60 text-xs tracking-[0.25em] uppercase font-medium mb-3">
-                Mecánica del juego
-              </p>
-              <h2 className="text-3xl lg:text-5xl font-extrabold tracking-tight">
-                <span className="text-white">12 Niveles</span>{" "}
-                <span className="text-white/30">de Historia</span>
-              </h2>
-            </div>
+      {/* ── First Mission ── */}
+      <section style={{ position: "relative", zIndex: 10, padding: "96px 0", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+        <div className="section-narrow" style={{ textAlign: "center" }}>
+          <p style={{ color: "rgba(251,191,36,0.5)", fontSize: 11, letterSpacing: "0.25em", textTransform: "uppercase", fontWeight: 500, marginBottom: 12 }}>
+            Primera misión
+          </p>
+          <h2 style={{ fontSize: "clamp(28px, 5vw, 48px)", fontWeight: 800, letterSpacing: "-0.02em", marginBottom: 24 }}>
+            <span style={{ color: "#fff" }}>Zona Colonial, </span>
+            <span className="text-shimmer">Santo Domingo</span>
+          </h2>
+          <p style={{ color: "rgba(255,255,255,0.35)", fontSize: 17, maxWidth: 640, margin: "0 auto 40px", lineHeight: 1.7 }}>
+            Elegida por su densidad histórica y detalles visuales únicos capturados por Street View. Una narrativa inmersiva que te desafía a encontrar datos exactos en edificios coloniales reales.
+          </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-              {[
-                {
-                  step: "01",
-                  icon: "🔐",
-                  title: "Suscríbete",
-                  desc: "Elige tu plan, paga con PayPal y recibe tu membresía con usuario y contraseña por email.",
-                },
-                {
-                  step: "02",
-                  icon: "⏱️",
-                  title: "Espera la señal",
-                  desc: "El temporizador global sincronizado marca cuándo se revelan las pistas. Todos arrancan al mismo tiempo.",
-                },
-                {
-                  step: "03",
-                  icon: "🗺️",
-                  title: "Explora",
-                  desc: "Recorre calles reales en Google Street View. Encuentra el dato exacto que pide cada pista.",
-                },
-                {
-                  step: "04",
-                  icon: "🏆",
-                  title: "Gana el tesoro",
-                  desc: "El primer explorador en completar los 12 niveles se lleva $1,000 USD. Solo uno gana.",
-                },
-              ].map((step) => (
-                <div
-                  key={step.step}
-                  className="card-hover group bg-white/[0.03] border border-white/[0.06] rounded-2xl p-7 relative overflow-hidden"
-                >
-                  {/* Step number */}
-                  <span className="absolute top-4 right-5 text-[64px] font-extrabold leading-none text-white/[0.03] select-none">
-                    {step.step}
-                  </span>
-                  <span className="text-3xl mb-5 block">{step.icon}</span>
-                  <h3 className="text-base font-bold text-white mb-2 tracking-tight">
-                    {step.title}
-                  </h3>
-                  <p className="text-sm text-white/35 leading-relaxed">
-                    {step.desc}
-                  </p>
-                </div>
-              ))}
-            </div>
+          {/* Pills */}
+          <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 10, marginBottom: 48 }}>
+            {[
+              "🧠 IA Gemini valida respuestas",
+              "🌎 Google Maps + Street View",
+              "⚡ 5,000 exploradores simultáneos",
+              "💰 $1,000 USD de premio",
+              "🔥 Eliminación progresiva",
+            ].map((pill) => (
+              <span key={pill} style={{ padding: "8px 16px", fontSize: 12, fontWeight: 500, color: "rgba(255,255,255,0.45)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 999, background: "rgba(255,255,255,0.02)" }}>
+                {pill}
+              </span>
+            ))}
           </div>
-        </section>
 
-        {/* ── First mission teaser ── */}
-        <section className="py-24 px-6 border-t border-white/[0.06]">
-          <div className="max-w-4xl mx-auto text-center">
-            <p className="text-amber-400/60 text-xs tracking-[0.25em] uppercase font-medium mb-3">
-              Primera misión
-            </p>
-            <h2 className="text-3xl lg:text-5xl font-extrabold tracking-tight mb-6">
-              <span className="text-white">Zona Colonial,</span>{" "}
-              <span className="text-shimmer">Santo Domingo</span>
-            </h2>
-            <p className="text-white/35 text-base lg:text-lg max-w-2xl mx-auto mb-10 leading-relaxed">
-              Elegida por su densidad histórica y detalles visuales únicos
-              capturados por Street View. Una narrativa inmersiva que te desafía
-              a encontrar datos exactos en edificios coloniales reales.
-            </p>
-
-            {/* Feature pills */}
-            <div className="flex flex-wrap justify-center gap-3 mb-12">
-              {[
-                "🧠 IA Gemini valida respuestas",
-                "🌎 Google Maps + Street View",
-                "⚡ 5,000 exploradores simultáneos",
-                "💰 $1,000 USD de premio",
-                "🔥 Eliminación progresiva",
-              ].map((pill) => (
-                <span
-                  key={pill}
-                  className="px-4 py-2 text-xs font-medium text-white/50 border border-white/[0.08] rounded-full bg-white/[0.02]"
-                >
-                  {pill}
-                </span>
-              ))}
-            </div>
-
-            <a
-              href="#"
-              className="btn-glow inline-flex items-center gap-2 px-10 py-4 text-base font-bold bg-amber-500 hover:bg-amber-400 text-black rounded-xl transition-all active:scale-95"
-            >
-              RESERVAR MI LUGAR
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-              </svg>
-            </a>
-          </div>
-        </section>
-      </main>
+          <a href="#" className="btn-glow" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "16px 40px", fontSize: 16, fontWeight: 700, background: "#f59e0b", color: "#000", borderRadius: 12, textDecoration: "none" }}>
+            RESERVAR MI LUGAR <span>→</span>
+          </a>
+        </div>
+      </section>
 
       {/* ── Footer ── */}
-      <footer className="relative z-10 py-10 px-6 border-t border-white/[0.06]">
-        <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-md bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center">
-              <span className="text-black font-extrabold text-[10px]">U</span>
+      <footer style={{ position: "relative", zIndex: 10, borderTop: "1px solid rgba(255,255,255,0.06)", padding: "40px 0" }}>
+        <div className="section-inner" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 16 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <div style={{ width: 24, height: 24, borderRadius: 6, background: "linear-gradient(135deg, #fbbf24, #d97706)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <span style={{ color: "#000", fontWeight: 800, fontSize: 10 }}>U</span>
             </div>
-            <span className="text-sm font-semibold text-white/50">UBEX</span>
+            <span style={{ fontSize: 14, fontWeight: 600, color: "rgba(255,255,255,0.4)" }}>UBEX</span>
           </div>
-          <p className="text-xs text-white/20 text-center">
-            © {new Date().getFullYear()} UBEX — Arqueología Digital de Próxima
-            Generación. Impulsada por Google Gemini &amp; Maps Platform.
+          <p style={{ fontSize: 12, color: "rgba(255,255,255,0.2)", textAlign: "center" }}>
+            © {new Date().getFullYear()} UBEX — Arqueología Digital de Próxima Generación. Impulsada por Google Gemini &amp; Maps Platform.
           </p>
         </div>
       </footer>

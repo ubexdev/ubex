@@ -1,13 +1,5 @@
 @import "tailwindcss";
 
-@theme inline {
-  --color-background: #000000;
-  --color-foreground: #ededed;
-  --color-amber-400: #fbbf24;
-  --color-amber-500: #f59e0b;
-  --color-amber-600: #d97706;
-}
-
 * {
   box-sizing: border-box;
   margin: 0;
@@ -16,17 +8,17 @@
 
 html {
   scroll-behavior: smooth;
+  background: #000;
 }
 
 body {
-  background: #000000;
+  background: #000;
   color: #ededed;
   font-family: var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Animated gradient text */
+/* Shimmer gradient text */
 @keyframes shimmer {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
@@ -42,88 +34,60 @@ body {
   animation: shimmer 6s ease-in-out infinite;
 }
 
-/* Globe pulse */
-@keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 30px rgba(245, 158, 11, 0.1), 0 0 60px rgba(245, 158, 11, 0.05); }
-  50% { box-shadow: 0 0 50px rgba(245, 158, 11, 0.25), 0 0 100px rgba(245, 158, 11, 0.1); }
-}
-
-.globe-pulse {
-  animation: pulse-glow 3s ease-in-out infinite;
-}
-
-/* Floating animation */
+/* Globe floating + glow */
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
   50% { transform: translateY(-10px); }
 }
 
-.animate-float {
+.globe-pulse {
   animation: float 4s ease-in-out infinite;
+  box-shadow: 0 0 40px rgba(245, 158, 11, 0.12);
 }
 
 /* Card hover */
 .card-hover {
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-              box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-              border-color 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
 }
-
 .card-hover:hover {
   transform: translateY(-6px);
-  box-shadow: 0 20px 60px rgba(245, 158, 11, 0.12);
-  border-color: rgba(245, 158, 11, 0.4);
+  box-shadow: 0 20px 60px rgba(245, 158, 11, 0.1);
+  border-color: rgba(245, 158, 11, 0.3) !important;
 }
 
 /* Button glow */
 .btn-glow {
   position: relative;
-  overflow: hidden;
   transition: all 0.3s ease;
 }
-
-.btn-glow::after {
-  content: '';
-  position: absolute;
-  inset: -2px;
-  background: linear-gradient(135deg, #fbbf24, #d97706);
-  border-radius: inherit;
-  z-index: -1;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  filter: blur(12px);
+.btn-glow:hover {
+  box-shadow: 0 0 30px rgba(245, 158, 11, 0.3);
 }
 
-.btn-glow:hover::after {
-  opacity: 0.6;
-}
-
-/* Number counter style */
-.font-tabular {
-  font-variant-numeric: tabular-nums;
-}
-
-/* Fade in animation */
+/* Fade in */
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(20px); }
+  from { opacity: 0; transform: translateY(24px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-.animate-fade-in-up {
-  animation: fadeInUp 0.8s ease-out forwards;
+.fade-in { animation: fadeInUp 0.7s ease-out forwards; }
+.fade-in-d1 { animation: fadeInUp 0.7s ease-out 0.1s forwards; opacity: 0; }
+.fade-in-d2 { animation: fadeInUp 0.7s ease-out 0.2s forwards; opacity: 0; }
+.fade-in-d3 { animation: fadeInUp 0.7s ease-out 0.35s forwards; opacity: 0; }
+
+/* Sections centered */
+.section-inner {
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 24px;
+  padding-right: 24px;
 }
 
-.animate-fade-in-up-delay-1 {
-  animation: fadeInUp 0.8s ease-out 0.15s forwards;
-  opacity: 0;
-}
-
-.animate-fade-in-up-delay-2 {
-  animation: fadeInUp 0.8s ease-out 0.3s forwards;
-  opacity: 0;
-}
-
-.animate-fade-in-up-delay-3 {
-  animation: fadeInUp 0.8s ease-out 0.45s forwards;
-  opacity: 0;
+.section-narrow {
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 24px;
+  padding-right: 24px;
 }
