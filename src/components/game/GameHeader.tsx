@@ -19,6 +19,7 @@ export default function GameHeader({
 }: GameHeaderProps) {
   return (
     <header
+      className="game-header"
       style={{
         display: "flex",
         alignItems: "center",
@@ -63,10 +64,10 @@ export default function GameHeader({
           </div>
         </Link>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span style={{ fontSize: 14, fontWeight: 600, color: "rgba(255,255,255,0.5)" }}>
+          <span className="gh-saga-title" style={{ fontSize: 14, fontWeight: 600, color: "rgba(255,255,255,0.5)" }}>
             {sagaTitle}
           </span>
-          <span style={{ color: "rgba(255,255,255,0.15)" }}>|</span>
+          <span className="gh-saga-title" style={{ color: "rgba(255,255,255,0.15)" }}>|</span>
           <span style={{ fontSize: 13, fontWeight: 700, color: "#fbbf24" }}>
             Misión {currentLevel}/{totalLevels}
           </span>
@@ -74,7 +75,7 @@ export default function GameHeader({
       </div>
 
       {/* Right: Stats */}
-      <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
+      <div className="gh-right" style={{ display: "flex", alignItems: "center", gap: 20 }}>
         {/* Participants */}
         <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
           <div
@@ -89,8 +90,8 @@ export default function GameHeader({
           <span style={{ fontSize: 13, color: "rgba(255,255,255,0.5)" }}>
             <span style={{ fontWeight: 700, color: "#fff", fontVariantNumeric: "tabular-nums" }}>
               {activeParticipants.toLocaleString()}
-            </span>{" "}
-            exploradores
+            </span>
+            <span className="gh-explorers-text">{" "}exploradores</span>
           </span>
         </div>
 
@@ -114,6 +115,12 @@ export default function GameHeader({
         @keyframes blink {
           0%, 100% { opacity: 1; }
           50% { opacity: 0.3; }
+        }
+        @media (max-width: 767px) {
+          .game-header { padding: 10px 12px !important; }
+          .gh-saga-title { display: none !important; }
+          .gh-right { gap: 12px !important; }
+          .gh-explorers-text { display: none !important; }
         }
       `}</style>
     </header>

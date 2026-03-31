@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import {
   Compass,
@@ -13,6 +13,8 @@ import {
   Lightning,
   Eye,
   Crosshair,
+  List,
+  X,
 } from "@phosphor-icons/react";
 import UserMenu from "@/components/auth/UserMenu";
 import CountdownTimer from "@/components/game/CountdownTimer";
@@ -23,6 +25,8 @@ export default function Home() {
     () => new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
     []
   );
+
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
     <div
@@ -84,7 +88,7 @@ export default function Home() {
               UBEX
             </span>
           </div>
-          <nav style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <nav className="nav-desktop">
             <a
               href="#how-it-works"
               className="btn-press"
@@ -134,26 +138,63 @@ export default function Home() {
               <UserMenu />
             </div>
           </nav>
+          <div className="mobile-header-actions">
+            <UserMenu />
+            <button
+              className="hamburger-btn"
+              onClick={() => setMobileMenuOpen((prev) => !prev)}
+              aria-label={mobileMenuOpen ? "Cerrar menú" : "Abrir menú"}
+            >
+              {mobileMenuOpen ? (
+                <X size={24} weight="bold" />
+              ) : (
+                <List size={24} weight="bold" />
+              )}
+            </button>
+          </div>
         </div>
       </header>
 
+      {/* ── Mobile menu overlay ── */}
+      {mobileMenuOpen && (
+        <div className="mobile-menu-overlay">
+          <a
+            href="#how-it-works"
+            className="mobile-menu-link"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            <Compass size={20} weight="regular" color="#d97706" />
+            Cómo funciona
+          </a>
+          <Link
+            href="/leaderboard"
+            className="mobile-menu-link"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            <Trophy size={20} weight="regular" color="#d97706" />
+            Clasificación
+          </Link>
+          <div style={{ height: 8 }} />
+          <Link
+            href="/play"
+            className="mobile-menu-cta"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            Iniciar exploración
+            <ArrowRight size={16} weight="bold" />
+          </Link>
+        </div>
+      )}
+
       {/* ── Hero (Asymmetric, left-aligned) ── */}
       <section
+        className="section-hero"
         style={{
           position: "relative",
           zIndex: 10,
-          padding: "80px 0 64px",
         }}
       >
-        <div
-          className="section-inner"
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: 64,
-            alignItems: "center",
-          }}
-        >
+        <div className="section-inner hero-grid">
           {/* Left: Copy */}
           <div>
             <div
@@ -258,16 +299,7 @@ export default function Home() {
           </div>
 
           {/* Right: Visual — Compass + decorative rings */}
-          <div
-            className="fade-in-d2"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              position: "relative",
-              height: 360,
-            }}
-          >
+          <div className="hero-visual fade-in-d2">
             {/* Outer ring */}
             <div
               className="compass-rotate"
@@ -331,29 +363,14 @@ export default function Home() {
           borderBottom: "1px solid rgba(255,255,255,0.06)",
         }}
       >
-        <div
-          className="section-inner"
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(4, 1fr)",
-            padding: "28px 24px",
-          }}
-        >
+        <div className="section-inner stats-grid">
           {[
             { icon: Users, value: "5,000+", label: "Exploradores" },
             { icon: MapTrifold, value: "12", label: "Misiones" },
             { icon: Trophy, value: "$1,000", label: "Premio USD" },
             { icon: Compass, value: "∞", label: "Ciudades" },
-          ].map((stat, i) => (
-            <div
-              key={stat.label}
-              style={{
-                textAlign: "center",
-                padding: "0 16px",
-                borderRight:
-                  i < 3 ? "1px solid rgba(255,255,255,0.06)" : "none",
-              }}
-            >
+          ].map((stat) => (
+            <div key={stat.label}>
               <stat.icon
                 size={18}
                 weight="regular"
@@ -388,10 +405,10 @@ export default function Home() {
 
       {/* ── Countdown ── */}
       <section
+        className="section-countdown"
         style={{
           position: "relative",
           zIndex: 10,
-          padding: "56px 0",
           textAlign: "center",
         }}
       >
@@ -405,10 +422,10 @@ export default function Home() {
 
       {/* ── Leaderboard Widget ── */}
       <section
+        className="section-leaderboard"
         style={{
           position: "relative",
           zIndex: 10,
-          padding: "0 0 56px",
         }}
       >
         <div className="section-narrow">
@@ -419,10 +436,10 @@ export default function Home() {
       {/* ── How it works (vertical steps, no card grid) ── */}
       <section
         id="how-it-works"
+        className="section-padded"
         style={{
           position: "relative",
           zIndex: 10,
-          padding: "80px 0",
           borderTop: "1px solid rgba(255,255,255,0.06)",
         }}
       >
@@ -451,13 +468,7 @@ export default function Home() {
             Cuatro pasos al tesoro
           </h2>
 
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: "40px 56px",
-            }}
-          >
+          <div className="steps-grid">
             {[
               {
                 Icon: Lock,
@@ -558,10 +569,10 @@ export default function Home() {
 
       {/* ── First Mission (left-aligned) ── */}
       <section
+        className="section-padded"
         style={{
           position: "relative",
           zIndex: 10,
-          padding: "80px 0",
           borderTop: "1px solid rgba(255,255,255,0.06)",
         }}
       >
@@ -665,11 +676,11 @@ export default function Home() {
 
       {/* ── Footer ── */}
       <footer
+        className="footer-section"
         style={{
           position: "relative",
           zIndex: 10,
           borderTop: "1px solid rgba(255,255,255,0.06)",
-          padding: "32px 0",
         }}
       >
         <div

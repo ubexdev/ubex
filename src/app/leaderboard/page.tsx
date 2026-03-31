@@ -324,6 +324,122 @@ export default function LeaderboardPage() {
 
   return (
     <div style={{ minHeight: "100dvh", background: "#09090b", color: "#e4e4e7" }}>
+      {/* ── Responsive overrides (media-query layer on top of inline styles) ── */}
+      <style>{`
+        /* ── Mobile ≤ 640px ── */
+        @media (max-width: 640px) {
+          /* Header: stack logo + CTA vertically */
+          .lb-header-inner {
+            flex-wrap: wrap !important;
+            height: auto !important;
+            padding-top: 12px !important;
+            padding-bottom: 12px !important;
+            gap: 10px !important;
+          }
+          .lb-header-inner > a:first-child {
+            flex: 1 1 100%;
+          }
+          .lb-header-inner > a:last-child {
+            min-height: 44px;
+            display: inline-flex !important;
+            align-items: center;
+            justify-content: center;
+          }
+
+          /* Main: tighter padding */
+          .lb-main {
+            padding: 20px 16px 48px !important;
+          }
+
+          /* Tabs: allow horizontal scroll, fill width */
+          .lb-tabs {
+            width: 100% !important;
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+          }
+          .lb-tabs::-webkit-scrollbar { display: none; }
+
+          /* Saga selector: full width */
+          .lb-saga-wrap {
+            width: 100% !important;
+          }
+          .lb-saga-wrap select {
+            width: 100% !important;
+            min-width: unset !important;
+          }
+
+          /* Top-3 podium: single column */
+          .lb-top-grid {
+            grid-template-columns: 1fr !important;
+            gap: 20px !important;
+          }
+        }
+
+        /* ── Tablet 641-1023px ── */
+        @media (min-width: 641px) and (max-width: 1023px) {
+          .lb-top-grid {
+            grid-template-columns: 1fr 1fr !important;
+          }
+        }
+
+        /* ── Mobile table → card rows ≤ 767px ── */
+        @media (max-width: 767px) {
+          /* Hide the column-header row */
+          .lb-table-header {
+            display: none !important;
+          }
+
+          /* Re-lay each row as a compact card */
+          .lb-table-row {
+            grid-template-columns: auto 1fr auto !important;
+            grid-template-rows: auto auto !important;
+            padding: 14px 16px !important;
+            gap: 2px 12px !important;
+          }
+
+          /* Rank – left, vertically centered across both rows */
+          .lb-table-row > *:nth-child(1) {
+            grid-row: 1 / 3;
+            grid-column: 1;
+            align-self: center;
+          }
+
+          /* Avatar + name – center column, spans both rows */
+          .lb-table-row > *:nth-child(2) {
+            grid-row: 1 / 3;
+            grid-column: 2;
+            align-self: center;
+            min-width: 0;
+          }
+
+          /* Score – top-right */
+          .lb-table-row > *:nth-child(3) {
+            grid-row: 1;
+            grid-column: 3;
+            align-self: end;
+            text-align: right !important;
+          }
+
+          /* Sagas completed – bottom-right, smaller */
+          .lb-table-row > *:nth-child(4) {
+            grid-row: 2;
+            grid-column: 3;
+            align-self: start;
+            text-align: right !important;
+            font-size: 11px !important;
+          }
+        }
+
+        /* ── Reduce section-inner side-padding on small screens ── */
+        @media (max-width: 480px) {
+          .section-inner {
+            padding-left: 16px !important;
+            padding-right: 16px !important;
+          }
+        }
+      `}</style>
+
       {/* Header */}
       <header
         style={{
@@ -336,7 +452,7 @@ export default function LeaderboardPage() {
         }}
       >
         <div
-          className="section-inner"
+          className="section-inner lb-header-inner"
           style={{
             display: "flex",
             alignItems: "center",
@@ -379,9 +495,10 @@ export default function LeaderboardPage() {
       </header>
 
       {/* Content */}
-      <main className="section-inner" style={{ padding: "32px 24px 64px" }}>
+      <main className="section-inner lb-main" style={{ padding: "32px 24px 64px" }}>
         {/* Tab navigation */}
         <div
+          className="lb-tabs"
           style={{
             display: "flex",
             gap: 4,
@@ -436,7 +553,7 @@ export default function LeaderboardPage() {
                 No hay sagas activas disponibles.
               </p>
             ) : (
-              <div style={{ position: "relative", width: "fit-content" }}>
+              <div className="lb-saga-wrap" style={{ position: "relative", width: "fit-content" }}>
                 <select
                   value={selectedSagaId ?? ""}
                   onChange={(e) => setSelectedSagaId(e.target.value)}
@@ -547,6 +664,7 @@ export default function LeaderboardPage() {
         {/* Top 3 cards */}
         {!loading && topThree.length > 0 && (
           <div
+            className="lb-top-grid"
             style={{
               display: "grid",
               gridTemplateColumns: topThree.length === 1
@@ -572,6 +690,7 @@ export default function LeaderboardPage() {
         {/* Table */}
         {!loading && tableEntries.length > 0 && (
           <div
+            className="lb-table-wrap"
             style={{
               borderRadius: 14,
               border: "1px solid rgba(255,255,255,0.06)",
@@ -580,6 +699,7 @@ export default function LeaderboardPage() {
           >
             {/* Desktop header */}
             <div
+              className="lb-table-header"
               style={{
                 display: "grid",
                 gridTemplateColumns: "60px 1fr 120px 120px",
@@ -604,6 +724,7 @@ export default function LeaderboardPage() {
               return (
                 <div
                   key={entry.user_id + "-" + entry.rank}
+                  className="lb-table-row"
                   style={{
                     display: "grid",
                     gridTemplateColumns: "60px 1fr 120px 120px",

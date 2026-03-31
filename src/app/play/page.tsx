@@ -99,6 +99,7 @@ function IntroScreen({ onStart }: { onStart: (difficulty: Difficulty) => void })
 
   return (
     <div
+      className="intro-screen"
       style={{
         minHeight: "100vh",
         background: "#000",
@@ -145,8 +146,8 @@ function IntroScreen({ onStart }: { onStart: (difficulty: Difficulty) => void })
         ← Volver
       </Link>
 
-      <div style={{ position: "relative", zIndex: 10, maxWidth: 600 }}>
-        <span style={{ fontSize: 72, display: "block", marginBottom: 24 }}>
+      <div className="intro-content" style={{ position: "relative", zIndex: 10, maxWidth: 600 }}>
+        <span className="intro-emoji" style={{ fontSize: 72, display: "block", marginBottom: 24 }}>
           {DEMO_SAGA.coverEmoji}
         </span>
 
@@ -187,6 +188,7 @@ function IntroScreen({ onStart }: { onStart: (difficulty: Difficulty) => void })
 
         {/* Stats row */}
         <div
+          className="intro-stats"
           style={{
             display: "flex",
             justifyContent: "center",
@@ -379,6 +381,18 @@ function IntroScreen({ onStart }: { onStart: (difficulty: Difficulty) => void })
           Demo gratuito — 12 misiones explorables
         </p>
       </div>
+
+      <style>{`
+        @supports (min-height: 100dvh) {
+          .intro-screen { min-height: 100dvh !important; }
+        }
+        @media (max-width: 767px) {
+          .intro-screen { padding: 20px 16px !important; }
+          .intro-content { max-width: 90vw !important; }
+          .intro-emoji { font-size: 48px !important; }
+          .intro-stats { gap: 20px !important; }
+        }
+      `}</style>
     </div>
   );
 }
@@ -392,6 +406,7 @@ function WinnerScreen({ totalTime }: { totalTime: number }) {
 
   return (
     <div
+      className="winner-screen"
       style={{
         minHeight: "100vh",
         background: "#000",
@@ -419,8 +434,8 @@ function WinnerScreen({ totalTime }: { totalTime: number }) {
         }}
       />
 
-      <div style={{ position: "relative", zIndex: 10, maxWidth: 500 }}>
-        <span style={{ fontSize: 96, display: "block", marginBottom: 24 }}>🏆</span>
+      <div className="winner-content" style={{ position: "relative", zIndex: 10, maxWidth: 500 }}>
+        <span className="winner-emoji" style={{ fontSize: 96, display: "block", marginBottom: 24 }}>🏆</span>
 
         <h1
           style={{
@@ -439,11 +454,13 @@ function WinnerScreen({ totalTime }: { totalTime: number }) {
         </p>
 
         <div
+          className="winner-stats"
           style={{
             display: "flex",
             justifyContent: "center",
             gap: 24,
             marginBottom: 40,
+            flexWrap: "wrap",
           }}
         >
           <div style={{ textAlign: "center" }}>
@@ -508,6 +525,18 @@ function WinnerScreen({ totalTime }: { totalTime: number }) {
           </button>
         </div>
       </div>
+
+      <style>{`
+        @supports (min-height: 100dvh) {
+          .winner-screen { min-height: 100dvh !important; }
+        }
+        @media (max-width: 767px) {
+          .winner-screen { padding: 20px 16px !important; }
+          .winner-content { max-width: 90vw !important; }
+          .winner-emoji { font-size: 64px !important; }
+          .winner-stats { gap: 16px !important; }
+        }
+      `}</style>
     </div>
   );
 }
@@ -528,6 +557,17 @@ export default function PlayPage() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [playerPos, setPlayerPos] = useState<{ lat: number; lng: number } | null>(null);
   const [hudMessage, setHudMessage] = useState<{ type: "success" | "error" | "info"; message: string } | null>(null);
+
+  const [isMobile, setIsMobile] = useState(false);
+
+  /* Detect mobile viewport for sidebar drawer pattern */
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    if (window.innerWidth < 768) setSidebarOpen(false);
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   const level = DEMO_LEVELS[levelIndex];
   const participants = useSimulatedParticipants(levelIndex);
@@ -624,7 +664,7 @@ export default function PlayPage() {
 
   /* ── Render: Game ── */
   return (
-    <div style={{ height: "100vh", display: "flex", flexDirection: "column", background: "#000", color: "#ededed" }}>
+    <div className="game-container" style={{ height: "100vh", display: "flex", flexDirection: "column", background: "#000", color: "#ededed" }}>
       {hudMessage && (
         <HudSystemMessage
           key={`${hudMessage.type}-${hudMessage.message}`}
@@ -651,16 +691,16 @@ export default function PlayPage() {
             onPositionChange={handlePositionChange}
           />
 
-          {/* Toggle sidebar button (mobile) */}
+          {/* Toggle sidebar button */}
           <button
             onClick={() => setSidebarOpen((v) => !v)}
             style={{
               position: "absolute",
               top: 12,
-              right: sidebarOpen ? 392 : 12,
+              right: isMobile ? 12 : (sidebarOpen ? 392 : 12),
               zIndex: 30,
-              width: 40,
-              height: 40,
+              width: 44,
+              height: 44,
               borderRadius: 10,
               background: "rgba(0,0,0,0.7)",
               border: "1px solid rgba(255,255,255,0.15)",
@@ -678,11 +718,36 @@ export default function PlayPage() {
           </button>
         </div>
 
+        {/* Mobile sidebar backdrop */}
+        {isMobile && sidebarOpen && (
+          <div
+            onClick={() => setSidebarOpen(false)}
+            style={{
+              position: "absolute",
+              inset: 0,
+              background: "rgba(0,0,0,0.6)",
+              zIndex: 20,
+            }}
+          />
+        )}
+
         {/* Sidebar */}
         <aside
           style={{
-            width: sidebarOpen ? 380 : 0,
-            minWidth: sidebarOpen ? 380 : 0,
+            ...(isMobile
+              ? {
+                  position: "absolute",
+                  top: 0,
+                  right: 0,
+                  bottom: 0,
+                  width: sidebarOpen ? "100%" : 0,
+                  maxWidth: sidebarOpen ? 420 : 0,
+                  zIndex: 25,
+                }
+              : {
+                  width: sidebarOpen ? 380 : 0,
+                  minWidth: sidebarOpen ? 380 : 0,
+                }),
             overflow: "hidden",
             transition: "all 0.3s ease",
             borderLeft: sidebarOpen ? "1px solid rgba(255,255,255,0.06)" : "none",
@@ -691,10 +756,10 @@ export default function PlayPage() {
         >
           <div
             style={{
-              width: 380,
+              width: isMobile ? "100%" : 380,
               height: "100%",
               overflowY: "auto",
-              padding: 24,
+              padding: isMobile ? "60px 16px 20px" : 24,
               display: "flex",
               flexDirection: "column",
               gap: 20,
@@ -919,6 +984,9 @@ export default function PlayPage() {
         @keyframes blink-dot {
           0%, 100% { opacity: 1; }
           50% { opacity: 0.3; }
+        }
+        @supports (height: 100dvh) {
+          .game-container { height: 100dvh !important; }
         }
       `}</style>
     </div>
