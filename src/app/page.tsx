@@ -128,7 +128,7 @@ export default function Home() {
                 textDecoration: "none",
               }}
             >
-              Jugar demo
+              Iniciar exploración
             </Link>
             <div style={{ marginLeft: 6 }}>
               <UserMenu />
@@ -210,7 +210,7 @@ export default function Home() {
               }}
             >
               Navega Google Street View, resuelve acertijos históricos y compite
-              contra miles de exploradores. El primero en completar los 12 niveles
+              contra miles de exploradores. El primero en completar las 12 misiones
               gana <span style={{ color: "#e4e4e7", fontWeight: 600 }}>$1,000 USD</span>.
             </p>
 
@@ -234,7 +234,7 @@ export default function Home() {
                   textDecoration: "none",
                 }}
               >
-                Jugar demo gratis
+                Iniciar exploración
                 <ArrowRight size={16} weight="bold" />
               </Link>
               <a
@@ -341,7 +341,7 @@ export default function Home() {
         >
           {[
             { icon: Users, value: "5,000+", label: "Exploradores" },
-            { icon: MapTrifold, value: "12", label: "Niveles" },
+            { icon: MapTrifold, value: "12", label: "Misiones" },
             { icon: Trophy, value: "$1,000", label: "Premio USD" },
             { icon: Compass, value: "∞", label: "Ciudades" },
           ].map((stat, i) => (
@@ -437,7 +437,7 @@ export default function Home() {
               marginBottom: 12,
             }}
           >
-            Mecánica del juego
+            Protocolo de misión
           </p>
           <h2
             style={{
@@ -469,19 +469,19 @@ export default function Home() {
                 Icon: Timer,
                 num: "02",
                 title: "Espera la señal",
-                desc: "El temporizador global sincronizado marca cuándo se revelan las pistas. Todos arrancan al mismo tiempo.",
+                desc: "El temporizador global sincronizado marca cuándo se revelan las señales de radar. Todos arrancan al mismo tiempo.",
               },
               {
                 Icon: Eye,
                 num: "03",
                 title: "Explora",
-                desc: "Recorre calles reales en Google Street View. Encuentra el dato exacto que pide cada pista.",
+                desc: "Recorre calles reales en Google Street View. Encuentra el dato exacto que pide cada señal de radar.",
               },
               {
                 Icon: Trophy,
                 num: "04",
                 title: "Gana el tesoro",
-                desc: "El primer explorador en completar los 12 niveles se lleva $1,000 USD. Solo uno gana.",
+                desc: "El primer explorador en completar las 12 misiones se lleva $1,000 USD. Solo uno gana.",
               },
             ].map((step) => (
               <div
@@ -656,7 +656,7 @@ export default function Home() {
                 textDecoration: "none",
               }}
             >
-              Jugar demo gratis
+              Iniciar exploración
               <ArrowRight size={16} weight="bold" />
             </Link>
           </div>

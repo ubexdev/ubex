@@ -439,7 +439,7 @@ export default function ProfilePage() {
             }}
           >
             <Compass size={20} weight="bold" />
-            Jugar
+            Explorar
           </Link>
           {profile?.role === "admin" && (
             <Link

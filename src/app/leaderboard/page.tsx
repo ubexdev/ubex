@@ -373,7 +373,7 @@ export default function LeaderboardPage() {
               textDecoration: "none",
             }}
           >
-            Jugar
+            Explorar
           </Link>
         </div>
       </header>
@@ -539,7 +539,7 @@ export default function LeaderboardPage() {
               }}
             >
               <GameController size={18} weight="bold" />
-              Jugar ahora
+              Explorar ahora
             </Link>
           </div>
         )}
@@ -595,7 +595,7 @@ export default function LeaderboardPage() {
             >
               <span>#</span>
               <span>Explorador</span>
-              <span style={{ textAlign: "right" }}>Puntos</span>
+              <span style={{ textAlign: "right" }}>XP de Datos</span>
               <span style={{ textAlign: "right" }}>Partidas</span>
             </div>
 

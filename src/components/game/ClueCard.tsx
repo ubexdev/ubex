@@ -53,7 +53,7 @@ export default function ClueCard({
               textTransform: "uppercase",
             }}
           >
-            NIVEL {levelNumber}/{totalLevels}
+            MISIÓN {levelNumber}/{totalLevels}
           </span>
         </div>
         <span
@@ -125,7 +125,7 @@ export default function ClueCard({
                 e.currentTarget.style.color = "rgba(255,255,255,0.3)";
               }}
             >
-              💡 Revelar pista
+              📡 Activar radar
             </button>
           ) : (
             <div

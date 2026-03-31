@@ -130,10 +130,10 @@ export default function SessionsPage() {
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-zinc-100 tracking-tight">
-          Sesiones de juego
+          Sesiones de exploración
         </h1>
         <p className="text-base text-zinc-500 mt-2">
-          Monitorea las partidas de los jugadores
+          Monitorea las sesiones de los exploradores
         </p>
         {!loading && (
           <p className="text-sm text-zinc-600 mt-1">
@@ -198,16 +198,16 @@ export default function SessionsPage() {
                 <tr className="border-b border-zinc-800">
                   <th className="w-14 px-4 py-4" />
                   <th className="text-left px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider">
-                    Jugador
+                    Explorador
                   </th>
                   <th className="text-left px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider">
                     Saga
                   </th>
                   <th className="text-center px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider">
-                    Nivel
+                    Misión
                   </th>
                   <th className="text-right px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider">
-                    Puntos
+                    XP
                   </th>
                   <th className="text-center px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider">
                     Modo
@@ -325,7 +325,7 @@ export default function SessionsPage() {
                                       />
                                     )}
                                     <span className="text-sm text-zinc-500 font-mono shrink-0">
-                                      Nivel {attempt.level?.number ?? "?"}
+                                      Misión {attempt.level?.number ?? "?"}
                                     </span>
                                     <span className="text-base text-zinc-300 flex-1 truncate">
                                       &ldquo;{attempt.answer_given}&rdquo;

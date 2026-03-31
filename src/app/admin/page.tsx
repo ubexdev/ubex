@@ -210,7 +210,7 @@ export default async function AdminDashboard() {
               No hay actividad reciente
             </p>
             <p className="text-zinc-600 text-xs mt-1">
-              Los intentos de los jugadores aparecerán aquí
+              Los intentos de los exploradores aparecerán aquí
             </p>
           </div>
         ) : (
@@ -258,11 +258,11 @@ export default async function AdminDashboard() {
                         ) : (
                           <XCircle size={12} weight="fill" />
                         )}
-                        {attempt.is_correct ? "Correcto" : "Incorrecto"}
+                        {attempt.is_correct ? "Validado" : "Fallido"}
                       </span>
                     </div>
                     <p className="text-xs text-zinc-500 truncate mt-0.5">
-                      {(saga?.title as string) ?? "Saga"} — Nivel{" "}
+                      {(saga?.title as string) ?? "Saga"} — Misión{" "}
                       {(level?.number as number) ?? "?"}: {(level?.title as string) ?? ""}
                     </p>
                   </div>

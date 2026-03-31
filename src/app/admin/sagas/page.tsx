@@ -290,7 +290,7 @@ export default function SagasPage() {
             No hay sagas creadas aún
           </p>
           <p className="mt-2 text-sm text-zinc-600 max-w-sm mx-auto leading-relaxed">
-            Las sagas son aventuras urbanas que guían a los jugadores por
+            Las sagas son aventuras urbanas que guían a los exploradores por
             diferentes ciudades. Crea tu primera saga para comenzar.
           </p>
           <Link
@@ -387,7 +387,7 @@ export default function SagasPage() {
                   <div className="flex items-center gap-5 mt-5 text-sm text-zinc-500">
                     <span className="inline-flex items-center gap-1.5">
                       <ListNumbers size={16} />
-                      {saga.total_levels} niveles
+                      {saga.total_levels} misiones
                     </span>
                     {saga.estimated_duration && (
                       <span className="inline-flex items-center gap-1.5">

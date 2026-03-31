@@ -111,7 +111,7 @@ export default function NewSagaPage() {
       <div>
         <h1 className="text-2xl font-bold text-zinc-100">Crear Saga</h1>
         <p className="text-sm text-zinc-500 mt-1">
-          Configura una nueva aventura para los jugadores
+          Configura una nueva aventura para los exploradores
         </p>
       </div>
 

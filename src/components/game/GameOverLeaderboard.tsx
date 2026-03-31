@@ -187,7 +187,7 @@ export default function GameOverLeaderboard({
               {formatScore(playerScore)}
             </div>
             <div style={{ fontSize: 11, color: "#71717a", marginTop: 2 }}>
-              Puntos
+              XP de Datos
             </div>
           </div>
         </div>
@@ -339,7 +339,7 @@ export default function GameOverLeaderboard({
           }}
         >
           <GameController size={18} weight="bold" />
-          Jugar otra saga
+          Explorar otra saga
         </Link>
         <Link
           href="/leaderboard"

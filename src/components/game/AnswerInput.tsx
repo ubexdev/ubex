@@ -31,7 +31,7 @@ export default function AnswerInput({
       await onSubmit(answer.trim());
       setFeedback({
         type: "success",
-        message: "¡Respuesta correcta! Avanzas al siguiente nivel.",
+        message: "[SINCRONIZACIÓN EXITOSA] Avanzas a la siguiente misión.",
       });
       setAnswer("");
     } catch (err) {
@@ -50,7 +50,7 @@ export default function AnswerInput({
   return (
     <div className="w-full max-w-md mx-auto">
       <h3 className="text-lg font-bold text-white mb-3">
-        Nivel {levelNumber} — Ingresa tu respuesta
+        Misión {levelNumber} — Ingresa el dato
       </h3>
 
       <form onSubmit={handleSubmit} className="flex gap-2">

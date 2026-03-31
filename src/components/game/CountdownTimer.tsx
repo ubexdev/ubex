@@ -12,7 +12,7 @@ interface CountdownTimerProps {
 export default function CountdownTimer({
   targetDate,
   onComplete,
-  label = "PRÓXIMA PISTA EN",
+  label = "PRÓXIMA SEÑAL EN",
 }: CountdownTimerProps) {
   const [timeLeft, setTimeLeft] = useState({ d: 0, h: 0, m: 0, s: 0 });
   const [isComplete, setIsComplete] = useState(false);

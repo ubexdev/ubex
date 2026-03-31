@@ -58,7 +58,7 @@ export default function ParticipantTracker({
 
         {/* Level indicator */}
         <div className="flex justify-between items-center pt-2 border-t border-white/10">
-          <span className="text-sm text-white/60">Nivel</span>
+          <span className="text-sm text-white/60">Misión</span>
           <span className="text-sm font-bold text-amber-400">
             {currentLevel} / {totalLevels}
           </span>

@@ -85,13 +85,13 @@ function IntroScreen({ onStart }: { onStart: (difficulty: Difficulty) => void })
       id: "libre",
       icon: "🟢",
       label: "Libre",
-      desc: "Responde desde cualquier posición. Solo necesitas la respuesta correcta.",
+      desc: "Responde desde cualquier posición. Solo necesitas el dato exacto.",
     },
     {
       id: "explorador",
       icon: "🟠",
       label: "Explorador",
-      desc: `Debes estar a menos de ${PROXIMITY_RADIUS_M}m del lugar de la pista para poder responder. ¡Navega hasta el sitio!`,
+      desc: `Debes estar a menos de ${PROXIMITY_RADIUS_M}m del lugar de la señal para poder responder. ¡Navega hasta el sitio!`,
     },
   ];
 
@@ -194,7 +194,7 @@ function IntroScreen({ onStart }: { onStart: (difficulty: Difficulty) => void })
           }}
         >
           {[
-            { icon: "🗺️", value: "12", label: "Niveles" },
+            { icon: "🗺️", value: "12", label: "Misiones" },
             { icon: "🏆", value: "$1,000", label: "Premio USD" },
             { icon: "👥", value: "5,000", label: "Exploradores" },
             { icon: "📍", value: "RD", label: "Santo Domingo" },
@@ -223,14 +223,14 @@ function IntroScreen({ onStart }: { onStart: (difficulty: Difficulty) => void })
           }}
         >
           <h3 style={{ fontSize: 14, fontWeight: 700, color: "#fbbf24", marginBottom: 16, letterSpacing: "0.1em", textTransform: "uppercase" }}>
-            Cómo jugar
+            Protocolo de exploración
           </h3>
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             {[
               "Explora las calles de la Zona Colonial usando Google Street View",
-              "Lee cada pista con atención — la respuesta está en lo que ves",
-              "Escribe tu respuesta y envíala para avanzar al siguiente nivel",
-              "Completa los 12 niveles para reclamar el tesoro",
+              "Lee cada señal de radar con atención — la respuesta está en lo que ves",
+              "Ingresa el dato exacto para avanzar a la siguiente misión",
+              "Completa las 12 misiones para reclamar el tesoro",
             ].map((rule, i) => (
               <div key={i} style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
                 <span
@@ -374,7 +374,7 @@ function IntroScreen({ onStart }: { onStart: (difficulty: Difficulty) => void })
         </button>
 
         <p style={{ marginTop: 16, fontSize: 12, color: "rgba(255,255,255,0.2)" }}>
-          Demo gratuito — 12 niveles jugables
+          Demo gratuito — 12 misiones explorables
         </p>
       </div>
     </div>
@@ -433,7 +433,7 @@ function WinnerScreen({ totalTime }: { totalTime: number }) {
         </h1>
 
         <p style={{ fontSize: 17, color: "rgba(255,255,255,0.4)", lineHeight: 1.7, marginBottom: 32 }}>
-          Has completado los 12 niveles de la Saga de Colón y recorrido la Zona Colonial de Santo Domingo como un verdadero arqueólogo digital.
+          Has completado las 12 misiones de la Saga de Colón y recorrido la Zona Colonial de Santo Domingo como un verdadero arqueólogo digital.
         </p>
 
         <div
@@ -449,7 +449,7 @@ function WinnerScreen({ totalTime }: { totalTime: number }) {
               12/12
             </span>
             <span style={{ fontSize: 11, color: "rgba(255,255,255,0.3)", textTransform: "uppercase", letterSpacing: "0.1em" }}>
-              Niveles
+              Misiones
             </span>
           </div>
           <div style={{ width: 1, background: "rgba(255,255,255,0.1)" }} />
@@ -502,7 +502,7 @@ function WinnerScreen({ totalTime }: { totalTime: number }) {
               cursor: "pointer",
             }}
           >
-            Jugar otra vez
+            Explorar de nuevo
           </button>
         </div>
       </div>
@@ -830,7 +830,7 @@ export default function PlayPage() {
               {/* Inline feedback */}
               {feedback?.type === "too-far" && (
                 <p style={{ fontSize: 13, color: "#f59e0b", fontWeight: 500 }}>
-                  📍 ¡Estás demasiado lejos! Navega hasta el lugar de la pista ({Math.round(distanceToTarget || 0)}m)
+                  📍 ¡Estás demasiado lejos! Navega hasta las coordenadas de la señal ({Math.round(distanceToTarget || 0)}m)
                 </p>
               )}
               {feedback?.type === "incorrect" && (
@@ -840,7 +840,7 @@ export default function PlayPage() {
               )}
               {feedback?.type === "correct" && (
                 <p style={{ fontSize: 13, color: "#22c55e", fontWeight: 500 }}>
-                  ✅ ¡Correcto! Avanzando...
+                  ✅ [DATA LOCK] ¡Dato validado! Avanzando...
                 </p>
               )}
             </form>
@@ -877,7 +877,7 @@ export default function PlayPage() {
       {feedback?.type === "correct" && (
         <ResultOverlay
           type="correct"
-          message="¡Nivel completado!"
+          message="[DATA LOCK] ¡Misión completada!"
           explanation={DEMO_LEVELS[feedback.levelIndex].explanation}
         />
       )}

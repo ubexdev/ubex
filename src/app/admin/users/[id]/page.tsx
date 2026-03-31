@@ -61,13 +61,13 @@ type ConfirmDialog = {
 /* ─── Constants ─── */
 
 const ROLE_LABELS: Record<string, string> = {
-  player: "Jugador",
+  player: "Explorador",
   creator: "Creador",
   admin: "Admin",
 };
 
 const ROLE_OPTIONS: { value: string; label: string }[] = [
-  { value: "player", label: "Jugador" },
+  { value: "player", label: "Explorador" },
   { value: "creator", label: "Creador" },
   { value: "admin", label: "Admin" },
 ];
@@ -425,7 +425,7 @@ export default function UserDetailPage() {
           <div className="flex items-center gap-2 text-zinc-500 mb-2">
             <Trophy size={16} weight="duotone" />
             <span className="text-xs font-medium uppercase tracking-wider">
-              Puntuación total
+              XP de Datos total
             </span>
           </div>
           <p className="text-2xl font-bold text-zinc-100 tabular-nums">
@@ -543,7 +543,7 @@ export default function UserDetailPage() {
               className="mx-auto text-zinc-700"
             />
             <p className="mt-3 text-zinc-500 text-sm">
-              Este usuario no tiene sesiones de juego
+              Este usuario no tiene sesiones de exploración
             </p>
           </div>
         ) : (
@@ -556,10 +556,10 @@ export default function UserDetailPage() {
                       Saga
                     </th>
                     <th className="text-right px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">
-                      Nivel
+                      Misión
                     </th>
                     <th className="text-right px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">
-                      Puntuación
+                      XP
                     </th>
                     <th className="text-left px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">
                       Dificultad

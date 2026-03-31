@@ -68,7 +68,7 @@ export default function GameHeader({
           </span>
           <span style={{ color: "rgba(255,255,255,0.15)" }}>|</span>
           <span style={{ fontSize: 13, fontWeight: 700, color: "#fbbf24" }}>
-            Nivel {currentLevel}/{totalLevels}
+            Misión {currentLevel}/{totalLevels}
           </span>
         </div>
       </div>

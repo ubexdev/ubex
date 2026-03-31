@@ -38,14 +38,14 @@ type RoleFilter = "all" | "player" | "creator" | "admin";
 const PAGE_SIZE = 20;
 
 const ROLE_LABELS: Record<string, string> = {
-  player: "Jugador",
+  player: "Explorador",
   creator: "Creador",
   admin: "Admin",
 };
 
 const ROLE_OPTIONS: { value: RoleFilter; label: string }[] = [
   { value: "all", label: "Todos los roles" },
-  { value: "player", label: "Jugadores" },
+  { value: "player", label: "Exploradores" },
   { value: "creator", label: "Creadores" },
   { value: "admin", label: "Admins" },
 ];
@@ -264,7 +264,7 @@ export default function UsersPage() {
                     Rol
                   </th>
                   <th className="text-right px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider">
-                    Puntuación
+                    XP de Datos
                   </th>
                   <th className="text-right px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider">
                     Sagas

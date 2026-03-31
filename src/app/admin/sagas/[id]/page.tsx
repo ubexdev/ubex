@@ -108,7 +108,7 @@ function HintsEditor({
     <div>
       <label className={labelClass + " flex items-center gap-1.5"}>
         <Lightbulb size={14} />
-        Pistas ({hints.length})
+        Señales ({hints.length})
       </label>
       <div className="space-y-2">
         {hints.map((hint, idx) => (
@@ -120,7 +120,7 @@ function HintsEditor({
               type="text"
               value={hint}
               onChange={(e) => updateHint(idx, e.target.value)}
-              placeholder={`Pista ${idx + 1}...`}
+              placeholder={`Señal ${idx + 1}...`}
               className={inputClass}
             />
             <button
@@ -139,7 +139,7 @@ function HintsEditor({
         className="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs text-zinc-400 border border-zinc-800 hover:bg-zinc-800 hover:text-zinc-200 transition-colors"
       >
         <Plus size={12} />
-        Agregar pista
+        Agregar señal
       </button>
     </div>
   );
@@ -246,7 +246,7 @@ export default function SagaDetailPage() {
 
   async function deleteSaga() {
     if (!supabase) return;
-    if (!confirm("¿Eliminar esta saga y todos sus niveles? Esta acción no se puede deshacer."))
+    if (!confirm("¿Eliminar esta saga y todas sus misiones? Esta acción no se puede deshacer."))
       return;
 
     const { error: err } = await supabase
@@ -342,12 +342,12 @@ export default function SagaDetailPage() {
       const lvls = imported.levels;
 
       if (!Array.isArray(lvls)) {
-        setError("El archivo no contiene niveles válidos");
+        setError("El archivo no contiene misiones válidas");
         return;
       }
 
       // Delete existing levels and insert imported ones
-      if (!confirm(`¿Reemplazar los ${levels.length} niveles actuales con ${lvls.length} niveles importados?`))
+      if (!confirm(`¿Reemplazar las ${levels.length} misiones actuales con ${lvls.length} misiones importadas?`))
         return;
 
       await supabase.from("levels").delete().eq("saga_id", sagaId);
@@ -356,7 +356,7 @@ export default function SagaDetailPage() {
         (l: Record<string, unknown>, idx: number) => ({
           saga_id: sagaId,
           level_number: (l.level_number as number) ?? idx + 1,
-          title: (l.title as string) ?? `Nivel ${idx + 1}`,
+          title: (l.title as string) ?? `Misión ${idx + 1}`,
           description: (l.description as string) ?? null,
           clue: (l.clue as string) ?? "",
           answer: (l.answer as string) ?? "",
@@ -432,14 +432,14 @@ export default function SagaDetailPage() {
       setError(err.message);
     } else {
       await loadData();
-      showSuccess("Nivel guardado");
+      showSuccess("Misión guardada");
     }
     setSavingLevel(false);
   }
 
   async function deleteLevel(levelId: string) {
     if (!supabase) return;
-    if (!confirm("¿Eliminar este nivel? Esta acción no se puede deshacer."))
+    if (!confirm("¿Eliminar esta misión? Esta acción no se puede deshacer."))
       return;
 
     const { error: err } = await supabase
@@ -450,7 +450,7 @@ export default function SagaDetailPage() {
     if (!err) {
       setExpandedLevel(null);
       await loadData();
-      showSuccess("Nivel eliminado");
+      showSuccess("Misión eliminada");
     }
   }
 
@@ -467,8 +467,8 @@ export default function SagaDetailPage() {
     const { error: err } = await supabase.from("levels").insert({
       saga_id: sagaId,
       level_number: nextNum,
-      title: `Nivel ${nextNum}`,
-      clue: "Escribe la pista aquí...",
+      title: `Misión ${nextNum}`,
+      clue: "Escribe la señal aquí...",
       answer: "respuesta",
       answer_type: "text",
       spawn_lat: 18.4861,
@@ -753,7 +753,7 @@ export default function SagaDetailPage() {
                   {saga.city}, {saga.country}
                   {saga.estimated_duration &&
                     ` · ${saga.estimated_duration} min`}
-                  {` · ${saga.total_levels} niveles`}
+                  {` · ${saga.total_levels} misiones`}
                 </p>
                 {saga.description && (
                   <p className="text-sm text-zinc-500 mt-2 whitespace-pre-wrap">
@@ -819,7 +819,7 @@ export default function SagaDetailPage() {
       {/* ─── Levels Section ─── */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-zinc-100">Niveles</h2>
+          <h2 className="text-lg font-semibold text-zinc-100">Misiones</h2>
           <button
             onClick={addLevel}
             disabled={addingLevel}
@@ -830,7 +830,7 @@ export default function SagaDetailPage() {
             ) : (
               <Plus size={16} weight="bold" />
             )}
-            Agregar Nivel
+            Agregar Misión
           </button>
         </div>
 
@@ -842,7 +842,7 @@ export default function SagaDetailPage() {
               className="mx-auto text-zinc-700"
             />
             <p className="text-zinc-500 text-sm mt-2">
-              No hay niveles en esta saga aún
+              No hay misiones en esta saga aún
             </p>
           </div>
         ) : (
@@ -939,7 +939,7 @@ export default function SagaDetailPage() {
                                 description: e.target.value || null,
                               })
                             }
-                            placeholder="Descripción opcional del nivel"
+                            placeholder="Descripción opcional de la misión"
                             className={inputClass}
                           />
                         </div>
@@ -947,7 +947,7 @@ export default function SagaDetailPage() {
 
                       {/* Clue */}
                       <div>
-                        <label className={labelClass}>Pista principal</label>
+                        <label className={labelClass}>Señal principal</label>
                         <textarea
                           value={levelForm.clue ?? ""}
                           onChange={(e) =>
@@ -1003,7 +1003,7 @@ export default function SagaDetailPage() {
                       {/* Points + Time limit + Proximity */}
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <div>
-                          <label className={labelClass}>Puntos</label>
+                          <label className={labelClass}>XP</label>
                           <input
                             type="number"
                             min={0}
@@ -1195,7 +1195,7 @@ export default function SagaDetailPage() {
                           ) : (
                             <FloppyDisk size={16} weight="bold" />
                           )}
-                          Guardar Nivel
+                          Guardar Misión
                         </button>
                         <button
                           onClick={() => setExpandedLevel(null)}
