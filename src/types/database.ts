@@ -17,34 +17,40 @@ export interface Database {
       profiles: {
         Row: {
           id: string;
+          username: string | null;
           display_name: string | null;
           avatar_url: string | null;
-          role: "player" | "admin";
+          role: "player" | "creator" | "admin";
           team_id: string | null;
           total_score: number;
           sagas_completed: number;
+          banned_at: string | null;
           created_at: string;
           updated_at: string;
         };
         Insert: {
           id: string;
+          username?: string | null;
           display_name?: string | null;
           avatar_url?: string | null;
-          role?: "player" | "admin";
+          role?: "player" | "creator" | "admin";
           team_id?: string | null;
           total_score?: number;
           sagas_completed?: number;
+          banned_at?: string | null;
           created_at?: string;
           updated_at?: string;
         };
         Update: {
           id?: string;
+          username?: string | null;
           display_name?: string | null;
           avatar_url?: string | null;
-          role?: "player" | "admin";
+          role?: "player" | "creator" | "admin";
           team_id?: string | null;
           total_score?: number;
           sagas_completed?: number;
+          banned_at?: string | null;
           updated_at?: string;
         };
         Relationships: [
@@ -291,7 +297,7 @@ export interface Database {
     };
     Functions: Record<string, never>;
     Enums: {
-      user_role: "player" | "admin";
+      user_role: "player" | "creator" | "admin";
       saga_status: "draft" | "active" | "completed";
       difficulty_mode: "libre" | "explorador";
       session_status: "active" | "completed" | "abandoned";

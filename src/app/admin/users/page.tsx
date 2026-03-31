@@ -16,7 +16,7 @@ import {
 type Profile = {
   id: string;
   display_name: string | null;
-  role: "player" | "admin";
+  role: "player" | "creator" | "admin";
   total_score: number;
   sagas_completed: number;
   created_at: string;

@@ -16,6 +16,7 @@ import {
 } from "@phosphor-icons/react";
 import UserMenu from "@/components/auth/UserMenu";
 import CountdownTimer from "@/components/game/CountdownTimer";
+import LeaderboardWidget from "@/components/game/LeaderboardWidget";
 
 export default function Home() {
   const sagaStart = useMemo(
@@ -97,6 +98,23 @@ export default function Home() {
             >
               Cómo funciona
             </a>
+            <Link
+              href="/leaderboard"
+              className="btn-press"
+              style={{
+                fontSize: 13,
+                color: "#a1a1aa",
+                textDecoration: "none",
+                padding: "6px 12px",
+                borderRadius: 8,
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 4,
+              }}
+            >
+              <Trophy size={14} weight="bold" color="#d97706" />
+              Clasificación
+            </Link>
             <Link
               href="/play"
               className="btn-press"
@@ -382,6 +400,19 @@ export default function Home() {
             targetDate={sagaStart}
             label="SAGA DE COLÓN — ZONA COLONIAL, SANTO DOMINGO"
           />
+        </div>
+      </section>
+
+      {/* ── Leaderboard Widget ── */}
+      <section
+        style={{
+          position: "relative",
+          zIndex: 10,
+          padding: "0 0 56px",
+        }}
+      >
+        <div className="section-narrow">
+          <LeaderboardWidget />
         </div>
       </section>
 
