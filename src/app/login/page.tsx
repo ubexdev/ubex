@@ -2,22 +2,27 @@
 
 import { useState, type FormEvent } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { SignIn, Compass, CircleNotch } from "@phosphor-icons/react";
-import { getSupabaseBrowser } from "@/lib/supabase/client";
+import { createClient } from "@supabase/supabase-js";
+
+function getAuthClient() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.replace(/[\s\r\n]+/g, "");
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.replace(/[\s\r\n]+/g, "");
+  if (!url || !key) return null;
+  return createClient(url, key, { auth: { persistSession: true, storageKey: "ubex-auth" } });
+}
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     setError("");
 
-    const supabase = getSupabaseBrowser();
+    const supabase = getAuthClient();
     if (!supabase) {
       setError("El servicio de autenticacion no esta disponible.");
       return;
@@ -50,12 +55,12 @@ export default function LoginPage() {
           .eq("id", data.user.id)
           .single();
 
+        // Use hard navigation to ensure server picks up the new session
         if (profile?.role === "admin") {
-          router.replace("/admin");
+          window.location.href = "/admin";
         } else {
-          router.replace("/play");
+          window.location.href = "/play";
         }
-        router.refresh();
         return;
       }
     } catch (err) {
