@@ -89,6 +89,11 @@ export default function SagasPage() {
       .order("created_at", { ascending: false });
 
     if (err) {
+      if (err.message.includes("Lock") || err.message.includes("stolen")) {
+        // Auth token lock race — retry once
+        setTimeout(() => loadSagas(), 500);
+        return;
+      }
       setError(err.message);
     } else {
       setSagas((data ?? []) as unknown as Saga[]);

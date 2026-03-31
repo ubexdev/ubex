@@ -23,6 +23,13 @@ export function getSupabaseBrowser() {
     return null;
   }
 
-  client = createBrowserClient<Database>(url, key);
+  client = createBrowserClient<Database>(url, key, {
+    auth: {
+      flowType: "pkce",
+      persistSession: true,
+      storageKey: "ubex-auth-token",
+      detectSessionInUrl: true,
+    },
+  });
   return client;
 }
