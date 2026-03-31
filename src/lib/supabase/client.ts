@@ -1,9 +1,9 @@
 "use client";
 
-import { createClient } from "@supabase/supabase-js";
+import { createBrowserClient } from "@supabase/ssr";
 import type { Database } from "@/types/database";
 
-let client: ReturnType<typeof createClient<Database>> | null = null;
+let client: ReturnType<typeof createBrowserClient<Database>> | null = null;
 
 export function getSupabaseBrowser() {
   if (client) return client;
@@ -16,12 +16,6 @@ export function getSupabaseBrowser() {
     return null;
   }
 
-  client = createClient<Database>(url, key, {
-    auth: {
-      persistSession: true,
-      autoRefreshToken: true,
-      storageKey: "ubex-auth",
-    },
-  });
+  client = createBrowserClient<Database>(url, key);
   return client;
 }

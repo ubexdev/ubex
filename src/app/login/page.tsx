@@ -3,14 +3,7 @@
 import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import { SignIn, Compass, CircleNotch } from "@phosphor-icons/react";
-import { createClient } from "@supabase/supabase-js";
-
-function getAuthClient() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.replace(/[\s\r\n]+/g, "");
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.replace(/[\s\r\n]+/g, "");
-  if (!url || !key) return null;
-  return createClient(url, key, { auth: { persistSession: true, storageKey: "ubex-auth" } });
-}
+import { getSupabaseBrowser } from "@/lib/supabase/client";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -22,7 +15,7 @@ export default function LoginPage() {
     e.preventDefault();
     setError("");
 
-    const supabase = getAuthClient();
+    const supabase = getSupabaseBrowser();
     if (!supabase) {
       setError("El servicio de autenticacion no esta disponible.");
       return;
@@ -55,7 +48,7 @@ export default function LoginPage() {
           .eq("id", data.user.id)
           .single();
 
-        // Use hard navigation to ensure server picks up the new session
+        // Hard navigation so the server/middleware picks up the new cookie
         if (profile?.role === "admin") {
           window.location.href = "/admin";
         } else {
