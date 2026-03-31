@@ -25,37 +25,45 @@ export default function LoginPage() {
 
     setLoading(true);
 
-    const { data, error: authError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    try {
+      const { data, error: authError } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password,
+      });
 
-    if (authError) {
-      setLoading(false);
-      if (authError.message === "Invalid login credentials") {
-        setError("Credenciales incorrectas. Verifica tu email y contrasena.");
-      } else if (authError.message === "Email not confirmed") {
-        setError("Tu email no ha sido confirmado. Revisa tu bandeja de entrada.");
-      } else {
-        setError(authError.message);
+      if (authError) {
+        setLoading(false);
+        if (authError.message === "Invalid login credentials") {
+          setError("Credenciales incorrectas. Verifica tu email y contrasena.");
+        } else if (authError.message === "Email not confirmed") {
+          setError("Tu email no ha sido confirmado. Revisa tu bandeja de entrada.");
+        } else {
+          setError(authError.message);
+        }
+        return;
       }
-      return;
+
+      if (data.user) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", data.user.id)
+          .single();
+
+        if (profile?.role === "admin") {
+          router.replace("/admin");
+        } else {
+          router.replace("/play");
+        }
+        router.refresh();
+        return;
+      }
+    } catch (err) {
+      console.error("signIn error:", err);
+      setError("Error de conexion. Verifica tu internet e intenta de nuevo.");
     }
 
-    // Check role to redirect appropriately
-    if (data.user) {
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("role")
-        .eq("id", data.user.id)
-        .single();
-
-      if (profile?.role === "admin") {
-        router.push("/admin");
-      } else {
-        router.push("/play");
-      }
-    }
+    setLoading(false);
   }
 
   return (
