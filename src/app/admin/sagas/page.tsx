@@ -18,7 +18,10 @@ import {
   Warning,
   MapPin,
   CalendarBlank,
+  Robot,
+  X,
 } from "@phosphor-icons/react";
+import { getCountryOptions, getCitiesForCountry } from "@/data/world-cities";
 
 type Saga = {
   id: string;
@@ -70,6 +73,16 @@ export default function SagasPage() {
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [importing, setImporting] = useState(false);
+  const [showAiModal, setShowAiModal] = useState(false);
+  const [generating, setGenerating] = useState(false);
+  const [genError, setGenError] = useState<string | null>(null);
+  const [genForm, setGenForm] = useState({
+    country: "República Dominicana",
+    city: "",
+    theme: "",
+    difficulty: "medium",
+    numLevels: 12,
+  });
 
   useEffect(() => {
     loadSagas();
@@ -182,6 +195,85 @@ export default function SagasPage() {
     if (fileRef.current) fileRef.current.value = "";
   }
 
+  const generateSaga = async () => {
+    setGenerating(true);
+    setGenError(null);
+    try {
+      const res = await fetch("/api/game/generate-saga", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          city: genForm.city,
+          country: genForm.country,
+          theme: genForm.theme || undefined,
+          difficulty: genForm.difficulty,
+          num_levels: genForm.numLevels,
+        }),
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || "Error generando saga");
+      }
+
+      const { saga, levels } = await res.json();
+
+      const supabase = getSupabaseBrowser();
+      if (!supabase) throw new Error("Supabase no configurado");
+
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) throw new Error("No autenticado");
+
+      const { data: newSaga, error: sagaErr } = await supabase
+        .from("sagas")
+        .insert({
+          title: saga.title,
+          description: saga.description,
+          city: saga.city,
+          country: saga.country,
+          difficulty: saga.difficulty,
+          estimated_duration: saga.estimated_duration,
+          created_by: user.id,
+        } as any)
+        .select("id")
+        .single();
+
+      if (sagaErr || !newSaga)
+        throw new Error(sagaErr?.message || "Error creando saga");
+
+      const levelInserts = levels.map((l: any) => ({
+        saga_id: newSaga.id,
+        level_number: l.level_number,
+        title: l.title,
+        description: l.description,
+        clue: l.clue,
+        answer: l.answer,
+        answer_type: l.answer_type || "text",
+        spawn_lat: l.spawn_lat,
+        spawn_lng: l.spawn_lng,
+        target_lat: l.target_lat,
+        target_lng: l.target_lng,
+        proximity_radius: l.proximity_radius,
+        points: l.points,
+        time_limit: l.time_limit,
+        hints: l.hints || [],
+      }));
+
+      const { error: levelsErr } = await supabase
+        .from("levels")
+        .insert(levelInserts as any);
+      if (levelsErr) throw new Error(levelsErr.message);
+
+      router.push(`/admin/sagas/${newSaga.id}`);
+    } catch (err: any) {
+      setGenError(err.message);
+    } finally {
+      setGenerating(false);
+    }
+  };
+
   const filtered = sagas.filter(
     (s) =>
       s.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -229,6 +321,17 @@ export default function SagasPage() {
             className="hidden"
             onChange={handleImport}
           />
+          <button
+            onClick={() => {
+              setGenError(null);
+              setShowAiModal(true);
+            }}
+            className="inline-flex items-center gap-2.5 px-5 py-3 rounded-xl bg-gradient-to-r from-amber-600 to-orange-500 text-zinc-950 text-sm font-semibold hover:from-amber-500 hover:to-orange-400 transition-all shadow-lg shadow-amber-600/25"
+            style={{ minHeight: 48 }}
+          >
+            <Robot size={18} weight="fill" />
+            Generar con IA
+          </button>
           <Link
             href="/admin/sagas/new"
             className="inline-flex items-center gap-2.5 px-6 py-3 rounded-xl bg-amber-600 text-zinc-950 text-sm font-semibold hover:bg-amber-500 transition-colors shadow-lg shadow-amber-600/20"
@@ -420,6 +523,199 @@ export default function SagasPage() {
               </button>
             );
           })}
+        </div>
+      )}
+
+      {/* AI Generation Modal */}
+      {showAiModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          onClick={() => !generating && setShowAiModal(false)}
+        >
+          {/* Backdrop */}
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+
+          {/* Modal card */}
+          <div
+            className="relative w-full max-w-lg rounded-2xl border border-zinc-800 bg-zinc-900 shadow-2xl shadow-black/50"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between px-6 py-5 border-b border-zinc-800">
+              <div className="flex items-center gap-3">
+                <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-amber-600 to-orange-500">
+                  <Robot size={20} weight="fill" className="text-zinc-950" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-semibold text-zinc-100">
+                    Generar Saga con IA
+                  </h2>
+                  <p className="text-xs text-zinc-500 mt-0.5">
+                    Crea una saga completa con Gemini AI
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => !generating && setShowAiModal(false)}
+                className="flex items-center justify-center w-10 h-10 rounded-lg text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800 transition-colors"
+                disabled={generating}
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* Body */}
+            <div className="px-6 py-5 space-y-5">
+              {/* País */}
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-zinc-300">
+                  País
+                </label>
+                <select
+                  value={genForm.country}
+                  onChange={(e) =>
+                    setGenForm((f) => ({
+                      ...f,
+                      country: e.target.value,
+                      city: "",
+                    }))
+                  }
+                  className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-3 text-sm text-zinc-100 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 focus:outline-none transition-colors"
+                  disabled={generating}
+                >
+                  {getCountryOptions().map((c) => (
+                    <option key={c} value={c}>
+                      {c}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Ciudad */}
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-zinc-300">
+                  Ciudad
+                </label>
+                <select
+                  value={genForm.city}
+                  onChange={(e) =>
+                    setGenForm((f) => ({ ...f, city: e.target.value }))
+                  }
+                  className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-3 text-sm text-zinc-100 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 focus:outline-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={generating || !genForm.country}
+                >
+                  <option value="">Seleccionar ciudad...</option>
+                  {getCitiesForCountry(genForm.country).map((city) => (
+                    <option key={city} value={city}>
+                      {city}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Tema */}
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-zinc-300">
+                  Tema{" "}
+                  <span className="text-zinc-600 font-normal">(opcional)</span>
+                </label>
+                <input
+                  type="text"
+                  value={genForm.theme}
+                  onChange={(e) =>
+                    setGenForm((f) => ({ ...f, theme: e.target.value }))
+                  }
+                  placeholder="ej: Historia colonial, Gastronomía, Parques secretos..."
+                  className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-3 text-sm text-zinc-100 placeholder-zinc-600 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 focus:outline-none transition-colors"
+                  disabled={generating}
+                />
+              </div>
+
+              {/* Dificultad + Número de misiones — side by side */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-zinc-300">
+                    Dificultad
+                  </label>
+                  <select
+                    value={genForm.difficulty}
+                    onChange={(e) =>
+                      setGenForm((f) => ({
+                        ...f,
+                        difficulty: e.target.value,
+                      }))
+                    }
+                    className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-3 text-sm text-zinc-100 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 focus:outline-none transition-colors"
+                    disabled={generating}
+                  >
+                    <option value="easy">Fácil</option>
+                    <option value="medium">Media</option>
+                    <option value="hard">Difícil</option>
+                  </select>
+                </div>
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-zinc-300">
+                    Nº de misiones
+                  </label>
+                  <input
+                    type="number"
+                    value={genForm.numLevels}
+                    onChange={(e) =>
+                      setGenForm((f) => ({
+                        ...f,
+                        numLevels: Math.max(
+                          4,
+                          Math.min(20, Number(e.target.value) || 4)
+                        ),
+                      }))
+                    }
+                    min={4}
+                    max={20}
+                    className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-3 text-sm text-zinc-100 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 focus:outline-none transition-colors"
+                    disabled={generating}
+                  />
+                </div>
+              </div>
+
+              {/* Error display */}
+              {genError && (
+                <div className="rounded-lg border border-red-900 bg-red-950/50 px-4 py-3 text-sm text-red-400 flex items-center gap-2.5">
+                  <Warning size={16} className="shrink-0" />
+                  {genError}
+                </div>
+              )}
+            </div>
+
+            {/* Footer */}
+            <div className="flex items-center justify-end gap-3 px-6 py-5 border-t border-zinc-800">
+              <button
+                onClick={() => setShowAiModal(false)}
+                className="inline-flex items-center gap-2 px-5 py-3 rounded-xl border border-zinc-800 text-zinc-300 text-sm font-medium hover:bg-zinc-800 transition-colors"
+                style={{ minHeight: 44 }}
+                disabled={generating}
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={generateSaga}
+                disabled={generating || !genForm.city}
+                className="inline-flex items-center gap-2.5 px-6 py-3 rounded-xl bg-amber-600 text-zinc-950 text-sm font-semibold hover:bg-amber-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-lg shadow-amber-600/20"
+                style={{ minHeight: 44 }}
+              >
+                {generating ? (
+                  <>
+                    <CircleNotch size={18} className="animate-spin" />
+                    Generando con IA...
+                  </>
+                ) : (
+                  <>
+                    <Robot size={18} weight="fill" />
+                    Generar Saga
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
