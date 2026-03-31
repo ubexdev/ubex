@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import Link from "next/link";
 import CountdownTimer from "@/components/game/CountdownTimer";
 
 export default function Home() {
@@ -64,11 +65,10 @@ export default function Home() {
 
         {/* CTAs */}
         <div className="fade-in-d3" style={{ display: "flex", flexWrap: "wrap", gap: 16, justifyContent: "center" }}>
-          <a href="#" className="btn-glow" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "16px 32px", fontSize: 16, fontWeight: 700, background: "#f59e0b", color: "#000", borderRadius: 12, textDecoration: "none" }}>
-            UNIRSE A LA SAGA
-            <span style={{ color: "rgba(120,53,15,0.5)", fontWeight: 500 }}>$9.99</span>
+          <Link href="/play" className="btn-glow" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "16px 32px", fontSize: 16, fontWeight: 700, background: "#f59e0b", color: "#000", borderRadius: 12, textDecoration: "none" }}>
+            JUGAR DEMO GRATIS
             <span style={{ fontSize: 14 }}>→</span>
-          </a>
+          </Link>
           <a href="#how-it-works" style={{ display: "inline-flex", alignItems: "center", padding: "16px 32px", fontSize: 16, fontWeight: 600, border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.7)", borderRadius: 12, textDecoration: "none" }}>
             ¿Cómo funciona?
           </a>
@@ -152,9 +152,9 @@ export default function Home() {
             ))}
           </div>
 
-          <a href="#" className="btn-glow" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "16px 40px", fontSize: 16, fontWeight: 700, background: "#f59e0b", color: "#000", borderRadius: 12, textDecoration: "none" }}>
-            RESERVAR MI LUGAR <span>→</span>
-          </a>
+          <Link href="/play" className="btn-glow" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "16px 40px", fontSize: 16, fontWeight: 700, background: "#f59e0b", color: "#000", borderRadius: 12, textDecoration: "none" }}>
+            JUGAR DEMO GRATIS <span>→</span>
+          </Link>
         </div>
       </section>
 
