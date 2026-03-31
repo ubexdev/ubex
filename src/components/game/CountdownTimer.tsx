@@ -46,38 +46,45 @@ export default function CountdownTimer({
 
   if (isComplete) {
     return (
-      <div className="text-center animate-pulse">
-        <p className="text-2xl font-bold text-green-400">
-          ¡LA BÚSQUEDA HA COMENZADO!
-        </p>
+      <div className="text-center">
+        <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-green-500/10 border border-green-500/20">
+          <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+          <span className="text-base font-bold text-green-400">
+            ¡LA BÚSQUEDA HA COMENZADO!
+          </span>
+        </div>
       </div>
     );
   }
 
   const segments = [
     { value: timeLeft.d, label: "DÍAS" },
-    { value: timeLeft.h, label: "HORAS" },
+    { value: timeLeft.h, label: "HRS" },
     { value: timeLeft.m, label: "MIN" },
     { value: timeLeft.s, label: "SEG" },
   ];
 
   return (
     <div className="text-center">
-      <p className="text-sm tracking-widest text-amber-400 mb-4 font-semibold">
+      <p className="text-[10px] tracking-[0.2em] text-amber-400/50 mb-5 font-medium uppercase">
         {label}
       </p>
       <div className="flex justify-center gap-3">
-        {segments.map(({ value, label: segLabel }) => (
-          <div
-            key={segLabel}
-            className="flex flex-col items-center bg-black/60 border border-amber-500/30 rounded-xl px-4 py-3 min-w-[70px] backdrop-blur-sm"
-          >
-            <span className="text-3xl font-mono font-bold text-white tabular-nums">
-              {String(value).padStart(2, "0")}
-            </span>
-            <span className="text-[10px] tracking-wider text-amber-400/70 mt-1">
-              {segLabel}
-            </span>
+        {segments.map(({ value, label: segLabel }, i) => (
+          <div key={segLabel} className="flex items-center gap-3">
+            <div className="flex flex-col items-center">
+              <div className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 min-w-[72px] backdrop-blur-sm">
+                <span className="text-3xl font-extrabold text-white font-[family-name:var(--font-mono)] tabular-nums leading-none">
+                  {String(value).padStart(2, "0")}
+                </span>
+              </div>
+              <span className="text-[9px] tracking-[0.15em] text-white/20 mt-2 font-medium">
+                {segLabel}
+              </span>
+            </div>
+            {i < segments.length - 1 && (
+              <span className="text-xl font-bold text-white/10 mb-5">:</span>
+            )}
           </div>
         ))}
       </div>
