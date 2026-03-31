@@ -41,9 +41,8 @@ export default function StreetViewExplorer({
   const onPositionChangeRef = useRef(onPositionChange);
   onPositionChangeRef.current = onPositionChange;
 
-  // Initialize once
+  // Initialize panorama once
   useEffect(() => {
-    if (!containerRef.current) return;
     let cancelled = false;
 
     ensureMapsLoaded()
@@ -110,95 +109,99 @@ export default function StreetViewExplorer({
     updatePosition(lat, lng, heading, pitch);
   }, [lat, lng, heading, pitch, updatePosition]);
 
-  // Loading state
-  if (status === "loading") {
-    return (
+  // Always render the container div so Google Maps can attach to it.
+  // Overlay loading/error states on top.
+  return (
+    <div style={{ width: "100%", height: "100%", position: "relative", background: "#0a0a0a" }}>
+      {/* The div Google Maps attaches to — always in the DOM */}
       <div
+        ref={containerRef}
         style={{
           width: "100%",
           height: "100%",
-          background: "#0a0a0a",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: 16,
+          visibility: status === "ready" ? "visible" : "hidden",
         }}
-      >
+      />
+
+      {/* Loading overlay */}
+      {status === "loading" && (
         <div
           style={{
-            width: 48,
-            height: 48,
-            border: "3px solid rgba(245,158,11,0.2)",
-            borderTopColor: "#f59e0b",
-            borderRadius: "50%",
-            animation: "spin 1s linear infinite",
+            position: "absolute",
+            inset: 0,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 16,
+            background: "#0a0a0a",
           }}
-        />
-        <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 14 }}>
-          Cargando Google Street View...
-        </p>
-        <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
-      </div>
-    );
-  }
+        >
+          <div
+            style={{
+              width: 48,
+              height: 48,
+              border: "3px solid rgba(245,158,11,0.2)",
+              borderTopColor: "#f59e0b",
+              borderRadius: "50%",
+              animation: "spin 1s linear infinite",
+            }}
+          />
+          <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 14 }}>
+            Cargando Google Street View...
+          </p>
+          <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
+        </div>
+      )}
 
-  // Error states
-  if (status === "error") {
-    return (
-      <div
-        style={{
-          width: "100%",
-          height: "100%",
-          background: "#0a0a0a",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: 12,
-          padding: 24,
-        }}
-      >
-        <span style={{ fontSize: 48 }}>🗺️</span>
-        <p style={{ color: "#ef4444", fontSize: 16, fontWeight: 600 }}>
-          Error cargando Google Maps
-        </p>
-        <p style={{ color: "rgba(255,255,255,0.3)", fontSize: 13, textAlign: "center", maxWidth: 300 }}>
-          Verifica tu API key de Google Maps o tu conexión a internet.
-        </p>
-      </div>
-    );
-  }
+      {/* Error overlay */}
+      {status === "error" && (
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 12,
+            padding: 24,
+            background: "#0a0a0a",
+          }}
+        >
+          <span style={{ fontSize: 48 }}>🗺️</span>
+          <p style={{ color: "#ef4444", fontSize: 16, fontWeight: 600 }}>
+            Error cargando Google Maps
+          </p>
+          <p style={{ color: "rgba(255,255,255,0.3)", fontSize: 13, textAlign: "center", maxWidth: 300 }}>
+            Verifica tu API key de Google Maps o tu conexión a internet.
+          </p>
+        </div>
+      )}
 
-  if (status === "no-coverage") {
-    return (
-      <div
-        style={{
-          width: "100%",
-          height: "100%",
-          background: "#0a0a0a",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: 12,
-        }}
-      >
-        <span style={{ fontSize: 48 }}>📍</span>
-        <p style={{ color: "#fbbf24", fontSize: 16, fontWeight: 600 }}>
-          Sin cobertura Street View
-        </p>
-        <p style={{ color: "rgba(255,255,255,0.3)", fontSize: 13 }}>
-          Esta ubicación no tiene imágenes de Street View disponibles.
-        </p>
-      </div>
-    );
-  }
-
-  return (
-    <div
-      ref={containerRef}
-      style={{ width: "100%", height: "100%", background: "#0a0a0a" }}
-    />
+      {/* No coverage overlay */}
+      {status === "no-coverage" && (
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 12,
+            background: "#0a0a0a",
+          }}
+        >
+          <span style={{ fontSize: 48 }}>📍</span>
+          <p style={{ color: "#fbbf24", fontSize: 16, fontWeight: 600 }}>
+            Sin cobertura Street View
+          </p>
+          <p style={{ color: "rgba(255,255,255,0.3)", fontSize: 13 }}>
+            Esta ubicación no tiene imágenes de Street View disponibles.
+          </p>
+        </div>
+      )}
+    </div>
   );
 }
