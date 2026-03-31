@@ -10,7 +10,10 @@ import GameHeader from "@/components/game/GameHeader";
 import ResultOverlay from "@/components/game/ResultOverlay";
 
 type GamePhase = "intro" | "playing" | "completed";
-type Feedback = { type: "correct" | "incorrect"; levelIndex: number } | null;
+type Feedback = { type: "correct" | "incorrect" | "too-far"; levelIndex: number } | null;
+type Difficulty = "libre" | "explorador";
+
+const PROXIMITY_RADIUS_M = 100;
 
 /** Normalize text for fuzzy comparison */
 function normalize(s: string): string {
@@ -30,6 +33,21 @@ function checkAnswer(playerAnswer: string, level: DemoLevel): boolean {
     const norm = normalize(correct);
     return input.includes(norm) || norm.includes(input);
   });
+}
+
+/** Haversine distance in meters between two lat/lng points */
+function haversineMeters(
+  lat1: number, lng1: number,
+  lat2: number, lng2: number
+): number {
+  const R = 6371000;
+  const toRad = (d: number) => (d * Math.PI) / 180;
+  const dLat = toRad(lat2 - lat1);
+  const dLng = toRad(lng2 - lng1);
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
 /* ─── Simulated live participants ─── */
@@ -59,7 +77,24 @@ function useSimulatedParticipants(currentLevel: number) {
 /* ═══════════════════════════════════════════
    INTRO SCREEN
    ═══════════════════════════════════════════ */
-function IntroScreen({ onStart }: { onStart: () => void }) {
+function IntroScreen({ onStart }: { onStart: (difficulty: Difficulty) => void }) {
+  const [selectedDiff, setSelectedDiff] = useState<Difficulty>("libre");
+
+  const difficulties: { id: Difficulty; icon: string; label: string; desc: string }[] = [
+    {
+      id: "libre",
+      icon: "🟢",
+      label: "Libre",
+      desc: "Responde desde cualquier posición. Solo necesitas la respuesta correcta.",
+    },
+    {
+      id: "explorador",
+      icon: "🟠",
+      label: "Explorador",
+      desc: `Debes estar a menos de ${PROXIMITY_RADIUS_M}m del lugar de la pista para poder responder. ¡Navega hasta el sitio!`,
+    },
+  ];
+
   return (
     <div
       style={{
@@ -225,8 +260,91 @@ function IntroScreen({ onStart }: { onStart: () => void }) {
           </div>
         </div>
 
+        {/* Difficulty selector */}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 12,
+            marginBottom: 40,
+            textAlign: "left",
+          }}
+        >
+          <h3
+            style={{
+              fontSize: 14,
+              fontWeight: 700,
+              color: "#fbbf24",
+              letterSpacing: "0.1em",
+              textTransform: "uppercase",
+              textAlign: "center",
+            }}
+          >
+            Elige tu dificultad
+          </h3>
+          {difficulties.map((d) => {
+            const isSelected = selectedDiff === d.id;
+            return (
+              <button
+                key={d.id}
+                onClick={() => setSelectedDiff(d.id)}
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: 12,
+                  padding: "14px 16px",
+                  background: isSelected ? "rgba(251,191,36,0.06)" : "rgba(255,255,255,0.02)",
+                  border: `1.5px solid ${isSelected ? "rgba(251,191,36,0.4)" : "rgba(255,255,255,0.06)"}`,
+                  borderRadius: 12,
+                  cursor: "pointer",
+                  transition: "all 0.2s",
+                  textAlign: "left",
+                  color: "inherit",
+                }}
+              >
+                <span style={{ fontSize: 20, flexShrink: 0, marginTop: 2 }}>{d.icon}</span>
+                <div>
+                  <span
+                    style={{
+                      fontSize: 15,
+                      fontWeight: 700,
+                      color: isSelected ? "#fbbf24" : "rgba(255,255,255,0.6)",
+                      display: "block",
+                      marginBottom: 4,
+                    }}
+                  >
+                    {d.label}
+                  </span>
+                  <span style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", lineHeight: 1.5, display: "block" }}>
+                    {d.desc}
+                  </span>
+                </div>
+                {/* Radio indicator */}
+                <div
+                  style={{
+                    width: 18,
+                    height: 18,
+                    borderRadius: "50%",
+                    border: `2px solid ${isSelected ? "#fbbf24" : "rgba(255,255,255,0.15)"}`,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                    marginLeft: "auto",
+                    marginTop: 4,
+                  }}
+                >
+                  {isSelected && (
+                    <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#fbbf24" }} />
+                  )}
+                </div>
+              </button>
+            );
+          })}
+        </div>
+
         <button
-          onClick={onStart}
+          onClick={() => onStart(selectedDiff)}
           style={{
             display: "inline-flex",
             alignItems: "center",
@@ -397,6 +515,7 @@ function WinnerScreen({ totalTime }: { totalTime: number }) {
    ═══════════════════════════════════════════ */
 export default function PlayPage() {
   const [phase, setPhase] = useState<GamePhase>("intro");
+  const [difficulty, setDifficulty] = useState<Difficulty>("libre");
   const [levelIndex, setLevelIndex] = useState(0);
   const [completedLevels, setCompletedLevels] = useState<number[]>([]);
   const [feedback, setFeedback] = useState<Feedback>(null);
@@ -405,14 +524,36 @@ export default function PlayPage() {
   const [shakeInput, setShakeInput] = useState(false);
   const [startTime] = useState(Date.now());
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [playerPos, setPlayerPos] = useState<{ lat: number; lng: number } | null>(null);
 
   const level = DEMO_LEVELS[levelIndex];
   const participants = useSimulatedParticipants(levelIndex);
+
+  // Distance from player to target
+  const distanceToTarget =
+    playerPos
+      ? haversineMeters(playerPos.lat, playerPos.lng, level.lat, level.lng)
+      : null;
+  const isCloseEnough = distanceToTarget !== null && distanceToTarget <= PROXIMITY_RADIUS_M;
+  const proximityBlocked = difficulty === "explorador" && !isCloseEnough;
+
+  const handlePositionChange = useCallback((lat: number, lng: number) => {
+    setPlayerPos({ lat, lng });
+  }, []);
 
   const handleSubmit = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault();
       if (!answer.trim() || submitting) return;
+
+      // Block if explorador mode and too far
+      if (proximityBlocked) {
+        setFeedback({ type: "too-far", levelIndex });
+        setShakeInput(true);
+        setTimeout(() => setShakeInput(false), 600);
+        setTimeout(() => setFeedback(null), 3000);
+        return;
+      }
 
       setSubmitting(true);
 
@@ -445,7 +586,7 @@ export default function PlayPage() {
         }
       }, 600);
     },
-    [answer, submitting, level, levelIndex, completedLevels]
+    [answer, submitting, level, levelIndex, completedLevels, proximityBlocked]
   );
 
   const dismissFeedback = useCallback(() => {
@@ -455,7 +596,7 @@ export default function PlayPage() {
 
   /* ── Render: Intro ── */
   if (phase === "intro") {
-    return <IntroScreen onStart={() => setPhase("playing")} />;
+    return <IntroScreen onStart={(diff) => { setDifficulty(diff); setPhase("playing"); }} />;
   }
 
   /* ── Render: Winner ── */
@@ -481,6 +622,7 @@ export default function PlayPage() {
             lng={level.lng}
             heading={level.heading}
             pitch={level.pitch}
+            onPositionChange={handlePositionChange}
           />
 
           {/* Toggle sidebar button (mobile) */}
@@ -542,6 +684,59 @@ export default function PlayPage() {
               difficulty={level.clue.difficulty}
             />
 
+            {/* Proximity indicator (explorador mode) */}
+            {difficulty === "explorador" && (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
+                  padding: "10px 14px",
+                  borderRadius: 10,
+                  background: isCloseEnough
+                    ? "rgba(34,197,94,0.08)"
+                    : "rgba(239,68,68,0.06)",
+                  border: `1px solid ${isCloseEnough ? "rgba(34,197,94,0.2)" : "rgba(239,68,68,0.15)"}`,
+                }}
+              >
+                <div
+                  style={{
+                    width: 10,
+                    height: 10,
+                    borderRadius: "50%",
+                    background: isCloseEnough ? "#22c55e" : "#ef4444",
+                    boxShadow: isCloseEnough
+                      ? "0 0 8px rgba(34,197,94,0.4)"
+                      : "0 0 8px rgba(239,68,68,0.3)",
+                    animation: isCloseEnough ? "none" : "blink-dot 1.5s ease-in-out infinite",
+                    flexShrink: 0,
+                  }}
+                />
+                <div style={{ flex: 1 }}>
+                  <span
+                    style={{
+                      fontSize: 12,
+                      fontWeight: 600,
+                      color: isCloseEnough ? "#22c55e" : "#ef4444",
+                      display: "block",
+                    }}
+                  >
+                    {isCloseEnough
+                      ? "📍 En zona de respuesta"
+                      : "📍 Fuera de rango"}
+                  </span>
+                  <span style={{ fontSize: 11, color: "rgba(255,255,255,0.3)" }}>
+                    {distanceToTarget !== null
+                      ? distanceToTarget < 1000
+                        ? `${Math.round(distanceToTarget)}m del objetivo`
+                        : `${(distanceToTarget / 1000).toFixed(1)}km del objetivo`
+                      : "Calculando posición..."}
+                    {!isCloseEnough && ` · Necesitas ≤${PROXIMITY_RADIUS_M}m`}
+                  </span>
+                </div>
+              </div>
+            )}
+
             {/* Answer input */}
             <form
               onSubmit={handleSubmit}
@@ -569,7 +764,11 @@ export default function PlayPage() {
                   type="text"
                   value={answer}
                   onChange={(e) => setAnswer(e.target.value)}
-                  placeholder="Escribe lo que encontraste..."
+                  placeholder={
+                    proximityBlocked
+                      ? "Acércate al lugar para responder..."
+                      : "Escribe lo que encontraste..."
+                  }
                   disabled={submitting || feedback?.type === "correct"}
                   autoFocus
                   style={{
@@ -578,22 +777,29 @@ export default function PlayPage() {
                     fontSize: 15,
                     background: "rgba(255,255,255,0.04)",
                     border: `1.5px solid ${
-                      feedback?.type === "incorrect"
-                        ? "rgba(239,68,68,0.5)"
-                        : feedback?.type === "correct"
-                          ? "rgba(34,197,94,0.5)"
-                          : "rgba(255,255,255,0.1)"
+                      feedback?.type === "too-far"
+                        ? "rgba(245,158,11,0.5)"
+                        : feedback?.type === "incorrect"
+                          ? "rgba(239,68,68,0.5)"
+                          : feedback?.type === "correct"
+                            ? "rgba(34,197,94,0.5)"
+                            : proximityBlocked
+                              ? "rgba(255,255,255,0.05)"
+                              : "rgba(255,255,255,0.1)"
                     }`,
                     borderRadius: 10,
                     color: "#fff",
                     outline: "none",
                     transition: "border-color 0.2s",
+                    opacity: proximityBlocked ? 0.5 : 1,
                   }}
                   onFocus={(e) => {
-                    if (!feedback) e.currentTarget.style.borderColor = "rgba(251,191,36,0.4)";
+                    if (!feedback && !proximityBlocked)
+                      e.currentTarget.style.borderColor = "rgba(251,191,36,0.4)";
                   }}
                   onBlur={(e) => {
-                    if (!feedback) e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)";
+                    if (!feedback && !proximityBlocked)
+                      e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)";
                   }}
                 />
                 <button
@@ -603,21 +809,30 @@ export default function PlayPage() {
                     padding: "12px 20px",
                     fontSize: 14,
                     fontWeight: 700,
-                    background: submitting ? "rgba(245,158,11,0.5)" : "#f59e0b",
+                    background: proximityBlocked
+                      ? "rgba(245,158,11,0.3)"
+                      : submitting
+                        ? "rgba(245,158,11,0.5)"
+                        : "#f59e0b",
                     color: "#000",
                     borderRadius: 10,
                     border: "none",
-                    cursor: submitting ? "wait" : "pointer",
+                    cursor: submitting || proximityBlocked ? "not-allowed" : "pointer",
                     transition: "all 0.2s",
                     opacity: !answer.trim() ? 0.5 : 1,
                     whiteSpace: "nowrap",
                   }}
                 >
-                  {submitting ? "⏳" : "ENVIAR →"}
+                  {submitting ? "⏳" : proximityBlocked ? "🔒" : "ENVIAR →"}
                 </button>
               </div>
 
               {/* Inline feedback */}
+              {feedback?.type === "too-far" && (
+                <p style={{ fontSize: 13, color: "#f59e0b", fontWeight: 500 }}>
+                  📍 ¡Estás demasiado lejos! Navega hasta el lugar de la pista ({Math.round(distanceToTarget || 0)}m)
+                </p>
+              )}
               {feedback?.type === "incorrect" && (
                 <p style={{ fontSize: 13, color: "#ef4444", fontWeight: 500 }}>
                   ❌ Respuesta incorrecta — sigue explorando
@@ -674,6 +889,10 @@ export default function PlayPage() {
           40% { transform: translateX(8px); }
           60% { transform: translateX(-4px); }
           80% { transform: translateX(4px); }
+        }
+        @keyframes blink-dot {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.3; }
         }
       `}</style>
     </div>
