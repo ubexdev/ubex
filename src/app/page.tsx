@@ -14,6 +14,7 @@ import {
   Eye,
   Crosshair,
 } from "@phosphor-icons/react";
+import UserMenu from "@/components/auth/UserMenu";
 import CountdownTimer from "@/components/game/CountdownTimer";
 
 export default function Home() {
@@ -111,6 +112,9 @@ export default function Home() {
             >
               Jugar demo
             </Link>
+            <div style={{ marginLeft: 6 }}>
+              <UserMenu />
+            </div>
           </nav>
         </div>
       </header>

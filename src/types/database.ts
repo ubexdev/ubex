@@ -47,6 +47,15 @@ export interface Database {
           sagas_completed?: number;
           updated_at?: string;
         };
+        Relationships: [
+          {
+            foreignKeyName: "profiles_team_id_fkey";
+            columns: ["team_id"];
+            isOneToOne: false;
+            referencedRelation: "teams";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       sagas: {
         Row: {
@@ -94,6 +103,7 @@ export interface Database {
           ends_at?: string | null;
           updated_at?: string;
         };
+        Relationships: [];
       };
       levels: {
         Row: {
@@ -150,6 +160,15 @@ export interface Database {
           explanation?: string | null;
           proximity_radius_m?: number;
         };
+        Relationships: [
+          {
+            foreignKeyName: "levels_saga_id_fkey";
+            columns: ["saga_id"];
+            isOneToOne: false;
+            referencedRelation: "sagas";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       game_sessions: {
         Row: {
@@ -180,6 +199,22 @@ export interface Database {
           status?: "active" | "completed" | "abandoned";
           completed_at?: string | null;
         };
+        Relationships: [
+          {
+            foreignKeyName: "game_sessions_saga_id_fkey";
+            columns: ["saga_id"];
+            isOneToOne: false;
+            referencedRelation: "sagas";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "game_sessions_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       level_attempts: {
         Row: {
@@ -203,6 +238,22 @@ export interface Database {
           attempted_at?: string;
         };
         Update: never;
+        Relationships: [
+          {
+            foreignKeyName: "level_attempts_session_id_fkey";
+            columns: ["session_id"];
+            isOneToOne: false;
+            referencedRelation: "game_sessions";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "level_attempts_level_id_fkey";
+            columns: ["level_id"];
+            isOneToOne: false;
+            referencedRelation: "levels";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       teams: {
         Row: {
@@ -222,6 +273,7 @@ export interface Database {
         Update: {
           name?: string;
         };
+        Relationships: [];
       };
     };
     Views: {
@@ -234,6 +286,7 @@ export interface Database {
           sagas_completed: number;
           rank: number;
         };
+        Relationships: [];
       };
     };
     Functions: Record<string, never>;
