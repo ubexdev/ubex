@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Outfit, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
+const outfit = Outfit({
+  variable: "--font-sans",
   subsets: ["latin"],
 });
 
@@ -13,9 +13,9 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "UBEX — El Mundo es el Tablero",
+  title: "UBEX — Arqueología Digital",
   description:
-    "Plataforma de arqueología digital. Explora calles reales en Google Street View, resuelve acertijos y encuentra el tesoro. Impulsada por Google Gemini AI.",
+    "Explora calles reales en Google Street View, resuelve acertijos históricos y reclama el tesoro. Impulsada por Google Gemini AI.",
   keywords: [
     "búsqueda de tesoros",
     "arqueología digital",
@@ -34,9 +34,9 @@ export default function RootLayout({
   return (
     <html
       lang="es"
-      className={`${inter.variable} ${jetbrainsMono.variable} h-full antialiased`}
+      className={`${outfit.variable} ${jetbrainsMono.variable} antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-black text-white font-[family-name:var(--font-inter)]">
+      <body className="min-h-[100dvh] flex flex-col bg-zinc-950 text-zinc-100 font-[family-name:var(--font-sans)]">
         {children}
       </body>
     </html>

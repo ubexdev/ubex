@@ -8,74 +8,77 @@
 
 html {
   scroll-behavior: smooth;
-  background: #000;
+  background: #09090b; /* zinc-950 */
 }
 
 body {
-  background: #000;
-  color: #ededed;
-  font-family: var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #09090b;
+  color: #e4e4e7; /* zinc-200 */
+  font-family: var(--font-sans), system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
-/* Shimmer gradient text */
-@keyframes shimmer {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+/* ── Transitions ── */
+.transition-smooth {
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.text-shimmer {
-  background: linear-gradient(90deg, #fbbf24, #f59e0b, #d97706, #f59e0b, #fbbf24);
-  background-size: 300% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: shimmer 6s ease-in-out infinite;
-}
-
-/* Globe floating + glow */
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-}
-
-.globe-pulse {
-  animation: float 4s ease-in-out infinite;
-  box-shadow: 0 0 40px rgba(245, 158, 11, 0.12);
-}
-
-/* Card hover */
-.card-hover {
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-}
-.card-hover:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 20px 60px rgba(245, 158, 11, 0.1);
-  border-color: rgba(245, 158, 11, 0.3) !important;
-}
-
-/* Button glow */
-.btn-glow {
-  position: relative;
-  transition: all 0.3s ease;
-}
-.btn-glow:hover {
-  box-shadow: 0 0 30px rgba(245, 158, 11, 0.3);
-}
-
-/* Fade in */
+/* ── Staggered fade-in (transform + opacity only) ── */
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(24px); }
+  from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-.fade-in { animation: fadeInUp 0.7s ease-out forwards; }
-.fade-in-d1 { animation: fadeInUp 0.7s ease-out 0.1s forwards; opacity: 0; }
-.fade-in-d2 { animation: fadeInUp 0.7s ease-out 0.2s forwards; opacity: 0; }
-.fade-in-d3 { animation: fadeInUp 0.7s ease-out 0.35s forwards; opacity: 0; }
+.fade-in { animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.fade-in-d1 { animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards; opacity: 0; }
+.fade-in-d2 { animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards; opacity: 0; }
+.fade-in-d3 { animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.35s forwards; opacity: 0; }
+.fade-in-d4 { animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards; opacity: 0; }
 
-/* Sections centered */
+/* ── Compass rotation ── */
+@keyframes compass-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.compass-rotate {
+  animation: compass-spin 40s linear infinite;
+}
+
+/* ── Floating ── */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+.float { animation: float 5s ease-in-out infinite; }
+
+/* ── Globe pulse ── */
+.globe-pulse {
+  animation: float 4s ease-in-out infinite;
+}
+
+/* ── Card interaction ── */
+.card-hover {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.card-hover:hover {
+  transform: translateY(-4px);
+}
+.card-hover:active {
+  transform: translateY(-1px) scale(0.98);
+}
+
+/* ── CTA press feedback ── */
+.btn-press {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.btn-press:hover {
+  transform: translateY(-1px);
+}
+.btn-press:active {
+  transform: translateY(0px) scale(0.98);
+}
+
+/* ── Sections centered ── */
 .section-inner {
   max-width: 1100px;
   margin-left: auto;
@@ -90,4 +93,10 @@ body {
   margin-right: auto;
   padding-left: 24px;
   padding-right: 24px;
+}
+
+/* ── Monospace numbers ── */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+  font-family: var(--font-mono), ui-monospace, monospace;
 }

@@ -529,10 +529,10 @@ export default function PlayPage() {
   const level = DEMO_LEVELS[levelIndex];
   const participants = useSimulatedParticipants(levelIndex);
 
-  // Distance from player to target
+  // Distance from player to TARGET location (not spawn)
   const distanceToTarget =
     playerPos
-      ? haversineMeters(playerPos.lat, playerPos.lng, level.lat, level.lng)
+      ? haversineMeters(playerPos.lat, playerPos.lng, level.targetLat, level.targetLng)
       : null;
   const isCloseEnough = distanceToTarget !== null && distanceToTarget <= PROXIMITY_RADIUS_M;
   const proximityBlocked = difficulty === "explorador" && !isCloseEnough;

@@ -1,6 +1,9 @@
 /**
  * Datos de la saga demo: Zona Colonial, Santo Domingo.
  * 12 niveles con coordenadas reales de Google Street View.
+ *
+ * lat/lng       → punto de INICIO (spawn) del jugador
+ * targetLat/Lng → ubicación de la RESPUESTA (zona de validación en modo Explorador)
  */
 
 export interface DemoLevel {
@@ -12,10 +15,14 @@ export interface DemoLevel {
     hint?: string;
     difficulty: "easy" | "medium" | "hard" | "extreme";
   };
+  /** Starting position (spawn) */
   lat: number;
   lng: number;
   heading: number;
   pitch: number;
+  /** Answer location (proximity target) */
+  targetLat: number;
+  targetLng: number;
   correctAnswers: string[];
   explanation: string;
 }
@@ -43,10 +50,14 @@ export const DEMO_LEVELS: DemoLevel[] = [
       hint: "Llegó a estas tierras en 1492 con tres carabelas.",
       difficulty: "easy",
     },
-    lat: 18.47395,
-    lng: -69.88265,
-    heading: 200,
-    pitch: 15,
+    // Spawn: Calle Arzobispo Meriño, ~250m south
+    lat: 18.47150,
+    lng: -69.88250,
+    heading: 0,
+    pitch: 0,
+    // Target: Parque Colón (the statue)
+    targetLat: 18.47395,
+    targetLng: -69.88265,
     correctAnswers: [
       "colon",
       "cristobal colon",
@@ -66,10 +77,14 @@ export const DEMO_LEVELS: DemoLevel[] = [
       hint: "Su nombre rinde homenaje a las mujeres de la corte virreinal.",
       difficulty: "easy",
     },
-    lat: 18.47200,
-    lng: -69.88100,
-    heading: 0,
+    // Spawn: near Fortaleza Ozama, ~200m east
+    lat: 18.47080,
+    lng: -69.87920,
+    heading: 315,
     pitch: 0,
+    // Target: Calle Las Damas
+    targetLat: 18.47200,
+    targetLng: -69.88100,
     correctAnswers: [
       "las damas",
       "calle las damas",
@@ -87,10 +102,14 @@ export const DEMO_LEVELS: DemoLevel[] = [
       hint: "Mira con atención la loggia del segundo piso.",
       difficulty: "easy",
     },
-    lat: 18.47340,
-    lng: -69.88090,
-    heading: 280,
-    pitch: 10,
+    // Spawn: Calle Isabel la Católica, ~300m south-west
+    lat: 18.47120,
+    lng: -69.88350,
+    heading: 45,
+    pitch: 0,
+    // Target: Alcázar de Colón / Plaza España
+    targetLat: 18.47340,
+    targetLng: -69.88090,
     correctAnswers: ["5", "cinco", "five"],
     explanation:
       "El Alcázar de Colón, construido por Diego Colón en 1510, tiene 5 arcos en su loggia superior. Fue sede del gobierno colonial.",
@@ -104,10 +123,14 @@ export const DEMO_LEVELS: DemoLevel[] = [
       hint: "Observa las columnas y ornamentos de la entrada — recuerdan al trabajo de los plateros.",
       difficulty: "medium",
     },
-    lat: 18.47360,
-    lng: -69.88250,
-    heading: 140,
-    pitch: 20,
+    // Spawn: Calle El Conde, ~300m west
+    lat: 18.47310,
+    lng: -69.88550,
+    heading: 90,
+    pitch: 0,
+    // Target: Catedral Primada
+    targetLat: 18.47360,
+    targetLng: -69.88250,
     correctAnswers: ["plateresco", "plateresque"],
     explanation:
       "La Catedral Primada de América (1512-1540) combina elementos góticos con una fachada predominantemente plateresca, estilo español del Renacimiento.",
@@ -121,10 +144,14 @@ export const DEMO_LEVELS: DemoLevel[] = [
       hint: "La torre lleva el nombre de un acto de sumisión feudal.",
       difficulty: "medium",
     },
-    lat: 18.47100,
-    lng: -69.87960,
-    heading: 120,
-    pitch: 15,
+    // Spawn: Calle Las Damas norte, ~300m north
+    lat: 18.47380,
+    lng: -69.88100,
+    heading: 180,
+    pitch: 0,
+    // Target: Fortaleza Ozama
+    targetLat: 18.47100,
+    targetLng: -69.87960,
     correctAnswers: [
       "torre del homenaje",
       "homenaje",
@@ -142,10 +169,14 @@ export const DEMO_LEVELS: DemoLevel[] = [
       hint: "Es un obsequio del gobierno de España, y nunca deja de arder.",
       difficulty: "medium",
     },
-    lat: 18.47290,
-    lng: -69.88300,
-    heading: 90,
+    // Spawn: Parque Colón, ~200m east
+    lat: 18.47395,
+    lng: -69.88265,
+    heading: 270,
     pitch: 0,
+    // Target: Panteón Nacional
+    targetLat: 18.47290,
+    targetLng: -69.88300,
     correctAnswers: [
       "lampara",
       "lámpara",
@@ -166,10 +197,14 @@ export const DEMO_LEVELS: DemoLevel[] = [
       hint: "Su nombre evoca a un título nobiliario.",
       difficulty: "medium",
     },
-    lat: 18.47300,
-    lng: -69.88500,
-    heading: 90,
+    // Spawn: near Catedral, ~250m east
+    lat: 18.47350,
+    lng: -69.88200,
+    heading: 270,
     pitch: 0,
+    // Target: Calle El Conde (middle section)
+    targetLat: 18.47300,
+    targetLng: -69.88500,
     correctAnswers: [
       "el conde",
       "calle el conde",
@@ -188,10 +223,14 @@ export const DEMO_LEVELS: DemoLevel[] = [
       hint: "Los romanos ya los usaban. No tiene engranajes ni agujas.",
       difficulty: "hard",
     },
-    lat: 18.47260,
-    lng: -69.88170,
-    heading: 270,
-    pitch: 5,
+    // Spawn: Plaza España, ~250m north
+    lat: 18.47380,
+    lng: -69.88050,
+    heading: 180,
+    pitch: 0,
+    // Target: Museo de las Casas Reales
+    targetLat: 18.47260,
+    targetLng: -69.88170,
     correctAnswers: [
       "reloj de sol",
       "reloj solar",
@@ -210,10 +249,14 @@ export const DEMO_LEVELS: DemoLevel[] = [
       hint: "Su fundador llevaba el nombre de la ciudad italiana de Asís.",
       difficulty: "hard",
     },
-    lat: 18.47200,
-    lng: -69.88400,
-    heading: 180,
-    pitch: 10,
+    // Spawn: Calle Hostos, ~300m east
+    lat: 18.47250,
+    lng: -69.88100,
+    heading: 270,
+    pitch: 0,
+    // Target: Monasterio de San Francisco
+    targetLat: 18.47200,
+    targetLng: -69.88400,
     correctAnswers: [
       "franciscana",
       "franciscanos",
@@ -233,10 +276,14 @@ export const DEMO_LEVELS: DemoLevel[] = [
       hint: "Fue en la primera mitad del siglo XIX, en el mes de febrero.",
       difficulty: "hard",
     },
-    lat: 18.47290,
-    lng: -69.88810,
-    heading: 90,
-    pitch: 5,
+    // Spawn: Calle El Conde east side, ~400m east
+    lat: 18.47350,
+    lng: -69.88400,
+    heading: 270,
+    pitch: 0,
+    // Target: Puerta del Conde
+    targetLat: 18.47290,
+    targetLng: -69.88810,
     correctAnswers: ["1844"],
     explanation:
       "El 27 de febrero de 1844, frente a la Puerta del Conde, se proclamó la independencia de la República Dominicana por Juan Pablo Duarte y los Trinitarios.",
@@ -250,10 +297,14 @@ export const DEMO_LEVELS: DemoLevel[] = [
       hint: "Es un metal que se oxida con el tiempo y adquiere un tono rojizo.",
       difficulty: "extreme",
     },
-    lat: 18.47350,
-    lng: -69.88080,
-    heading: 315,
+    // Spawn: Panteón Nacional, ~350m west
+    lat: 18.47290,
+    lng: -69.88350,
+    heading: 90,
     pitch: 0,
+    // Target: Plaza España
+    targetLat: 18.47350,
+    targetLng: -69.88080,
     correctAnswers: [
       "hierro",
       "hierro forjado",
@@ -273,10 +324,14 @@ export const DEMO_LEVELS: DemoLevel[] = [
       hint: "Fue antes de 1500, durante el segundo viaje de los Colón.",
       difficulty: "extreme",
     },
-    lat: 18.47395,
-    lng: -69.88265,
-    heading: 0,
-    pitch: 10,
+    // Spawn: Fortaleza Ozama, ~400m south-east
+    lat: 18.47050,
+    lng: -69.87900,
+    heading: 315,
+    pitch: 0,
+    // Target: Parque Colón (full circle)
+    targetLat: 18.47395,
+    targetLng: -69.88265,
     correctAnswers: ["1498", "1496"],
     explanation:
       "Santo Domingo fue fundada en 1498 (algunos historiadores dicen 1496) por Bartolomé Colón, convirtiéndola en el primer asentamiento europeo permanente de América.",
