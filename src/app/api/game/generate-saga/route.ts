@@ -171,10 +171,7 @@ IMPORTANTE:
 
     return NextResponse.json({ saga, levels });
   } catch (error) {
-    console.error(
-      `Error generando saga para ${requestData.city}, ${requestData.country}:`,
-      error,
-    );
+    console.error("Error generando saga:", requestData.city, requestData.country, error);
     return NextResponse.json(
       {
         error: `Error generando saga: ${error instanceof Error ? error.message : "Error desconocido"}`,
