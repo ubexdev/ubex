@@ -12,6 +12,7 @@ import {
   X,
   SignOut,
   Compass,
+  ArrowLeft,
 } from "@phosphor-icons/react";
 import { getSupabaseBrowser } from "@/lib/supabase/client";
 
@@ -42,16 +43,17 @@ export default function Sidebar() {
   return (
     <>
       {/* Mobile top bar */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 h-14 bg-zinc-900 border-b border-zinc-800">
-        <div className="flex items-center gap-2">
-          <Compass size={24} weight="duotone" className="text-amber-600" />
-          <span className="font-semibold text-zinc-100 text-sm">
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-5 h-16 bg-zinc-900 border-b border-zinc-800">
+        <div className="flex items-center gap-2.5">
+          <Compass size={26} weight="duotone" className="text-amber-600" />
+          <span className="font-bold text-zinc-100 text-sm tracking-tight">
             UBEX Admin
           </span>
         </div>
         <button
           onClick={() => setOpen(!open)}
-          className="p-2 rounded-lg text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 transition-colors"
+          className="p-2.5 rounded-lg text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 transition-colors"
+          style={{ minWidth: 44, minHeight: 44 }}
         >
           {open ? <X size={22} /> : <List size={22} />}
         </button>
@@ -75,15 +77,18 @@ export default function Sidebar() {
         `}
       >
         {/* Logo */}
-        <div className="flex items-center gap-2.5 px-5 h-16 border-b border-zinc-800">
-          <Compass size={28} weight="duotone" className="text-amber-600" />
-          <span className="font-bold text-zinc-100 tracking-tight">
+        <div
+          className="flex items-center gap-3 px-6 border-b border-zinc-800"
+          style={{ height: 72, boxShadow: "0 1px 3px rgba(0,0,0,0.3)" }}
+        >
+          <Compass size={30} weight="duotone" className="text-amber-600" />
+          <span className="font-bold text-lg text-zinc-100 tracking-tight">
             UBEX Admin
           </span>
         </div>
 
         {/* Nav */}
-        <nav className="flex-1 py-4 px-3 space-y-1">
+        <nav className="flex-1 py-5 px-3 space-y-1">
           {navItems.map((item) => {
             const active = isActive(item.href);
             const Icon = item.icon;
@@ -93,13 +98,14 @@ export default function Sidebar() {
                 href={item.href}
                 onClick={() => setOpen(false)}
                 className={`
-                  flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
+                  flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors
                   ${
                     active
-                      ? "bg-amber-600/10 text-amber-500"
-                      : "text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800"
+                      ? "border-l-2 border-l-amber-600 bg-amber-600/10 text-amber-500"
+                      : "border-l-2 border-l-transparent text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800"
                   }
                 `}
+                style={{ minHeight: 44 }}
               >
                 <Icon
                   size={20}
@@ -111,11 +117,20 @@ export default function Sidebar() {
           })}
         </nav>
 
-        {/* Sign out */}
-        <div className="p-3 border-t border-zinc-800">
+        {/* Bottom section */}
+        <div className="border-t border-zinc-800 p-3 space-y-1">
+          <Link
+            href="/"
+            className="flex items-center gap-3 w-full px-4 py-3 rounded-lg text-sm font-medium text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 transition-colors"
+            style={{ minHeight: 44 }}
+          >
+            <ArrowLeft size={20} />
+            Volver al sitio
+          </Link>
           <button
             onClick={handleSignOut}
-            className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-sm font-medium text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 transition-colors"
+            className="flex items-center gap-3 w-full px-4 py-3 rounded-lg text-sm font-medium text-zinc-400 hover:text-red-400 hover:bg-zinc-800 transition-colors"
+            style={{ minHeight: 44 }}
           >
             <SignOut size={20} />
             Cerrar sesión

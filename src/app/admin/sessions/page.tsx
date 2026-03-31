@@ -126,22 +126,33 @@ export default function SessionsPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-zinc-100">Sesiones de juego</h1>
-        <p className="text-sm text-zinc-500 mt-1">
+        <h1 className="text-3xl font-bold text-zinc-100 tracking-tight">
+          Sesiones de juego
+        </h1>
+        <p className="text-base text-zinc-500 mt-2">
           Monitorea las partidas de los jugadores
         </p>
+        {!loading && (
+          <p className="text-sm text-zinc-600 mt-1">
+            {sessions.length} sesion{sessions.length !== 1 ? "es" : ""}{" "}
+            encontrada{sessions.length !== 1 ? "s" : ""}
+          </p>
+        )}
       </div>
 
       {/* Filter */}
-      <div className="flex items-center gap-2">
-        <Funnel size={16} className="text-zinc-500" />
+      <div className="relative inline-block">
+        <Funnel
+          size={18}
+          className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-600 pointer-events-none"
+        />
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-2 text-sm text-zinc-200 focus:border-amber-600 focus:ring-1 focus:ring-amber-600 focus:outline-none transition-colors"
+          className="appearance-none rounded-xl border border-zinc-800 bg-zinc-900 pl-11 pr-10 py-3 text-sm text-zinc-200 focus:border-amber-600 focus:ring-1 focus:ring-amber-600 focus:outline-none transition-colors cursor-pointer"
         >
           <option value="all">Todos los estados</option>
           <option value="active">Activas</option>
@@ -152,27 +163,27 @@ export default function SessionsPage() {
 
       {/* Error */}
       {error && (
-        <div className="rounded-lg border border-red-900 bg-red-950 px-4 py-3 text-sm text-red-300">
+        <div className="rounded-xl border border-red-900 bg-red-950 px-6 py-4 text-sm text-red-300">
           {error}
         </div>
       )}
 
       {/* Loading */}
       {loading && (
-        <div className="flex items-center justify-center py-20">
-          <CircleNotch size={32} className="text-zinc-600 animate-spin" />
+        <div className="flex items-center justify-center py-28">
+          <CircleNotch size={36} className="text-zinc-600 animate-spin" />
         </div>
       )}
 
       {/* Empty */}
       {!loading && !error && sessions.length === 0 && (
-        <div className="rounded-xl border border-zinc-800 bg-zinc-900 py-16 text-center">
+        <div className="rounded-xl border border-zinc-800 bg-zinc-900 py-24 text-center">
           <GameController
-            size={40}
+            size={52}
             weight="duotone"
             className="mx-auto text-zinc-700"
           />
-          <p className="mt-3 text-zinc-500 text-sm">
+          <p className="mt-4 text-zinc-500 text-base">
             No hay sesiones registradas
           </p>
         </div>
@@ -182,29 +193,29 @@ export default function SessionsPage() {
       {!loading && sessions.length > 0 && (
         <div className="rounded-xl border border-zinc-800 bg-zinc-900 overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full">
               <thead>
                 <tr className="border-b border-zinc-800">
-                  <th className="w-8" />
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">
+                  <th className="w-14 px-4 py-4" />
+                  <th className="text-left px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider">
                     Jugador
                   </th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">
+                  <th className="text-left px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider">
                     Saga
                   </th>
-                  <th className="text-center px-4 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">
+                  <th className="text-center px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider">
                     Nivel
                   </th>
-                  <th className="text-right px-4 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">
+                  <th className="text-right px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider">
                     Puntos
                   </th>
-                  <th className="text-center px-4 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">
+                  <th className="text-center px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider">
                     Modo
                   </th>
-                  <th className="text-center px-4 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">
+                  <th className="text-center px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider">
                     Estado
                   </th>
-                  <th className="text-right px-4 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">
+                  <th className="text-right px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider">
                     Inicio
                   </th>
                 </tr>
@@ -220,41 +231,49 @@ export default function SessionsPage() {
                         onClick={() => toggleExpand(session.id)}
                         className="hover:bg-zinc-800/50 cursor-pointer transition-colors"
                       >
-                        <td className="pl-4 py-3 text-zinc-600">
-                          {isExpanded ? (
-                            <CaretDown size={14} />
-                          ) : (
-                            <CaretRight size={14} />
-                          )}
+                        <td className="pl-6 py-4">
+                          <div className="h-8 w-8 rounded-lg flex items-center justify-center text-zinc-500 transition-colors hover:text-zinc-300">
+                            {isExpanded ? (
+                              <CaretDown size={18} weight="bold" />
+                            ) : (
+                              <CaretRight size={18} weight="bold" />
+                            )}
+                          </div>
                         </td>
-                        <td className="px-4 py-3 font-medium text-zinc-200">
-                          {session.user?.display_name || "Anónimo"}
+                        <td className="px-6 py-4">
+                          <span className="text-base font-medium text-zinc-200">
+                            {session.user?.display_name || "Anónimo"}
+                          </span>
                         </td>
-                        <td className="px-4 py-3 text-zinc-400">
-                          {session.saga?.title || "—"}
+                        <td className="px-6 py-4">
+                          <span className="text-sm text-zinc-400">
+                            {session.saga?.title || "—"}
+                          </span>
                         </td>
-                        <td className="px-4 py-3 text-center text-zinc-300 tabular-nums">
+                        <td className="px-6 py-4 text-center text-base text-zinc-300 tabular-nums">
                           {session.current_level}
                         </td>
-                        <td className="px-4 py-3 text-right text-zinc-300 tabular-nums">
-                          {session.score.toLocaleString("es-ES")}
+                        <td className="px-6 py-4 text-right tabular-nums">
+                          <span className="text-base font-semibold text-zinc-200">
+                            {session.score.toLocaleString("es-ES")}
+                          </span>
                         </td>
-                        <td className="px-4 py-3 text-center">
-                          <span className="text-xs text-zinc-400">
+                        <td className="px-6 py-4 text-center">
+                          <span className="text-sm text-zinc-400">
                             {diffLabels[session.difficulty]}
                           </span>
                         </td>
-                        <td className="px-4 py-3 text-center">
+                        <td className="px-6 py-4 text-center">
                           <span
-                            className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium ${st.bg} ${st.text}`}
+                            className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium ${st.bg} ${st.text}`}
                           >
                             <span
-                              className={`w-1.5 h-1.5 rounded-full ${st.dot}`}
+                              className={`w-2 h-2 rounded-full ${st.dot}`}
                             />
                             {st.label}
                           </span>
                         </td>
-                        <td className="px-4 py-3 text-right text-zinc-500">
+                        <td className="px-6 py-4 text-right text-sm text-zinc-500 whitespace-nowrap">
                           {new Date(session.started_at).toLocaleString(
                             "es-ES",
                             {
@@ -270,52 +289,52 @@ export default function SessionsPage() {
                       {/* Expanded detail */}
                       {isExpanded && (
                         <tr>
-                          <td colSpan={8} className="bg-zinc-950 px-8 py-4">
+                          <td colSpan={8} className="bg-zinc-950 px-10 py-6">
                             {loadingAttempts ? (
-                              <div className="flex items-center justify-center py-4">
+                              <div className="flex items-center justify-center py-6">
                                 <CircleNotch
-                                  size={20}
+                                  size={24}
                                   className="text-zinc-600 animate-spin"
                                 />
                               </div>
                             ) : attempts.length === 0 ? (
-                              <p className="text-sm text-zinc-600 text-center py-4">
+                              <p className="text-base text-zinc-600 text-center py-6">
                                 No hay intentos registrados
                               </p>
                             ) : (
-                              <div className="space-y-2">
-                                <p className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">
+                              <div className="space-y-3">
+                                <p className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-4">
                                   Intentos ({attempts.length})
                                 </p>
                                 {attempts.map((attempt) => (
                                   <div
                                     key={attempt.id}
-                                    className="flex items-center gap-3 rounded-lg border border-zinc-800 bg-zinc-900 px-4 py-2.5"
+                                    className="flex items-center gap-4 rounded-xl border border-zinc-800 bg-zinc-900 px-5 py-3.5"
                                   >
                                     {attempt.is_correct ? (
                                       <CheckCircle
-                                        size={16}
+                                        size={22}
                                         weight="duotone"
                                         className="text-emerald-400 shrink-0"
                                       />
                                     ) : (
                                       <XCircle
-                                        size={16}
+                                        size={22}
                                         weight="duotone"
                                         className="text-red-400 shrink-0"
                                       />
                                     )}
-                                    <span className="text-xs text-zinc-500 font-mono shrink-0">
+                                    <span className="text-sm text-zinc-500 font-mono shrink-0">
                                       Nivel {attempt.level?.number ?? "?"}
                                     </span>
-                                    <span className="text-sm text-zinc-300 flex-1 truncate">
+                                    <span className="text-base text-zinc-300 flex-1 truncate">
                                       &ldquo;{attempt.answer_given}&rdquo;
                                     </span>
-                                    <span className="text-xs text-zinc-600 shrink-0">
+                                    <span className="text-sm text-zinc-600 shrink-0 tabular-nums">
                                       {attempt.time_spent_seconds}s
                                     </span>
                                     {attempt.distance_to_target_m != null && (
-                                      <span className="text-xs text-zinc-600 shrink-0">
+                                      <span className="text-sm text-zinc-600 shrink-0 tabular-nums">
                                         {Math.round(
                                           attempt.distance_to_target_m
                                         )}

@@ -16,6 +16,8 @@ import {
   Timer,
   ListNumbers,
   Warning,
+  MapPin,
+  CalendarBlank,
 } from "@phosphor-icons/react";
 
 type Saga = {
@@ -187,19 +189,21 @@ export default function SagasPage() {
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
         <div>
-          <h1 className="text-2xl font-bold text-zinc-100">Sagas</h1>
-          <p className="text-sm text-zinc-500 mt-1">
+          <h1 className="text-3xl font-bold text-zinc-100 tracking-tight">
+            Sagas
+          </h1>
+          <p className="text-zinc-500 mt-2">
             Gestiona las aventuras de UBEX
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <button
             onClick={exportAllSagas}
-            className="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-lg border border-zinc-800 text-zinc-300 text-sm font-medium hover:bg-zinc-800 transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-zinc-800 text-zinc-300 text-sm font-medium hover:bg-zinc-800 transition-colors"
           >
             <Export size={18} />
             Exportar
@@ -207,7 +211,7 @@ export default function SagasPage() {
           <button
             onClick={() => fileRef.current?.click()}
             disabled={importing}
-            className="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-lg border border-zinc-800 text-zinc-300 text-sm font-medium hover:bg-zinc-800 disabled:opacity-50 transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-zinc-800 text-zinc-300 text-sm font-medium hover:bg-zinc-800 disabled:opacity-50 transition-colors"
           >
             {importing ? (
               <CircleNotch size={18} className="animate-spin" />
@@ -225,62 +229,72 @@ export default function SagasPage() {
           />
           <Link
             href="/admin/sagas/new"
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-amber-600 text-zinc-950 text-sm font-semibold hover:bg-amber-500 transition-colors"
+            className="inline-flex items-center gap-2.5 px-5 py-3 rounded-xl bg-amber-600 text-zinc-950 text-sm font-semibold hover:bg-amber-500 transition-colors shadow-lg shadow-amber-600/20"
           >
-            <Plus size={18} weight="bold" />
+            <Plus size={20} weight="bold" />
             Crear Saga
           </Link>
         </div>
       </div>
 
-      {/* Search */}
+      {/* Search + count */}
       {!loading && sagas.length > 0 && (
-        <div className="relative">
-          <MagnifyingGlass
-            size={18}
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-600"
-          />
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Buscar por título o ciudad..."
-            className="w-full rounded-lg border border-zinc-800 bg-zinc-950 pl-10 pr-4 py-2.5 text-sm text-zinc-100 placeholder-zinc-600 focus:border-amber-600 focus:ring-1 focus:ring-amber-600 focus:outline-none transition-colors"
-          />
+        <div className="space-y-3">
+          <div className="relative">
+            <MagnifyingGlass
+              size={20}
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-600"
+            />
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Buscar por título o ciudad..."
+              className="w-full rounded-xl border border-zinc-800 bg-zinc-900 pl-12 pr-4 py-3 text-sm text-zinc-100 placeholder-zinc-600 focus:border-amber-600 focus:ring-1 focus:ring-amber-600 focus:outline-none transition-colors"
+            />
+          </div>
+          <p className="text-sm text-zinc-500 pl-1">
+            {filtered.length}{" "}
+            {filtered.length === 1 ? "saga encontrada" : "sagas encontradas"}
+          </p>
         </div>
       )}
 
       {/* Error */}
       {error && (
-        <div className="rounded-lg border border-red-900 bg-red-950 px-4 py-3 text-sm text-red-300 flex items-center gap-2">
-          <Warning size={18} />
+        <div className="rounded-xl border border-red-900 bg-red-950 px-6 py-4 text-sm text-red-300 flex items-center gap-3">
+          <Warning size={20} />
           {error}
         </div>
       )}
 
       {/* Loading */}
       {loading && (
-        <div className="flex items-center justify-center py-20">
-          <CircleNotch size={32} className="text-zinc-600 animate-spin" />
+        <div className="flex items-center justify-center py-24">
+          <CircleNotch size={36} className="text-zinc-600 animate-spin" />
         </div>
       )}
 
       {/* Empty state */}
       {!loading && !error && sagas.length === 0 && (
-        <div className="rounded-xl border border-zinc-800 bg-zinc-900 py-16 text-center">
+        <div className="rounded-xl border border-zinc-800 bg-zinc-900 py-20 text-center">
           <MapTrifold
-            size={40}
+            size={48}
             weight="duotone"
             className="mx-auto text-zinc-700"
           />
-          <p className="mt-3 text-zinc-500 text-sm">
+          <p className="mt-4 text-zinc-400 font-medium">
             No hay sagas creadas aún
+          </p>
+          <p className="mt-2 text-sm text-zinc-600 max-w-sm mx-auto leading-relaxed">
+            Las sagas son aventuras urbanas que guían a los jugadores por
+            diferentes ciudades. Crea tu primera saga para comenzar.
           </p>
           <Link
             href="/admin/sagas/new"
-            className="inline-flex items-center gap-2 mt-4 px-4 py-2.5 rounded-lg bg-zinc-800 text-zinc-200 text-sm font-medium hover:bg-zinc-700 transition-colors"
+            className="inline-flex items-center gap-2 mt-6 px-5 py-3 rounded-xl bg-zinc-800 text-zinc-200 text-sm font-medium hover:bg-zinc-700 transition-colors"
           >
-            <Plus size={16} />
+            <Plus size={18} />
             Crear tu primera saga
           </Link>
         </div>
@@ -288,84 +302,118 @@ export default function SagasPage() {
 
       {/* No results */}
       {!loading && sagas.length > 0 && filtered.length === 0 && (
-        <div className="rounded-xl border border-zinc-800 bg-zinc-900 py-12 text-center">
-          <MagnifyingGlass size={32} className="mx-auto text-zinc-700" />
-          <p className="mt-2 text-zinc-500 text-sm">
-            Sin resultados para &ldquo;{search}&rdquo;
+        <div className="rounded-xl border border-zinc-800 bg-zinc-900 py-16 text-center">
+          <MagnifyingGlass size={36} className="mx-auto text-zinc-700" />
+          <p className="mt-3 text-zinc-400 font-medium">Sin resultados</p>
+          <p className="mt-1 text-sm text-zinc-600">
+            No se encontraron sagas para &ldquo;{search}&rdquo;
           </p>
         </div>
       )}
 
       {/* Sagas grid */}
       {!loading && filtered.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {filtered.map((saga) => {
-            const diff = difficultyConfig[saga.difficulty] ?? difficultyConfig.medium;
+            const diff =
+              difficultyConfig[saga.difficulty] ?? difficultyConfig.medium;
             return (
               <button
                 key={saga.id}
                 onClick={() => router.push(`/admin/sagas/${saga.id}`)}
-                className="text-left rounded-xl border border-zinc-800 bg-zinc-900 p-5 hover:border-zinc-700 transition-colors group"
+                className="text-left rounded-xl border border-zinc-800 bg-zinc-900 overflow-hidden hover:border-zinc-700 hover:scale-[1.01] hover:shadow-xl hover:shadow-zinc-950/60 transition-all duration-200 group"
               >
-                <div className="flex items-start justify-between gap-3">
-                  <h3 className="font-semibold text-zinc-100 text-base group-hover:text-amber-500 transition-colors truncate">
-                    {saga.title}
-                  </h3>
-                  <div className="flex items-center gap-1.5 shrink-0">
-                    {saga.is_featured && (
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-amber-400/10 text-amber-300">
-                        <Star size={12} weight="fill" />
+                {/* Cover image placeholder */}
+                <div
+                  className="w-full bg-zinc-800 flex items-center justify-center"
+                  style={{ height: "120px" }}
+                >
+                  {saga.cover_image_url ? (
+                    <img
+                      src={saga.cover_image_url}
+                      alt={saga.title}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <MapTrifold
+                      size={36}
+                      weight="duotone"
+                      className="text-zinc-600"
+                    />
+                  )}
+                </div>
+
+                {/* Card content */}
+                <div className="px-6 py-5">
+                  {/* Title + badges row */}
+                  <div className="flex items-start justify-between gap-4">
+                    <h3 className="font-semibold text-zinc-100 text-lg leading-snug group-hover:text-amber-500 transition-colors line-clamp-1">
+                      {saga.title}
+                    </h3>
+                    <div className="flex items-center gap-2 shrink-0">
+                      {saga.is_featured && (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-400/10 text-amber-300">
+                          <Star size={14} weight="fill" />
+                        </span>
+                      )}
+                      <span
+                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium ${diff.bg} ${diff.text}`}
+                      >
+                        <span
+                          className={`w-1.5 h-1.5 rounded-full ${diff.dot}`}
+                        />
+                        {diff.label}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Location */}
+                  <p className="text-sm text-zinc-500 mt-2 flex items-center gap-1.5">
+                    <MapPin size={14} className="shrink-0 text-zinc-600" />
+                    {saga.city}, {saga.country}
+                  </p>
+
+                  {/* Description */}
+                  {saga.description && (
+                    <p className="text-sm text-zinc-600 mt-3 line-clamp-3 leading-relaxed">
+                      {saga.description}
+                    </p>
+                  )}
+
+                  {/* Stats row */}
+                  <div className="flex items-center gap-5 mt-5 text-sm text-zinc-500">
+                    <span className="inline-flex items-center gap-1.5">
+                      <ListNumbers size={16} />
+                      {saga.total_levels} niveles
+                    </span>
+                    {saga.estimated_duration && (
+                      <span className="inline-flex items-center gap-1.5">
+                        <Timer size={16} />
+                        {saga.estimated_duration} min
                       </span>
                     )}
-                    <span
-                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${diff.bg} ${diff.text}`}
-                    >
-                      <span
-                        className={`w-1.5 h-1.5 rounded-full ${diff.dot}`}
-                      />
-                      {diff.label}
+                    <span className="inline-flex items-center gap-1.5">
+                      <Lightning size={16} />
+                      {saga.is_active ? (
+                        <span className="text-emerald-400">Activa</span>
+                      ) : (
+                        <span className="text-zinc-600">Inactiva</span>
+                      )}
                     </span>
                   </div>
+
+                  {/* Date row — separated */}
+                  <div className="mt-5 pt-4 border-t border-zinc-800">
+                    <p className="text-xs text-zinc-600 flex items-center gap-1.5">
+                      <CalendarBlank size={14} />
+                      {new Date(saga.created_at).toLocaleDateString("es-ES", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })}
+                    </p>
+                  </div>
                 </div>
-
-                <p className="text-sm text-zinc-500 mt-1">
-                  {saga.city}, {saga.country}
-                </p>
-
-                {saga.description && (
-                  <p className="text-xs text-zinc-600 mt-2 line-clamp-2">
-                    {saga.description}
-                  </p>
-                )}
-
-                <div className="flex items-center gap-4 mt-4 text-xs text-zinc-500">
-                  <span className="inline-flex items-center gap-1">
-                    <ListNumbers size={14} />
-                    {saga.total_levels} niveles
-                  </span>
-                  {saga.estimated_duration && (
-                    <span className="inline-flex items-center gap-1">
-                      <Timer size={14} />
-                      {saga.estimated_duration} min
-                    </span>
-                  )}
-                  <span className="inline-flex items-center gap-1">
-                    <Lightning size={14} />
-                    {saga.is_active ? (
-                      <span className="text-emerald-400">Activa</span>
-                    ) : (
-                      <span className="text-zinc-600">Inactiva</span>
-                    )}
-                  </span>
-                </div>
-
-                <p className="text-xs text-zinc-700 mt-2">
-                  {new Date(saga.created_at).toLocaleDateString("es-ES", {
-                    day: "numeric",
-                    month: "short",
-                    year: "numeric",
-                  })}
-                </p>
               </button>
             );
           })}
