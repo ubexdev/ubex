@@ -46,13 +46,32 @@ export default function CountdownTimer({
 
   if (isComplete) {
     return (
-      <div className="text-center">
-        <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-green-500/10 border border-green-500/20">
-          <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-          <span className="text-base font-bold text-green-400">
-            ¡LA BÚSQUEDA HA COMENZADO!
+      <div style={{ textAlign: "center" }}>
+        <div
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 8,
+            padding: "10px 24px",
+            borderRadius: 999,
+            background: "rgba(34,197,94,0.08)",
+            border: "1px solid rgba(34,197,94,0.15)",
+          }}
+        >
+          <div
+            style={{
+              width: 8,
+              height: 8,
+              borderRadius: "50%",
+              background: "#22c55e",
+              animation: "blink 2s ease-in-out infinite",
+            }}
+          />
+          <span style={{ fontSize: 14, fontWeight: 700, color: "#22c55e" }}>
+            La búsqueda ha comenzado
           </span>
         </div>
+        <style>{`@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }`}</style>
       </div>
     );
   }
@@ -65,25 +84,69 @@ export default function CountdownTimer({
   ];
 
   return (
-    <div className="text-center">
-      <p className="text-[10px] tracking-[0.2em] text-amber-400/50 mb-5 font-medium uppercase">
+    <div style={{ textAlign: "center" }}>
+      <p
+        style={{
+          fontSize: 10,
+          letterSpacing: "0.2em",
+          color: "#92400e",
+          marginBottom: 20,
+          fontWeight: 600,
+          textTransform: "uppercase",
+        }}
+      >
         {label}
       </p>
-      <div className="flex justify-center gap-3">
+      <div style={{ display: "flex", justifyContent: "center", gap: 12 }}>
         {segments.map(({ value, label: segLabel }, i) => (
-          <div key={segLabel} className="flex items-center gap-3">
-            <div className="flex flex-col items-center">
-              <div className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 min-w-[72px] backdrop-blur-sm">
-                <span className="text-3xl font-extrabold text-white font-[family-name:var(--font-mono)] tabular-nums leading-none">
+          <div key={segLabel} style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+              <div
+                style={{
+                  background: "rgba(255,255,255,0.03)",
+                  border: "1px solid rgba(255,255,255,0.06)",
+                  borderRadius: 10,
+                  padding: "12px 16px",
+                  minWidth: 64,
+                }}
+              >
+                <span
+                  className="tabular-nums"
+                  style={{
+                    fontSize: 28,
+                    fontWeight: 800,
+                    color: "#fafafa",
+                    lineHeight: 1,
+                    display: "block",
+                    textAlign: "center",
+                  }}
+                >
                   {String(value).padStart(2, "0")}
                 </span>
               </div>
-              <span className="text-[9px] tracking-[0.15em] text-white/20 mt-2 font-medium">
+              <span
+                style={{
+                  fontSize: 9,
+                  letterSpacing: "0.15em",
+                  color: "#3f3f46",
+                  marginTop: 6,
+                  fontWeight: 600,
+                }}
+              >
                 {segLabel}
               </span>
             </div>
             {i < segments.length - 1 && (
-              <span className="text-xl font-bold text-white/10 mb-5">:</span>
+              <span
+                style={{
+                  fontSize: 18,
+                  fontWeight: 700,
+                  color: "#27272a",
+                  marginBottom: 16,
+                }}
+              >
+                :
+              </span>
             )}
           </div>
         ))}
