@@ -45,24 +45,32 @@ export default function RegisterPage() {
 
     setLoading(true);
 
-    const { error: authError } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: { full_name: displayName.trim() },
-      },
-    });
+    try {
+      const { error: authError } = await supabase.auth.signUp({
+        email: email.trim(),
+        password,
+        options: {
+          data: { full_name: displayName.trim() },
+        },
+      });
 
-    setLoading(false);
-
-    if (authError) {
-      if (authError.message.includes("already registered")) {
-        setError("Este email ya esta registrado. Intenta iniciar sesion.");
-      } else {
-        setError(authError.message);
+      if (authError) {
+        if (authError.message.includes("already registered")) {
+          setError("Este email ya esta registrado. Intenta iniciar sesion.");
+        } else {
+          setError(authError.message);
+        }
+        setLoading(false);
+        return;
       }
+    } catch (err) {
+      setError("Error de conexion. Verifica tu internet e intenta de nuevo.");
+      console.error("signUp error:", err);
+      setLoading(false);
       return;
     }
+
+    setLoading(false);
 
     setSuccess(true);
   }
