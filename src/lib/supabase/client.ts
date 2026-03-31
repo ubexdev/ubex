@@ -1,9 +1,9 @@
 "use client";
 
-import { createBrowserClient } from "@supabase/ssr";
+import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/types/database";
 
-let client: ReturnType<typeof createBrowserClient<Database>> | null = null;
+let client: ReturnType<typeof createClient<Database>> | null = null;
 
 export function getSupabaseBrowser() {
   if (client) return client;
@@ -16,19 +16,11 @@ export function getSupabaseBrowser() {
     return null;
   }
 
-  try {
-    new URL(url);
-  } catch {
-    console.error("[UBEX] Invalid SUPABASE_URL:", url);
-    return null;
-  }
-
-  client = createBrowserClient<Database>(url, key, {
+  client = createClient<Database>(url, key, {
     auth: {
-      flowType: "pkce",
       persistSession: true,
-      storageKey: "ubex-auth-token",
-      detectSessionInUrl: true,
+      autoRefreshToken: true,
+      storageKey: "ubex-auth",
     },
   });
   return client;
