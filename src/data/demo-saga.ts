@@ -50,14 +50,14 @@ export const DEMO_LEVELS: DemoLevel[] = [
       hint: "Llegó a estas tierras en 1492 con tres carabelas.",
       difficulty: "easy",
     },
-    // Spawn: Calle Arzobispo Meriño, ~250m south
-    lat: 18.47150,
-    lng: -69.88250,
-    heading: 0,
+    // Spawn: Calle El Conde ~200m west of the park
+    lat: 18.47310,
+    lng: -69.88620,
+    heading: 90,
     pitch: 0,
-    // Target: Parque Colón (the statue)
-    targetLat: 18.47395,
-    targetLng: -69.88265,
+    // Target: Parque Colón — Columbus statue (verified)
+    targetLat: 18.47348,
+    targetLng: -69.88399,
     correctAnswers: [
       "colon",
       "cristobal colon",
