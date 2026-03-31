@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { getSupabaseBrowser } from "@/lib/supabase/client";
+import { getCountryOptions, getCitiesForCountry } from "@/data/world-cities";
 import MapPicker from "@/lib/maps/MapPicker";
 import {
   ArrowLeft,
@@ -601,26 +602,31 @@ export default function SagaDetailPage() {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className={labelClass}>Ciudad</label>
-                    <input
-                      type="text"
-                      value={sagaForm.city ?? ""}
-                      onChange={(e) =>
-                        setSagaForm({ ...sagaForm, city: e.target.value })
-                      }
-                      className={inputClass}
-                    />
+                    <label className="block text-sm font-medium text-zinc-400 mb-2">País</label>
+                    <select
+                      value={sagaForm.country}
+                      onChange={(e) => setSagaForm({ ...sagaForm, country: e.target.value, city: "" })}
+                      className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-3 text-white focus:border-amber-500 focus:ring-1 focus:ring-amber-500 outline-none"
+                    >
+                      <option value="">Seleccionar país</option>
+                      {getCountryOptions().map((c) => (
+                        <option key={c} value={c}>{c}</option>
+                      ))}
+                    </select>
                   </div>
                   <div>
-                    <label className={labelClass}>País</label>
-                    <input
-                      type="text"
-                      value={sagaForm.country ?? ""}
-                      onChange={(e) =>
-                        setSagaForm({ ...sagaForm, country: e.target.value })
-                      }
-                      className={inputClass}
-                    />
+                    <label className="block text-sm font-medium text-zinc-400 mb-2">Ciudad</label>
+                    <select
+                      value={sagaForm.city}
+                      onChange={(e) => setSagaForm({ ...sagaForm, city: e.target.value })}
+                      disabled={!sagaForm.country}
+                      className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-3 text-white focus:border-amber-500 focus:ring-1 focus:ring-amber-500 outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <option value="">Seleccionar ciudad</option>
+                      {sagaForm.country && getCitiesForCountry(sagaForm.country).map((city) => (
+                        <option key={city} value={city}>{city}</option>
+                      ))}
+                    </select>
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">

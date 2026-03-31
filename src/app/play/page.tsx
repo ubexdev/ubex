@@ -8,8 +8,10 @@ import ClueCard from "@/components/game/ClueCard";
 import LevelProgress from "@/components/game/LevelProgress";
 import GameHeader from "@/components/game/GameHeader";
 import ResultOverlay from "@/components/game/ResultOverlay";
+import HudBootSequence from "@/components/game/HudBootSequence";
+import HudSystemMessage from "@/components/game/HudSystemMessage";
 
-type GamePhase = "intro" | "playing" | "completed";
+type GamePhase = "boot" | "intro" | "playing" | "completed";
 type Feedback = { type: "correct" | "incorrect" | "too-far"; levelIndex: number } | null;
 type Difficulty = "libre" | "explorador";
 
@@ -514,7 +516,7 @@ function WinnerScreen({ totalTime }: { totalTime: number }) {
    MAIN PLAY PAGE
    ═══════════════════════════════════════════ */
 export default function PlayPage() {
-  const [phase, setPhase] = useState<GamePhase>("intro");
+  const [phase, setPhase] = useState<GamePhase>("boot");
   const [difficulty, setDifficulty] = useState<Difficulty>("libre");
   const [levelIndex, setLevelIndex] = useState(0);
   const [completedLevels, setCompletedLevels] = useState<number[]>([]);
@@ -525,6 +527,7 @@ export default function PlayPage() {
   const [startTime] = useState(Date.now());
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [playerPos, setPlayerPos] = useState<{ lat: number; lng: number } | null>(null);
+  const [hudMessage, setHudMessage] = useState<{ type: "success" | "error" | "info"; message: string } | null>(null);
 
   const level = DEMO_LEVELS[levelIndex];
   const participants = useSimulatedParticipants(levelIndex);
@@ -549,9 +552,10 @@ export default function PlayPage() {
       // Block if explorador mode and too far
       if (proximityBlocked) {
         setFeedback({ type: "too-far", levelIndex });
+        setHudMessage({ type: "info", message: "Acércate a las coordenadas objetivo para validar datos" });
         setShakeInput(true);
         setTimeout(() => setShakeInput(false), 600);
-        setTimeout(() => setFeedback(null), 3000);
+        setTimeout(() => { setFeedback(null); setHudMessage(null); }, 3000);
         return;
       }
 
@@ -564,12 +568,14 @@ export default function PlayPage() {
 
         if (isCorrect) {
           setFeedback({ type: "correct", levelIndex });
+          setHudMessage({ type: "success", message: "[DATA LOCK] Coordenadas verificadas — avanzando a siguiente misión" });
           const newCompleted = [...completedLevels, level.number];
           setCompletedLevels(newCompleted);
 
           // Advance after delay
           setTimeout(() => {
             setFeedback(null);
+            setHudMessage(null);
             setAnswer("");
 
             if (levelIndex < DEMO_LEVELS.length - 1) {
@@ -580,9 +586,10 @@ export default function PlayPage() {
           }, 2500);
         } else {
           setFeedback({ type: "incorrect", levelIndex });
+          setHudMessage({ type: "error", message: "[DATO IMPRECISO] Respuesta incorrecta — intenta de nuevo" });
           setShakeInput(true);
           setTimeout(() => setShakeInput(false), 600);
-          setTimeout(() => setFeedback(null), 2000);
+          setTimeout(() => { setFeedback(null); setHudMessage(null); }, 2000);
         }
       }, 600);
     },
@@ -591,8 +598,19 @@ export default function PlayPage() {
 
   const dismissFeedback = useCallback(() => {
     setFeedback(null);
+    setHudMessage(null);
     setAnswer("");
   }, []);
+
+  /* ── Render: Boot ── */
+  if (phase === "boot") {
+    return (
+      <HudBootSequence
+        explorerName="Agente"
+        onComplete={() => setPhase("intro")}
+      />
+    );
+  }
 
   /* ── Render: Intro ── */
   if (phase === "intro") {
@@ -607,6 +625,14 @@ export default function PlayPage() {
   /* ── Render: Game ── */
   return (
     <div style={{ height: "100vh", display: "flex", flexDirection: "column", background: "#000", color: "#ededed" }}>
+      {hudMessage && (
+        <HudSystemMessage
+          key={`${hudMessage.type}-${hudMessage.message}`}
+          type={hudMessage.type}
+          message={hudMessage.message}
+          onDismiss={() => setHudMessage(null)}
+        />
+      )}
       <GameHeader
         sagaTitle={DEMO_SAGA.title}
         currentLevel={level.number}

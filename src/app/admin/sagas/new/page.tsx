@@ -10,6 +10,7 @@ import {
   Warning,
 } from "@phosphor-icons/react";
 import Link from "next/link";
+import { getCountryOptions, getCitiesForCountry } from "@/data/world-cities";
 
 const difficultyOptions = [
   { value: "easy", label: "Fácil" },
@@ -27,7 +28,7 @@ export default function NewSagaPage() {
     title: "",
     description: "",
     city: "",
-    country: "DO",
+    country: "República Dominicana",
     difficulty: "medium" as "easy" | "medium" | "hard" | "expert",
     estimated_duration: 60,
     cover_image_url: "",
@@ -152,29 +153,39 @@ export default function NewSagaPage() {
           />
         </div>
 
-        {/* City + Country */}
+        {/* Country + City */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className={labelClass}>
-              Ciudad <span className="text-red-400">*</span>
-            </label>
-            <input
-              type="text"
-              value={form.city}
-              onChange={(e) => update("city", e.target.value)}
-              placeholder="Santo Domingo"
-              className={inputClass}
-            />
+            <label className="block text-sm font-medium text-zinc-400 mb-2">País</label>
+            <select
+              value={form.country}
+              onChange={(e) => {
+                update("country", e.target.value);
+                update("city", "");
+              }}
+              className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-3 text-white focus:border-amber-500 focus:ring-1 focus:ring-amber-500 outline-none"
+            >
+              <option value="">Seleccionar país</option>
+              {getCountryOptions().map((c) => (
+                <option key={c} value={c}>{c}</option>
+              ))}
+            </select>
           </div>
           <div>
-            <label className={labelClass}>País</label>
-            <input
-              type="text"
-              value={form.country}
-              onChange={(e) => update("country", e.target.value)}
-              placeholder="DO"
-              className={inputClass}
-            />
+            <label className="block text-sm font-medium text-zinc-400 mb-2">
+              Ciudad <span className="text-red-400">*</span>
+            </label>
+            <select
+              value={form.city}
+              onChange={(e) => update("city", e.target.value)}
+              disabled={!form.country}
+              className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-3 text-white focus:border-amber-500 focus:ring-1 focus:ring-amber-500 outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <option value="">Seleccionar ciudad</option>
+              {form.country && getCitiesForCountry(form.country).map((city) => (
+                <option key={city} value={city}>{city}</option>
+              ))}
+            </select>
           </div>
         </div>
 
