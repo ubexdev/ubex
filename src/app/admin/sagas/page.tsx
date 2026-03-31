@@ -68,6 +68,7 @@ export default function SagasPage() {
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [importing, setImporting] = useState(false);
+  const retryCount = useRef(0);
 
   useEffect(() => {
     loadSagas();
@@ -83,14 +84,12 @@ export default function SagasPage() {
 
     const { data, error: err } = await supabase
       .from("sagas")
-      .select(
-        "id, title, description, city, country, difficulty, is_active, is_featured, total_levels, estimated_duration, cover_image_url, created_at"
-      )
+      .select("*")
       .order("created_at", { ascending: false });
 
     if (err) {
-      if (err.message.includes("Lock") || err.message.includes("stolen")) {
-        // Auth token lock race — retry once
+      if ((err.message.includes("Lock") || err.message.includes("stolen")) && retryCount.current < 2) {
+        retryCount.current++;
         setTimeout(() => loadSagas(), 500);
         return;
       }
