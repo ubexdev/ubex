@@ -31,7 +31,7 @@ export default async function AdminLayout({
     <div className="flex min-h-[100dvh] bg-zinc-950">
       <Sidebar />
       <main className="flex-1 lg:ml-0 mt-14 lg:mt-0 overflow-auto">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
+        <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 py-8 lg:py-12">
           {children}
         </div>
       </main>

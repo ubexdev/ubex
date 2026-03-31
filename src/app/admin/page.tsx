@@ -125,7 +125,7 @@ export default async function AdminDashboard() {
   });
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-12">
       {/* Welcome header */}
       <div>
         <h1 className="text-3xl font-bold text-zinc-100 tracking-tight">
@@ -163,27 +163,27 @@ export default async function AdminDashboard() {
       </div>
 
       {/* Quick actions */}
-      <div className="flex flex-wrap gap-4">
+      <div className="flex flex-wrap gap-5">
         <Link
           href="/admin/sagas"
-          className="inline-flex items-center gap-2.5 px-5 py-3 rounded-xl bg-amber-600 text-zinc-950 text-sm font-semibold hover:bg-amber-500 transition-colors"
-          style={{ minHeight: 44 }}
+          className="inline-flex items-center gap-3 px-7 py-4 rounded-xl bg-amber-600 text-zinc-950 text-base font-semibold hover:bg-amber-500 transition-colors"
+          style={{ minHeight: 48 }}
         >
-          <Plus size={18} weight="bold" />
+          <Plus size={20} weight="bold" />
           Crear Saga
         </Link>
         <Link
           href="/admin/users"
-          className="inline-flex items-center gap-2.5 px-5 py-3 rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-300 text-sm font-semibold hover:bg-zinc-800 transition-colors"
-          style={{ minHeight: 44 }}
+          className="inline-flex items-center gap-3 px-7 py-4 rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-300 text-base font-semibold hover:bg-zinc-800 transition-colors"
+          style={{ minHeight: 48 }}
         >
           <Trophy size={18} weight="duotone" />
           Ver Leaderboard
         </Link>
         <Link
           href="/admin/sessions"
-          className="inline-flex items-center gap-2.5 px-5 py-3 rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-300 text-sm font-semibold hover:bg-zinc-800 transition-colors"
-          style={{ minHeight: 44 }}
+          className="inline-flex items-center gap-3 px-7 py-4 rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-300 text-base font-semibold hover:bg-zinc-800 transition-colors"
+          style={{ minHeight: 48 }}
         >
           <Export size={18} weight="duotone" />
           Exportar Datos

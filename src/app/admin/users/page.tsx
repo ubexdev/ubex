@@ -150,7 +150,7 @@ export default function UsersPage() {
   const totalPages = Math.ceil(total / PAGE_SIZE);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-zinc-100 tracking-tight">

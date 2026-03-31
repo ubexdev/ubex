@@ -189,7 +189,7 @@ export default function SagasPage() {
   );
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
         <div>
@@ -200,10 +200,11 @@ export default function SagasPage() {
             Gestiona las aventuras de UBEX
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           <button
             onClick={exportAllSagas}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-zinc-800 text-zinc-300 text-sm font-medium hover:bg-zinc-800 transition-colors"
+            className="inline-flex items-center gap-2.5 px-5 py-3 rounded-xl border border-zinc-800 text-zinc-300 text-sm font-medium hover:bg-zinc-800 transition-colors"
+            style={{ minHeight: 48 }}
           >
             <Export size={18} />
             Exportar
@@ -211,7 +212,8 @@ export default function SagasPage() {
           <button
             onClick={() => fileRef.current?.click()}
             disabled={importing}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-zinc-800 text-zinc-300 text-sm font-medium hover:bg-zinc-800 disabled:opacity-50 transition-colors"
+            className="inline-flex items-center gap-2.5 px-5 py-3 rounded-xl border border-zinc-800 text-zinc-300 text-sm font-medium hover:bg-zinc-800 disabled:opacity-50 transition-colors"
+            style={{ minHeight: 48 }}
           >
             {importing ? (
               <CircleNotch size={18} className="animate-spin" />
@@ -229,7 +231,8 @@ export default function SagasPage() {
           />
           <Link
             href="/admin/sagas/new"
-            className="inline-flex items-center gap-2.5 px-5 py-3 rounded-xl bg-amber-600 text-zinc-950 text-sm font-semibold hover:bg-amber-500 transition-colors shadow-lg shadow-amber-600/20"
+            className="inline-flex items-center gap-2.5 px-6 py-3 rounded-xl bg-amber-600 text-zinc-950 text-sm font-semibold hover:bg-amber-500 transition-colors shadow-lg shadow-amber-600/20"
+            style={{ minHeight: 48 }}
           >
             <Plus size={20} weight="bold" />
             Crear Saga
