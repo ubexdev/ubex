@@ -46,11 +46,22 @@ export default function StreetViewExplorer({
     let cancelled = false;
 
     ensureMapsLoaded()
-      .then(() => {
+      .then(async () => {
+        if (cancelled || !containerRef.current) return;
+
+        // Find nearest panorama within 200m radius before displaying
+        const svService = new google.maps.StreetViewService();
+        const response = await svService.getPanorama({
+          location: { lat, lng },
+          radius: 200,
+          preference: google.maps.StreetViewPreference.NEAREST,
+          source: google.maps.StreetViewSource.OUTDOOR,
+        });
+
         if (cancelled || !containerRef.current) return;
 
         const panorama = new google.maps.StreetViewPanorama(containerRef.current, {
-          position: { lat, lng },
+          pano: response.data.location?.pano,
           pov: { heading, pitch },
           zoom: 1,
           addressControl: true,
@@ -74,19 +85,17 @@ export default function StreetViewExplorer({
           }
         });
 
-        panorama.addListener("status_changed", () => {
-          const s = panorama.getStatus();
-          if (s === google.maps.StreetViewStatus.OK) {
-            setStatus("ready");
-          } else {
-            setStatus("no-coverage");
-          }
-        });
-
         setStatus("ready");
       })
-      .catch(() => {
-        if (!cancelled) setStatus("error");
+      .catch((err) => {
+        if (cancelled) return;
+        // StreetViewService throws when no panorama found
+        const msg = err?.message || String(err);
+        if (msg.includes("ZERO_RESULTS") || msg.includes("no panorama")) {
+          setStatus("no-coverage");
+        } else {
+          setStatus("error");
+        }
       });
 
     return () => {
@@ -96,18 +105,30 @@ export default function StreetViewExplorer({
   }, []);
 
   // Update position when level changes
-  const updatePosition = useCallback(
-    (newLat: number, newLng: number, newHeading: number, newPitch: number) => {
-      if (!panoRef.current) return;
-      panoRef.current.setPosition({ lat: newLat, lng: newLng });
-      panoRef.current.setPov({ heading: newHeading, pitch: newPitch });
-    },
-    []
-  );
-
   useEffect(() => {
-    updatePosition(lat, lng, heading, pitch);
-  }, [lat, lng, heading, pitch, updatePosition]);
+    if (!panoRef.current || !initialized) return;
+
+    const svService = new google.maps.StreetViewService();
+    svService
+      .getPanorama({
+        location: { lat, lng },
+        radius: 200,
+        preference: google.maps.StreetViewPreference.NEAREST,
+        source: google.maps.StreetViewSource.OUTDOOR,
+      })
+      .then((response) => {
+        if (!panoRef.current) return;
+        const panoId = response.data.location?.pano;
+        if (panoId) {
+          panoRef.current.setPano(panoId);
+          panoRef.current.setPov({ heading, pitch });
+          setStatus("ready");
+        }
+      })
+      .catch(() => {
+        setStatus("no-coverage");
+      });
+  }, [lat, lng, heading, pitch]);
 
   // Always render the container div so Google Maps can attach to it.
   // Overlay loading/error states on top.
