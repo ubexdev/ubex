@@ -73,6 +73,12 @@ export interface Database {
           country: string;
           prize_amount_usd: number;
           max_participants: number;
+          saga_type: string | null;
+          total_levels: number | null;
+          difficulty: string | null;
+          is_featured: boolean;
+          is_active: boolean;
+          cover_image_url: string | null;
           status: "draft" | "active" | "completed";
           starts_at: string | null;
           ends_at: string | null;
@@ -89,6 +95,12 @@ export interface Database {
           country: string;
           prize_amount_usd?: number;
           max_participants?: number;
+          saga_type?: string | null;
+          total_levels?: number | null;
+          difficulty?: string | null;
+          is_featured?: boolean;
+          is_active?: boolean;
+          cover_image_url?: string | null;
           status?: "draft" | "active" | "completed";
           starts_at?: string | null;
           ends_at?: string | null;
@@ -104,6 +116,12 @@ export interface Database {
           country?: string;
           prize_amount_usd?: number;
           max_participants?: number;
+          saga_type?: string | null;
+          total_levels?: number | null;
+          difficulty?: string | null;
+          is_featured?: boolean;
+          is_active?: boolean;
+          cover_image_url?: string | null;
           status?: "draft" | "active" | "completed";
           starts_at?: string | null;
           ends_at?: string | null;
@@ -116,9 +134,11 @@ export interface Database {
           id: string;
           saga_id: string;
           number: number;
+          level_number: number | null;
           title: string;
           clue_text: string;
           hint: string | null;
+          hints: string[] | null;
           difficulty: "easy" | "medium" | "hard" | "extreme";
           spawn_lat: number;
           spawn_lng: number;
@@ -127,17 +147,23 @@ export interface Database {
           target_lat: number;
           target_lng: number;
           correct_answers: string[];
+          answer: string | null;
           explanation: string | null;
           proximity_radius_m: number;
+          proximity_radius: number | null;
+          points: number | null;
+          time_limit: number | null;
           created_at: string;
         };
         Insert: {
           id?: string;
           saga_id: string;
           number: number;
+          level_number?: number | null;
           title: string;
           clue_text: string;
           hint?: string | null;
+          hints?: string[] | null;
           difficulty?: "easy" | "medium" | "hard" | "extreme";
           spawn_lat: number;
           spawn_lng: number;
@@ -146,15 +172,21 @@ export interface Database {
           target_lat: number;
           target_lng: number;
           correct_answers: string[];
+          answer?: string | null;
           explanation?: string | null;
           proximity_radius_m?: number;
+          proximity_radius?: number | null;
+          points?: number | null;
+          time_limit?: number | null;
           created_at?: string;
         };
         Update: {
           number?: number;
+          level_number?: number | null;
           title?: string;
           clue_text?: string;
           hint?: string | null;
+          hints?: string[] | null;
           difficulty?: "easy" | "medium" | "hard" | "extreme";
           spawn_lat?: number;
           spawn_lng?: number;
@@ -163,8 +195,12 @@ export interface Database {
           target_lat?: number;
           target_lng?: number;
           correct_answers?: string[];
+          answer?: string | null;
           explanation?: string | null;
           proximity_radius_m?: number;
+          proximity_radius?: number | null;
+          points?: number | null;
+          time_limit?: number | null;
         };
         Relationships: [
           {

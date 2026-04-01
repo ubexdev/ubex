@@ -295,6 +295,44 @@ body {
   }
 }
 
+/* ── Saga grid ── */
+.saga-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+@media (max-width: 1024px) {
+  .saga-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .saga-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Saga card hover ── */
+.saga-card:hover {
+  border-color: #d97706 !important;
+  transform: scale(1.02);
+  box-shadow: 0 0 20px rgba(217, 119, 6, 0.06);
+}
+.saga-card:active {
+  transform: scale(0.99);
+}
+
+/* ── Saga skeleton pulse ── */
+@keyframes sagaPulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+.saga-skeleton-pulse {
+  animation: sagaPulse 1.5s ease-in-out infinite;
+}
+
 /* ── Hero visual responsive ── */
 .hero-visual {
   display: flex;

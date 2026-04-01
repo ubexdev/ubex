@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Outfit, JetBrains_Mono } from "next/font/google";
 import AuthProvider from "@/components/auth/AuthProvider";
+import { I18nProvider } from "@/i18n";
 import "./globals.css";
 
 const outfit = Outfit({
@@ -14,16 +15,18 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "UBEX — Arqueología Digital",
+  title: "UBEX",
   description:
-    "Explora calles reales en Google Street View, resuelve acertijos históricos y reclama el tesoro. Impulsada por Google Gemini AI.",
+    "Explore real streets in Google Street View, solve geospatial riddles, and claim the treasure. Powered by Google Gemini AI.",
   keywords: [
-    "búsqueda de tesoros",
-    "arqueología digital",
+    "treasure hunt",
+    "digital archaeology",
     "Google Maps",
     "Street View",
-    "aventura urbana",
+    "urban adventure",
     "UBEX",
+    "búsqueda de tesoros",
+    "arqueología digital",
   ],
 };
 
@@ -39,7 +42,9 @@ export default function RootLayout({
     >
       <body className="min-h-[100dvh] flex flex-col bg-zinc-950 text-zinc-100 font-[family-name:var(--font-sans)]">
         <AuthProvider>
-          {children}
+          <I18nProvider>
+            {children}
+          </I18nProvider>
         </AuthProvider>
       </body>
     </html>

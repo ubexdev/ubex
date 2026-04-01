@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback, useEffect, useRef, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { DEMO_SAGA, DEMO_LEVELS, type DemoLevel } from "@/data/demo-saga";
 import StreetViewExplorer from "@/components/maps/StreetViewExplorer";
@@ -52,6 +53,88 @@ function haversineMeters(
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
+/* ─── DB types & mapping ─── */
+
+interface DbLevel {
+  id: string;
+  number: number;
+  level_number: number | null;
+  title: string;
+  clue_text: string;
+  hint: string | null;
+  hints: string[] | null;
+  difficulty: string;
+  spawn_lat: number;
+  spawn_lng: number;
+  spawn_heading: number | null;
+  spawn_pitch: number | null;
+  target_lat: number;
+  target_lng: number;
+  correct_answers: string[];
+  answer: string | null;
+  explanation: string | null;
+  proximity_radius_m: number | null;
+  proximity_radius: number | null;
+  points: number | null;
+  time_limit: number | null;
+}
+
+interface DbSaga {
+  id: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  city: string;
+  country: string;
+  prize_amount_usd: number | null;
+  saga_type: string;
+  total_levels: number;
+  difficulty: string;
+  levels: DbLevel[];
+}
+
+function mapDbLevelToDemoLevel(dbLevel: DbLevel): DemoLevel {
+  const answers =
+    Array.isArray(dbLevel.correct_answers) && dbLevel.correct_answers.length > 0
+      ? dbLevel.correct_answers
+      : dbLevel.answer
+        ? [dbLevel.answer]
+        : [];
+
+  return {
+    id: dbLevel.id,
+    number: dbLevel.number ?? dbLevel.level_number ?? 1,
+    title: dbLevel.title,
+    clue: {
+      text: dbLevel.clue_text,
+      hint: dbLevel.hint ?? undefined,
+      difficulty: dbLevel.difficulty as DemoLevel["clue"]["difficulty"],
+    },
+    lat: dbLevel.spawn_lat,
+    lng: dbLevel.spawn_lng,
+    heading: dbLevel.spawn_heading ?? 0,
+    pitch: dbLevel.spawn_pitch ?? 0,
+    targetLat: dbLevel.target_lat,
+    targetLng: dbLevel.target_lng,
+    correctAnswers: answers,
+    explanation: dbLevel.explanation ?? "",
+  };
+}
+
+function mapDbSagaToDemo(dbSaga: DbSaga) {
+  return {
+    id: dbSaga.id,
+    title: dbSaga.title,
+    subtitle: dbSaga.subtitle,
+    description: dbSaga.description,
+    city: dbSaga.city,
+    country: dbSaga.country,
+    prizeAmountUSD: dbSaga.prize_amount_usd ?? 0,
+    maxParticipants: 5000,
+    coverEmoji: "🌍",
+  };
+}
+
 /* ─── Simulated live participants ─── */
 function useSimulatedParticipants(currentLevel: number) {
   const [count, setCount] = useState(4832);
@@ -79,7 +162,7 @@ function useSimulatedParticipants(currentLevel: number) {
 /* ═══════════════════════════════════════════
    INTRO SCREEN
    ═══════════════════════════════════════════ */
-function IntroScreen({ onStart }: { onStart: (difficulty: Difficulty) => void }) {
+function IntroScreen({ onStart, saga, totalLevels }: { onStart: (difficulty: Difficulty) => void; saga: typeof DEMO_SAGA; totalLevels: number }) {
   const [selectedDiff, setSelectedDiff] = useState<Difficulty>("libre");
 
   const difficulties: { id: Difficulty; icon: string; label: string; desc: string }[] = [
@@ -147,7 +230,7 @@ function IntroScreen({ onStart }: { onStart: (difficulty: Difficulty) => void })
 
       <div className="play-intro-content" style={{ position: "relative", zIndex: 10 }}>
         <span className="play-intro-emoji" style={{ display: "block", marginBottom: 24 }}>
-          {DEMO_SAGA.coverEmoji}
+          {saga.coverEmoji}
         </span>
 
         <h1
@@ -159,8 +242,7 @@ function IntroScreen({ onStart }: { onStart: (difficulty: Difficulty) => void })
             color: "#fff",
           }}
         >
-          {DEMO_SAGA.title}
-        </h1>
+          {saga.title}        </h1>
 
         <p
           style={{
@@ -171,7 +253,7 @@ function IntroScreen({ onStart }: { onStart: (difficulty: Difficulty) => void })
             letterSpacing: "0.05em",
           }}
         >
-          {DEMO_SAGA.subtitle}
+          {saga.subtitle}
         </p>
 
         <p
@@ -182,7 +264,7 @@ function IntroScreen({ onStart }: { onStart: (difficulty: Difficulty) => void })
             marginBottom: 48,
           }}
         >
-          {DEMO_SAGA.description}
+          {saga.description}
         </p>
 
         {/* Stats row */}
@@ -197,7 +279,7 @@ function IntroScreen({ onStart }: { onStart: (difficulty: Difficulty) => void })
           }}
         >
           {[
-            { icon: "🗺️", value: String(DEMO_LEVELS.length), label: "Misiones" },
+            { icon: "🗺️", value: String(totalLevels), label: "Misiones" },
             { icon: "🏆", value: "$1,000", label: "Premio USD" },
             { icon: "👥", value: "5,000", label: "Exploradores" },
             { icon: "📍", value: "RD", label: "Santo Domingo" },
@@ -233,7 +315,7 @@ function IntroScreen({ onStart }: { onStart: (difficulty: Difficulty) => void })
               "Explora las calles de la Zona Colonial usando Google Street View",
               "Lee cada señal de radar con atención — la respuesta está en lo que ves",
               "Ingresa el dato exacto para avanzar a la siguiente misión",
-              `Completa las ${DEMO_LEVELS.length} misiones para reclamar el tesoro`,
+              `Completa las ${totalLevels} misiones para reclamar el tesoro`,
             ].map((rule, i) => (
               <div key={i} style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
                 <span
@@ -377,7 +459,7 @@ function IntroScreen({ onStart }: { onStart: (difficulty: Difficulty) => void })
         </button>
 
         <p style={{ marginTop: 16, fontSize: 12, color: "rgba(255,255,255,0.2)" }}>
-          {`Demo gratuito — ${DEMO_LEVELS.length} misiones explorables`}
+          {`Demo gratuito — ${totalLevels} misiones explorables`}
         </p>
       </div>
 
@@ -388,7 +470,7 @@ function IntroScreen({ onStart }: { onStart: (difficulty: Difficulty) => void })
 /* ═══════════════════════════════════════════
    WINNER SCREEN
    ═══════════════════════════════════════════ */
-function WinnerScreen({ totalTime }: { totalTime: number }) {
+function WinnerScreen({ totalTime, saga, totalLevels }: { totalTime: number; saga: typeof DEMO_SAGA; totalLevels: number }) {
   const minutes = Math.floor(totalTime / 60000);
   const seconds = Math.floor((totalTime % 60000) / 1000);
 
@@ -437,7 +519,7 @@ function WinnerScreen({ totalTime }: { totalTime: number }) {
         </h1>
 
         <p style={{ fontSize: 17, color: "rgba(255,255,255,0.4)", lineHeight: 1.7, marginBottom: 32 }}>
-          {`Has completado las ${DEMO_LEVELS.length} misiones de la Saga de Colón y recorrido la Zona Colonial de Santo Domingo como un verdadero arqueólogo digital.`}
+          {`Has completado las ${totalLevels} misiones de la ${saga.title} y recorrido ${saga.city} como un verdadero arqueólogo digital.`}
         </p>
 
         <div
@@ -452,7 +534,7 @@ function WinnerScreen({ totalTime }: { totalTime: number }) {
         >
           <div style={{ textAlign: "center" }}>
             <span style={{ fontSize: 28, fontWeight: 700, color: "#fbbf24", display: "block" }}>
-              {`${DEMO_LEVELS.length}/${DEMO_LEVELS.length}`}
+              {`${totalLevels}/${totalLevels}`}
             </span>
             <span style={{ fontSize: 11, color: "rgba(255,255,255,0.3)", textTransform: "uppercase", letterSpacing: "0.1em" }}>
               Misiones
@@ -517,9 +599,16 @@ function WinnerScreen({ totalTime }: { totalTime: number }) {
 }
 
 /* ═══════════════════════════════════════════
-   MAIN PLAY PAGE
+   MAIN PLAY PAGE CONTENT
    ═══════════════════════════════════════════ */
-export default function PlayPage() {
+function PlayPageContent() {
+  const searchParams = useSearchParams();
+  const sagaId = searchParams.get("saga");
+
+  const [sagaData, setSagaData] = useState<{ saga: typeof DEMO_SAGA; levels: DemoLevel[] } | null>(null);
+  const [sagaLoading, setSagaLoading] = useState(true);
+  const [sagaError, setSagaError] = useState<string | null>(null);
+
   const [phase, setPhase] = useState<GamePhase>("boot");
   const [difficulty, setDifficulty] = useState<Difficulty>("libre");
   const [levelIndex, setLevelIndex] = useState(0);
@@ -535,6 +624,39 @@ export default function PlayPage() {
 
   const [isMobile, setIsMobile] = useState(false);
 
+  /* ── Fetch saga data ── */
+  useEffect(() => {
+    if (!sagaId || sagaId === "demo") {
+      setSagaData({ saga: DEMO_SAGA, levels: DEMO_LEVELS });
+      setSagaLoading(false);
+      return;
+    }
+
+    let cancelled = false;
+    setSagaLoading(true);
+    setSagaError(null);
+
+    fetch(`/api/game/sagas/${sagaId}/play`)
+      .then((res) => {
+        if (!res.ok) throw new Error(res.status === 404 ? "Saga no encontrada" : `Error ${res.status}`);
+        return res.json();
+      })
+      .then((dbSaga: DbSaga) => {
+        if (cancelled) return;
+        const mappedSaga = mapDbSagaToDemo(dbSaga);
+        const mappedLevels = dbSaga.levels.map(mapDbLevelToDemoLevel);
+        setSagaData({ saga: mappedSaga, levels: mappedLevels });
+        setSagaLoading(false);
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        setSagaError(err instanceof Error ? err.message : "Error desconocido");
+        setSagaLoading(false);
+      });
+
+    return () => { cancelled = true; };
+  }, [sagaId]);
+
   /* Detect mobile viewport for sidebar drawer pattern */
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
@@ -544,7 +666,10 @@ export default function PlayPage() {
     return () => window.removeEventListener("resize", check);
   }, []);
 
-  const level = DEMO_LEVELS[levelIndex];
+  const activeSaga = sagaData?.saga ?? DEMO_SAGA;
+  const activeLevels = sagaData?.levels ?? DEMO_LEVELS;
+
+  const level = activeLevels[levelIndex];
   const participants = useSimulatedParticipants(levelIndex);
 
   // Distance from player to TARGET location (not spawn)
@@ -593,7 +718,7 @@ export default function PlayPage() {
             setHudMessage(null);
             setAnswer("");
 
-            if (levelIndex < DEMO_LEVELS.length - 1) {
+            if (levelIndex < activeLevels.length - 1) {
               setLevelIndex((i) => i + 1);
             } else {
               setPhase("completed");
@@ -617,6 +742,88 @@ export default function PlayPage() {
     setAnswer("");
   }, []);
 
+  /* ── Render: Loading ── */
+  if (sagaLoading && phase === "boot") {
+    return (
+      <div
+        style={{
+          background: "#09090b",
+          color: "#ededed",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          position: "fixed",
+          inset: 0,
+          zIndex: 50,
+        }}
+      >
+        <div
+          style={{
+            fontSize: 16,
+            fontFamily: "monospace",
+            color: "#d97706",
+            letterSpacing: "0.15em",
+            animation: "pulse 1.5s ease-in-out infinite",
+          }}
+        >
+          CARGANDO MISIÓN...
+        </div>
+        <style>{`
+          @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+          }
+        `}</style>
+      </div>
+    );
+  }
+
+  /* ── Render: Error ── */
+  if (sagaError) {
+    return (
+      <div
+        style={{
+          background: "#09090b",
+          color: "#ededed",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          position: "fixed",
+          inset: 0,
+          zIndex: 50,
+          gap: 24,
+          padding: 24,
+          textAlign: "center",
+        }}
+      >
+        <span style={{ fontSize: 48 }}>⚠️</span>
+        <h1 style={{ fontSize: 24, fontWeight: 700, color: "#ef4444" }}>
+          Error al cargar la saga
+        </h1>
+        <p style={{ fontSize: 15, color: "rgba(255,255,255,0.4)", maxWidth: 400 }}>
+          {sagaError}
+        </p>
+        <Link
+          href="/"
+          style={{
+            display: "inline-flex",
+            padding: "12px 32px",
+            fontSize: 15,
+            fontWeight: 700,
+            background: "#f59e0b",
+            color: "#000",
+            borderRadius: 10,
+            textDecoration: "none",
+          }}
+        >
+          Volver al inicio
+        </Link>
+      </div>
+    );
+  }
+
   /* ── Render: Boot ── */
   if (phase === "boot") {
     return (
@@ -629,12 +836,12 @@ export default function PlayPage() {
 
   /* ── Render: Intro ── */
   if (phase === "intro") {
-    return <IntroScreen onStart={(diff) => { setDifficulty(diff); setPhase("playing"); }} />;
+    return <IntroScreen onStart={(diff) => { setDifficulty(diff); setPhase("playing"); }} saga={activeSaga} totalLevels={activeLevels.length} />;
   }
 
   /* ── Render: Winner ── */
   if (phase === "completed") {
-    return <WinnerScreen totalTime={Date.now() - startTime} />;
+    return <WinnerScreen totalTime={Date.now() - startTime} saga={activeSaga} totalLevels={activeLevels.length} />;
   }
 
   /* ── Render: Game ── */
@@ -649,9 +856,9 @@ export default function PlayPage() {
         />
       )}
       <GameHeader
-        sagaTitle={DEMO_SAGA.title}
+        sagaTitle={activeSaga.title}
         currentLevel={level.number}
-        totalLevels={DEMO_LEVELS.length}
+        totalLevels={activeLevels.length}
         activeParticipants={participants}
       />
 
@@ -742,7 +949,7 @@ export default function PlayPage() {
             {/* Clue */}
             <ClueCard
               levelNumber={level.number}
-              totalLevels={DEMO_LEVELS.length}
+              totalLevels={activeLevels.length}
               title={level.title}
               clueText={level.clue.text}
               hint={level.clue.hint}
@@ -916,7 +1123,7 @@ export default function PlayPage() {
             {/* Level progress */}
             <LevelProgress
               currentLevel={level.number}
-              totalLevels={DEMO_LEVELS.length}
+              totalLevels={activeLevels.length}
               completedLevels={completedLevels}
             />
 
@@ -943,7 +1150,7 @@ export default function PlayPage() {
         <ResultOverlay
           type="correct"
           message="[DATA LOCK] ¡Misión completada!"
-          explanation={DEMO_LEVELS[feedback.levelIndex].explanation}
+          explanation={activeLevels[feedback.levelIndex].explanation}
         />
       )}
 
@@ -961,5 +1168,47 @@ export default function PlayPage() {
         }
       `}</style>
     </div>
+  );
+}
+
+/* ═══════════════════════════════════════════
+   PAGE WRAPPER WITH SUSPENSE
+   ═══════════════════════════════════════════ */
+export default function PlayPage() {
+  return (
+    <Suspense
+      fallback={
+        <div
+          style={{
+            background: "#09090b",
+            position: "fixed",
+            inset: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <div
+            style={{
+              fontSize: 16,
+              fontFamily: "monospace",
+              color: "#d97706",
+              letterSpacing: "0.15em",
+              animation: "pulse 1.5s ease-in-out infinite",
+            }}
+          >
+            CARGANDO MISIÓN...
+          </div>
+          <style>{`
+            @keyframes pulse {
+              0%, 100% { opacity: 1; }
+              50% { opacity: 0.4; }
+            }
+          `}</style>
+        </div>
+      }
+    >
+      <PlayPageContent />
+    </Suspense>
   );
 }

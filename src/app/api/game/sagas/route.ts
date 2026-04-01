@@ -9,9 +9,9 @@ export async function GET() {
     const { data, error } = await supabase
       .from("sagas")
       .select(
-        "id, title, subtitle, description, city, country, prize_amount_usd, max_participants, starts_at, ends_at",
+        "id, title, subtitle, description, city, country, prize_amount_usd, max_participants, saga_type, total_levels, difficulty, is_featured, cover_image_url, starts_at, ends_at",
       )
-      .eq("status", "active")
+      .or("status.eq.active,is_active.eq.true")
       .order("starts_at", { ascending: true });
 
     if (error) {
