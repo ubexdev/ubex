@@ -35,6 +35,7 @@ type Saga = {
   city: string;
   country: string;
   difficulty: "easy" | "medium" | "hard" | "expert";
+  saga_type: "free" | "demo" | "paid";
   is_active: boolean;
   is_featured: boolean;
   created_by: string | null;
@@ -231,6 +232,8 @@ export default function SagaDetailPage() {
         is_featured: sagaForm.is_featured,
         estimated_duration: sagaForm.estimated_duration,
         cover_image_url: sagaForm.cover_image_url,
+        saga_type: sagaForm.saga_type,
+        total_levels: sagaForm.total_levels,
         updated_at: new Date().toISOString(),
       } as any)
       .eq("id", sagaId);
@@ -663,6 +666,44 @@ export default function SagaDetailPage() {
                             : null,
                         })
                       }
+                      className={inputClass}
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className={labelClass}>Tipo de Saga</label>
+                    <select
+                      value={sagaForm.saga_type ?? "free"}
+                      onChange={(e) =>
+                        setSagaForm({
+                          ...sagaForm,
+                          saga_type: e.target.value as Saga["saga_type"],
+                        })
+                      }
+                      className={inputClass}
+                    >
+                      <option value="free">Gratis</option>
+                      <option value="demo">Demo</option>
+                      <option value="paid">Premium</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className={labelClass}>Número de Misiones</label>
+                    <input
+                      type="number"
+                      min={1}
+                      max={50}
+                      value={sagaForm.total_levels ?? 12}
+                      onChange={(e) =>
+                        setSagaForm({
+                          ...sagaForm,
+                          total_levels: e.target.value
+                            ? Number(e.target.value)
+                            : 12,
+                        })
+                      }
+                      placeholder="12"
                       className={inputClass}
                     />
                   </div>

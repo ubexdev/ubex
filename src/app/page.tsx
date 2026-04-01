@@ -251,7 +251,7 @@ export default function Home() {
               }}
             >
               Navega Google Street View, resuelve acertijos históricos y compite
-              contra miles de exploradores. El primero en completar las 12 misiones
+              contra miles de exploradores. El primero en completar todas las misiones
               gana <span style={{ color: "#e4e4e7", fontWeight: 600 }}>$1,000 USD</span>.
             </p>
 
@@ -366,7 +366,7 @@ export default function Home() {
         <div className="section-inner stats-grid">
           {[
             { icon: Users, value: "5,000+", label: "Exploradores" },
-            { icon: MapTrifold, value: "12", label: "Misiones" },
+            { icon: MapTrifold, value: "12+", label: "Misiones por saga" },
             { icon: Trophy, value: "$1,000", label: "Premio USD" },
             { icon: Compass, value: "∞", label: "Ciudades" },
           ].map((stat) => (
@@ -492,7 +492,7 @@ export default function Home() {
                 Icon: Trophy,
                 num: "04",
                 title: "Gana el tesoro",
-                desc: "El primer explorador en completar las 12 misiones se lleva $1,000 USD. Solo uno gana.",
+                desc: "El primer explorador en completar todas las misiones se lleva $1,000 USD. Solo uno gana.",
               },
             ].map((step) => (
               <div

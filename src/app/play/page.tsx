@@ -197,7 +197,7 @@ function IntroScreen({ onStart }: { onStart: (difficulty: Difficulty) => void })
           }}
         >
           {[
-            { icon: "🗺️", value: "12", label: "Misiones" },
+            { icon: "🗺️", value: String(DEMO_LEVELS.length), label: "Misiones" },
             { icon: "🏆", value: "$1,000", label: "Premio USD" },
             { icon: "👥", value: "5,000", label: "Exploradores" },
             { icon: "📍", value: "RD", label: "Santo Domingo" },
@@ -233,7 +233,7 @@ function IntroScreen({ onStart }: { onStart: (difficulty: Difficulty) => void })
               "Explora las calles de la Zona Colonial usando Google Street View",
               "Lee cada señal de radar con atención — la respuesta está en lo que ves",
               "Ingresa el dato exacto para avanzar a la siguiente misión",
-              "Completa las 12 misiones para reclamar el tesoro",
+              `Completa las ${DEMO_LEVELS.length} misiones para reclamar el tesoro`,
             ].map((rule, i) => (
               <div key={i} style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
                 <span
@@ -377,7 +377,7 @@ function IntroScreen({ onStart }: { onStart: (difficulty: Difficulty) => void })
         </button>
 
         <p style={{ marginTop: 16, fontSize: 12, color: "rgba(255,255,255,0.2)" }}>
-          Demo gratuito — 12 misiones explorables
+          {`Demo gratuito — ${DEMO_LEVELS.length} misiones explorables`}
         </p>
       </div>
 
@@ -437,7 +437,7 @@ function WinnerScreen({ totalTime }: { totalTime: number }) {
         </h1>
 
         <p style={{ fontSize: 17, color: "rgba(255,255,255,0.4)", lineHeight: 1.7, marginBottom: 32 }}>
-          Has completado las 12 misiones de la Saga de Colón y recorrido la Zona Colonial de Santo Domingo como un verdadero arqueólogo digital.
+          {`Has completado las ${DEMO_LEVELS.length} misiones de la Saga de Colón y recorrido la Zona Colonial de Santo Domingo como un verdadero arqueólogo digital.`}
         </p>
 
         <div
@@ -452,7 +452,7 @@ function WinnerScreen({ totalTime }: { totalTime: number }) {
         >
           <div style={{ textAlign: "center" }}>
             <span style={{ fontSize: 28, fontWeight: 700, color: "#fbbf24", display: "block" }}>
-              12/12
+              {`${DEMO_LEVELS.length}/${DEMO_LEVELS.length}`}
             </span>
             <span style={{ fontSize: 11, color: "rgba(255,255,255,0.3)", textTransform: "uppercase", letterSpacing: "0.1em" }}>
               Misiones

@@ -30,6 +30,7 @@ type Saga = {
   city: string;
   country: string;
   difficulty: "easy" | "medium" | "hard" | "expert";
+  saga_type: "free" | "demo" | "paid";
   is_active: boolean;
   is_featured: boolean;
   total_levels: number;
@@ -72,6 +73,7 @@ export default function SagasPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
+  const [typeFilter, setTypeFilter] = useState<"all" | "free" | "demo" | "paid">("all");
   const [importing, setImporting] = useState(false);
   const [showAiModal, setShowAiModal] = useState(false);
   const [generating, setGenerating] = useState(false);
@@ -276,8 +278,9 @@ export default function SagasPage() {
 
   const filtered = sagas.filter(
     (s) =>
-      s.title.toLowerCase().includes(search.toLowerCase()) ||
-      s.city.toLowerCase().includes(search.toLowerCase())
+      (s.title.toLowerCase().includes(search.toLowerCase()) ||
+        s.city.toLowerCase().includes(search.toLowerCase())) &&
+      (typeFilter === "all" || s.saga_type === typeFilter)
   );
 
   return (
@@ -343,21 +346,33 @@ export default function SagasPage() {
         </div>
       </div>
 
-      {/* Search + count */}
+      {/* Search + filter + count */}
       {!loading && sagas.length > 0 && (
         <div className="space-y-3">
-          <div className="relative">
-            <MagnifyingGlass
-              size={20}
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-600"
-            />
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Buscar por título o ciudad..."
-              className="w-full rounded-xl border border-zinc-800 bg-zinc-900 pl-12 pr-4 py-3 text-sm text-zinc-100 placeholder-zinc-600 focus:border-amber-600 focus:ring-1 focus:ring-amber-600 focus:outline-none transition-colors"
-            />
+          <div className="flex items-center gap-3">
+            <div className="relative flex-1">
+              <MagnifyingGlass
+                size={20}
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-600"
+              />
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Buscar por título o ciudad..."
+                className="w-full rounded-xl border border-zinc-800 bg-zinc-900 pl-12 pr-4 py-3 text-sm text-zinc-100 placeholder-zinc-600 focus:border-amber-600 focus:ring-1 focus:ring-amber-600 focus:outline-none transition-colors"
+              />
+            </div>
+            <select
+              value={typeFilter}
+              onChange={(e) => setTypeFilter(e.target.value as typeof typeFilter)}
+              className="rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-sm text-zinc-100 focus:border-amber-600 focus:ring-1 focus:ring-amber-600 focus:outline-none transition-colors"
+            >
+              <option value="all">Todos los tipos</option>
+              <option value="free">Gratis</option>
+              <option value="demo">Demo</option>
+              <option value="paid">Premium</option>
+            </select>
           </div>
           <p className="text-sm text-zinc-500 pl-1">
             {filtered.length}{" "}
@@ -460,6 +475,19 @@ export default function SagasPage() {
                       {saga.is_featured && (
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-400/10 text-amber-300">
                           <Star size={14} weight="fill" />
+                        </span>
+                      )}
+                      {saga.saga_type === "paid" ? (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-400/10 text-emerald-300">
+                          Premium
+                        </span>
+                      ) : saga.saga_type === "demo" ? (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-blue-400/10 text-blue-300">
+                          Demo
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-zinc-700/50 text-zinc-400">
+                          Gratis
                         </span>
                       )}
                       <span

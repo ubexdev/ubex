@@ -32,6 +32,8 @@ export default function NewSagaPage() {
     difficulty: "medium" as "easy" | "medium" | "hard" | "expert",
     estimated_duration: 60,
     cover_image_url: "",
+    saga_type: "free" as "free" | "demo" | "paid",
+    total_levels: 12,
   });
 
   function update(field: string, value: string | number) {
@@ -79,6 +81,8 @@ export default function NewSagaPage() {
         difficulty: form.difficulty,
         estimated_duration: form.estimated_duration || null,
         cover_image_url: form.cover_image_url.trim() || null,
+        saga_type: form.saga_type,
+        total_levels: form.total_levels,
         created_by: user.id,
       } as any)
       .select("id")
@@ -215,6 +219,36 @@ export default function NewSagaPage() {
               onChange={(e) =>
                 update("estimated_duration", Number(e.target.value))
               }
+              className={inputClass}
+            />
+          </div>
+        </div>
+
+        {/* Saga Type + Mission Count */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className={labelClass}>Tipo de Saga</label>
+            <select
+              value={form.saga_type}
+              onChange={(e) => update("saga_type", e.target.value)}
+              className={inputClass}
+            >
+              <option value="free">Gratis</option>
+              <option value="demo">Demo</option>
+              <option value="paid">Premium</option>
+            </select>
+          </div>
+          <div>
+            <label className={labelClass}>Número de Misiones</label>
+            <input
+              type="number"
+              min={1}
+              max={50}
+              value={form.total_levels}
+              onChange={(e) =>
+                update("total_levels", Number(e.target.value))
+              }
+              placeholder="12"
               className={inputClass}
             />
           </div>
