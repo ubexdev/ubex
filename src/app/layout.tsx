@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Outfit, JetBrains_Mono } from "next/font/google";
 import AuthProvider from "@/components/auth/AuthProvider";
 import { I18nProvider } from "@/i18n";
@@ -14,20 +14,70 @@ const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
 });
 
+export const viewport: Viewport = {
+  themeColor: "#d97706",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+};
+
 export const metadata: Metadata = {
-  title: "UBEX",
+  title: {
+    default: "UBEX — Arqueología Digital",
+    template: "%s | UBEX",
+  },
   description:
-    "Explore real streets in Google Street View, solve geospatial riddles, and claim the treasure. Powered by Google Gemini AI.",
+    "Explora ciudades reales en Google Street View. Resuelve enigmas geoespaciales. Compite contra miles de exploradores. El primero en completar todas las misiones gana.",
   keywords: [
-    "treasure hunt",
-    "digital archaeology",
-    "Google Maps",
-    "Street View",
-    "urban adventure",
     "UBEX",
-    "búsqueda de tesoros",
     "arqueología digital",
+    "Google Street View",
+    "juego exploración",
+    "geolocalización",
+    "treasure hunt",
+    "geo game",
   ],
+  authors: [{ name: "UBEX" }],
+  creator: "UBEX",
+  metadataBase: new URL("https://ubex.vercel.app"),
+  openGraph: {
+    type: "website",
+    locale: "es_DO",
+    alternateLocale: "en_US",
+    url: "https://ubex.vercel.app",
+    siteName: "UBEX",
+    title: "UBEX — Arqueología Digital",
+    description:
+      "Explora ciudades reales en Google Street View. Resuelve enigmas geoespaciales.",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "UBEX — El mundo es una base de datos",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "UBEX — Arqueología Digital",
+    description:
+      "Explora ciudades reales en Google Street View. Resuelve enigmas geoespaciales.",
+    images: ["/og-image.png"],
+  },
+  manifest: "/manifest.json",
+  icons: {
+    icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
+    apple: [{ url: "/icons/icon-192.png", sizes: "192x192" }],
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "UBEX",
+  },
+  other: {
+    "mobile-web-app-capable": "yes",
+  },
 };
 
 export default function RootLayout({

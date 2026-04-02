@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192">
+  <rect width="192" height="192" rx="36" fill="#09090b"/>
+  <!-- Satellite dish base -->
+  <ellipse cx="96" cy="130" rx="40" ry="12" fill="#d97706" opacity="0.3"/>
+  <!-- Dish arm -->
+  <line x1="96" y1="130" x2="96" y2="70" stroke="#d97706" stroke-width="4" stroke-linecap="round"/>
+  <!-- Dish -->
+  <path d="M60 80 Q96 40 132 80" fill="none" stroke="#d97706" stroke-width="5" stroke-linecap="round"/>
+  <!-- Signal waves -->
+  <path d="M108 62 Q120 50 118 36" fill="none" stroke="#d97706" stroke-width="2.5" opacity="0.7" stroke-linecap="round"/>
+  <path d="M114 68 Q130 52 126 32" fill="none" stroke="#d97706" stroke-width="2" opacity="0.5" stroke-linecap="round"/>
+  <!-- UX text -->
+  <text x="96" y="168" font-family="system-ui" font-size="28" font-weight="800" fill="#ffffff" text-anchor="middle">UX</text>
+</svg>

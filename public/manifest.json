@@ -1,0 +1,25 @@
+{
+  "name": "UBEX — Arqueología Digital",
+  "short_name": "UBEX",
+  "description": "Explora ciudades reales en Google Street View. Resuelve enigmas geoespaciales. Compite contra miles de exploradores.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#09090b",
+  "theme_color": "#d97706",
+  "orientation": "portrait-primary",
+  "categories": ["games", "entertainment", "education"],
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
