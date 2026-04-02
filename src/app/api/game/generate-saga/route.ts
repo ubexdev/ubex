@@ -78,14 +78,31 @@ Dificultad: ${difficulty} — ${difficultyDesc}
 
 REGLAS CRÍTICAS:
 1. Cada misión debe tener coordenadas GPS REALES y PRECISAS de ${city}
-2. Las coordenadas spawn (inicio) deben estar a 100-500 metros del objetivo
-3. Las coordenadas target (objetivo) deben ser del LUGAR EXACTO de la respuesta
+2. Las coordenadas spawn (inicio) deben estar a 100-500 metros del objetivo, EN UNA CALLE con cobertura Street View
+3. Las coordenadas target (objetivo) deben ser del LUGAR EXACTO de la respuesta, EN UNA CALLE con cobertura Street View
 4. Las respuestas deben ser nombres de lugares, monumentos, calles, edificios o puntos de interés REALES
 5. Las pistas deben ser enigmas narrativos, NO preguntas directas
 6. Cada misión debe tener 2-3 señales de radar (pistas adicionales) progresivas
-7. IMPORTANTÍSIMO: Los puntos de interés DEBEN estar en CALLES PRINCIPALES con cobertura de Google Street View. Evita parques interiores, senderos, callejones, o zonas rurales sin cobertura. Usa avenidas principales, plazas centrales, y monumentos emblemáticos que tengan panoramas de Street View verificados.
-8. Las misiones deben formar un recorrido geográfico lógico por la ciudad
-9. Prefiere lugares turísticos emblemáticos, monumentos nacionales, plazas principales, catedrales, museos con fachada a la calle — estos SIEMPRE tienen cobertura Street View
+7. Las misiones deben formar un recorrido geográfico lógico por la ciudad
+
+REGLA DE ORO — ACCESIBILIDAD DESDE STREET VIEW:
+8. TODAS las respuestas y pistas DEBEN ser identificables DESDE LA CALLE usando Google Street View
+9. PROHIBIDO preguntar sobre:
+   - Interiores de edificios, iglesias, museos o cualquier espacio cerrado (NO hay Street View interior)
+   - Playas, senderos, parques interiores o zonas naturales sin cobertura vial
+   - Objetos dentro de edificios (lámparas, cuadros, reliquias, etc.)
+   - Detalles que solo se ven entrando a un lugar (patios interiores, altares, etc.)
+   - Zonas marítimas, islas sin acceso por carretera, o coordenadas en el agua
+10. PERMITIDO preguntar sobre:
+   - Fachadas de edificios visibles desde la calle
+   - Estatuas, monumentos y esculturas en plazas o calles
+   - Nombres de calles, avenidas y plazas (visibles en señalización)
+   - Arcos, columnas, torres y elementos arquitectónicos exteriores
+   - Letreros, carteles y señalización visible desde la acera
+   - Puentes, fuentes, murallas y estructuras al aire libre
+   - Edificios emblemáticos identificables por su fachada
+11. Las coordenadas DEBEN estar en calles principales con cobertura Street View verificada. Prefiere avenidas, plazas centrales, y zonas turísticas emblemáticas
+12. Tanto spawn como target DEBEN estar sobre asfalto/acera, NUNCA en agua, arena, o terreno sin carretera
 
 Responde EXCLUSIVAMENTE con un JSON válido (sin markdown, sin backticks, sin texto adicional) con esta estructura exacta:
 

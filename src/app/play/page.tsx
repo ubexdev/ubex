@@ -908,7 +908,7 @@ function PlayPageContent() {
               bottom: noCoverage ? 24 : 12,
               left: noCoverage ? "50%" : 12,
               transform: noCoverage ? "translateX(-50%)" : "none",
-              zIndex: 30,
+              zIndex: 9999,
               padding: noCoverage ? "12px 28px" : "8px 16px",
               borderRadius: 10,
               background: noCoverage ? "#d97706" : "rgba(0,0,0,0.7)",
@@ -922,6 +922,7 @@ function PlayPageContent() {
               backdropFilter: noCoverage ? "none" : "blur(8px)",
               opacity: noCoverage ? 1 : 0.7,
               transition: "opacity 0.2s",
+              pointerEvents: "auto",
             }}
             onMouseEnter={(e) => { e.currentTarget.style.opacity = "1"; }}
             onMouseLeave={(e) => { if (!noCoverage) e.currentTarget.style.opacity = "0.7"; }}

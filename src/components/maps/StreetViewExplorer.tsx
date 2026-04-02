@@ -116,9 +116,9 @@ export default function StreetViewExplorer({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Update position when level changes
+  // Update position when level changes (or retry full init if pano never created)
   useEffect(() => {
-    if (!panoRef.current || !initialized) return;
+    if (!initialized) return;
 
     const svService = new google.maps.StreetViewService();
     svService
@@ -129,11 +129,42 @@ export default function StreetViewExplorer({
         source: google.maps.StreetViewSource.OUTDOOR,
       })
       .then((response) => {
-        if (!panoRef.current) return;
         const panoId = response.data.location?.pano;
-        if (panoId) {
+        if (!panoId || !response.data.location?.latLng) {
+          setStatus("no-coverage");
+          onNoCoverageRef.current?.();
+          return;
+        }
+
+        if (panoRef.current) {
+          // Update existing panorama
           panoRef.current.setPano(panoId);
           panoRef.current.setPov({ heading, pitch });
+          setStatus("ready");
+        } else if (containerRef.current) {
+          // First panorama failed — create a new one now
+          const panorama = new google.maps.StreetViewPanorama(containerRef.current, {
+            pano: panoId,
+            pov: { heading, pitch },
+            zoom: 1,
+            addressControl: true,
+            addressControlOptions: { position: google.maps.ControlPosition.BOTTOM_CENTER },
+            showRoadLabels: false,
+            motionTracking: false,
+            motionTrackingControl: false,
+            fullscreenControl: false,
+            linksControl: true,
+            panControl: true,
+            zoomControl: true,
+            zoomControlOptions: { position: google.maps.ControlPosition.RIGHT_CENTER },
+          });
+          panoRef.current = panorama;
+          panorama.addListener("position_changed", () => {
+            const pos = panorama.getPosition();
+            if (pos && onPositionChangeRef.current) {
+              onPositionChangeRef.current(pos.lat(), pos.lng());
+            }
+          });
           setStatus("ready");
         }
       })

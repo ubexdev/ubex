@@ -24,6 +24,34 @@ Una **Misión** es un nivel individual dentro de una saga. Cada misión tiene:
 
 ---
 
+## ⚠️ REGLA DE ORO: Accesibilidad desde Street View
+
+**TODAS las misiones deben poder resolverse DESDE Google Street View.** El explorador SOLO puede navegar por calles y aceras — no puede entrar a edificios, caminar por playas ni volar.
+
+### ✅ Válido (visible desde la calle)
+- Fachadas de edificios, iglesias, museos (exterior)
+- Estatuas y monumentos en plazas o calles
+- Nombres de calles y plazas (señalización visible)
+- Arcos, columnas, torres y elementos arquitectónicos exteriores
+- Letreros, carteles y señalización urbana
+- Puentes, fuentes, murallas y estructuras al aire libre
+- Número de arcos/ventanas en una fachada (visible desde afuera)
+
+### ❌ Prohibido (NO accesible desde Street View)
+- Interiores de edificios, iglesias, museos
+- Objetos dentro de edificios (lámparas, cuadros, reliquias, altares)
+- Playas, senderos o zonas naturales sin cobertura vial
+- Patios interiores o jardines cerrados
+- Zonas marítimas o coordenadas en el agua
+- Cualquier detalle que requiera "entrar" a un lugar
+
+### 📍 Coordenadas GPS
+- Tanto el punto de inicio (spawn) como el objetivo (target) DEBEN estar **sobre una calle o acera** con cobertura de Google Street View
+- NUNCA usar coordenadas en el agua, arena, o terreno sin carretera
+- Verificar siempre en Google Maps que el punto tiene cobertura Street View (las líneas azules en el mapa indican cobertura)
+
+---
+
 ## Paso a Paso: Crear una Saga
 
 ### Paso 1: Elegir Ciudad y Tema
