@@ -53,16 +53,24 @@ export default function StreetViewExplorer({
       .then(async () => {
         if (cancelled || !containerRef.current) return;
 
-        // Find nearest panorama within 500m radius before displaying
+        // Find nearest panorama within 300m radius (OUTDOOR only, no aerials)
         const svService = new google.maps.StreetViewService();
         const response = await svService.getPanorama({
           location: { lat, lng },
-          radius: 500,
+          radius: 300,
           preference: google.maps.StreetViewPreference.NEAREST,
           source: google.maps.StreetViewSource.OUTDOOR,
         });
 
         if (cancelled || !containerRef.current) return;
+
+        // Verify the found panorama has navigation links (reject isolated aerials)
+        const panoLocation = response.data.location;
+        if (!panoLocation?.pano || !panoLocation.latLng) {
+          setStatus("no-coverage");
+          onNoCoverageRef.current?.();
+          return;
+        }
 
         const panorama = new google.maps.StreetViewPanorama(containerRef.current, {
           pano: response.data.location?.pano,
@@ -116,7 +124,7 @@ export default function StreetViewExplorer({
     svService
       .getPanorama({
         location: { lat, lng },
-        radius: 500,
+        radius: 300,
         preference: google.maps.StreetViewPreference.NEAREST,
         source: google.maps.StreetViewSource.OUTDOOR,
       })

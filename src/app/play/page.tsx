@@ -900,31 +900,34 @@ function PlayPageContent() {
             onNoCoverage={handleNoCoverage}
           />
 
-          {/* Skip mission button when no Street View coverage */}
-          {noCoverage && (
-            <button
-              onClick={handleSkipMission}
-              style={{
-                position: "absolute",
-                bottom: 24,
-                left: "50%",
-                transform: "translateX(-50%)",
-                zIndex: 30,
-                padding: "12px 28px",
-                borderRadius: 12,
-                background: "#d97706",
-                border: "none",
-                color: "#fff",
-                fontSize: 15,
-                fontWeight: 600,
-                cursor: "pointer",
-                fontFamily: "var(--font-outfit)",
-                boxShadow: "0 4px 20px rgba(217,119,6,0.4)",
-              }}
-            >
-              Saltar misión →
-            </button>
-          )}
+          {/* Skip mission button — always available, prominent when no coverage */}
+          <button
+            onClick={handleSkipMission}
+            style={{
+              position: "absolute",
+              bottom: noCoverage ? 24 : 12,
+              left: noCoverage ? "50%" : 12,
+              transform: noCoverage ? "translateX(-50%)" : "none",
+              zIndex: 30,
+              padding: noCoverage ? "12px 28px" : "8px 16px",
+              borderRadius: 10,
+              background: noCoverage ? "#d97706" : "rgba(0,0,0,0.7)",
+              border: noCoverage ? "none" : "1px solid rgba(255,255,255,0.15)",
+              color: "#fff",
+              fontSize: noCoverage ? 15 : 12,
+              fontWeight: 600,
+              cursor: "pointer",
+              fontFamily: "var(--font-outfit)",
+              boxShadow: noCoverage ? "0 4px 20px rgba(217,119,6,0.4)" : "none",
+              backdropFilter: noCoverage ? "none" : "blur(8px)",
+              opacity: noCoverage ? 1 : 0.7,
+              transition: "opacity 0.2s",
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.opacity = "1"; }}
+            onMouseLeave={(e) => { if (!noCoverage) e.currentTarget.style.opacity = "0.7"; }}
+          >
+            {noCoverage ? "Saltar misión →" : "Saltar →"}
+          </button>
 
           {/* Toggle sidebar button */}
           <button
