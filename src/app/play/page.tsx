@@ -623,6 +623,7 @@ function PlayPageContent() {
   const [hudMessage, setHudMessage] = useState<{ type: "success" | "error" | "info"; message: string } | null>(null);
 
   const [isMobile, setIsMobile] = useState(false);
+  const [noCoverage, setNoCoverage] = useState(false);
 
   /* ── Fetch saga data ── */
   useEffect(() => {
@@ -672,6 +673,11 @@ function PlayPageContent() {
   const level = activeLevels[levelIndex];
   const participants = useSimulatedParticipants(levelIndex);
 
+  // Reset no-coverage flag when level changes
+  useEffect(() => {
+    setNoCoverage(false);
+  }, [levelIndex]);
+
   // Distance from player to TARGET location (not spawn)
   const distanceToTarget =
     playerPos
@@ -683,6 +689,23 @@ function PlayPageContent() {
   const handlePositionChange = useCallback((lat: number, lng: number) => {
     setPlayerPos({ lat, lng });
   }, []);
+
+  const handleNoCoverage = useCallback(() => {
+    setNoCoverage(true);
+  }, []);
+
+  const handleSkipMission = useCallback(() => {
+    setNoCoverage(false);
+    setAnswer("");
+    setFeedback(null);
+    setHudMessage({ type: "info", message: "[SALTO] Misión sin cobertura — avanzando" });
+    if (levelIndex < activeLevels.length - 1) {
+      setLevelIndex((i) => i + 1);
+    } else {
+      setPhase("completed");
+    }
+    setTimeout(() => setHudMessage(null), 2500);
+  }, [levelIndex, activeLevels.length]);
 
   const handleSubmit = useCallback(
     (e: React.FormEvent) => {
@@ -871,7 +894,34 @@ function PlayPageContent() {
             heading={level.heading}
             pitch={level.pitch}
             onPositionChange={handlePositionChange}
+            onNoCoverage={handleNoCoverage}
           />
+
+          {/* Skip mission button when no Street View coverage */}
+          {noCoverage && (
+            <button
+              onClick={handleSkipMission}
+              style={{
+                position: "absolute",
+                bottom: 24,
+                left: "50%",
+                transform: "translateX(-50%)",
+                zIndex: 30,
+                padding: "12px 28px",
+                borderRadius: 12,
+                background: "#d97706",
+                border: "none",
+                color: "#fff",
+                fontSize: 15,
+                fontWeight: 600,
+                cursor: "pointer",
+                fontFamily: "var(--font-outfit)",
+                boxShadow: "0 4px 20px rgba(217,119,6,0.4)",
+              }}
+            >
+              Saltar misión →
+            </button>
+          )}
 
           {/* Toggle sidebar button */}
           <button

@@ -9,6 +9,7 @@ interface StreetViewExplorerProps {
   heading?: number;
   pitch?: number;
   onPositionChange?: (lat: number, lng: number) => void;
+  onNoCoverage?: () => void;
 }
 
 let initialized = false;
@@ -34,12 +35,15 @@ export default function StreetViewExplorer({
   heading = 0,
   pitch = 0,
   onPositionChange,
+  onNoCoverage,
 }: StreetViewExplorerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const panoRef = useRef<google.maps.StreetViewPanorama | null>(null);
   const [status, setStatus] = useState<"loading" | "ready" | "error" | "no-coverage">("loading");
   const onPositionChangeRef = useRef(onPositionChange);
   onPositionChangeRef.current = onPositionChange;
+  const onNoCoverageRef = useRef(onNoCoverage);
+  onNoCoverageRef.current = onNoCoverage;
 
   // Initialize panorama once
   useEffect(() => {
@@ -49,11 +53,11 @@ export default function StreetViewExplorer({
       .then(async () => {
         if (cancelled || !containerRef.current) return;
 
-        // Find nearest panorama within 200m radius before displaying
+        // Find nearest panorama within 500m radius before displaying
         const svService = new google.maps.StreetViewService();
         const response = await svService.getPanorama({
           location: { lat, lng },
-          radius: 200,
+          radius: 500,
           preference: google.maps.StreetViewPreference.NEAREST,
           source: google.maps.StreetViewSource.OUTDOOR,
         });
@@ -89,10 +93,10 @@ export default function StreetViewExplorer({
       })
       .catch((err) => {
         if (cancelled) return;
-        // StreetViewService throws when no panorama found
         const msg = err?.message || String(err);
         if (msg.includes("ZERO_RESULTS") || msg.includes("no panorama")) {
           setStatus("no-coverage");
+          onNoCoverageRef.current?.();
         } else {
           setStatus("error");
         }
@@ -112,7 +116,7 @@ export default function StreetViewExplorer({
     svService
       .getPanorama({
         location: { lat, lng },
-        radius: 200,
+        radius: 500,
         preference: google.maps.StreetViewPreference.NEAREST,
         source: google.maps.StreetViewSource.OUTDOOR,
       })
@@ -127,6 +131,7 @@ export default function StreetViewExplorer({
       })
       .catch(() => {
         setStatus("no-coverage");
+        onNoCoverageRef.current?.();
       });
   }, [lat, lng, heading, pitch]);
 
@@ -200,7 +205,7 @@ export default function StreetViewExplorer({
         </div>
       )}
 
-      {/* No coverage overlay */}
+      {/* No coverage overlay — satellite map fallback + skip */}
       {status === "no-coverage" && (
         <div
           style={{
@@ -214,13 +219,27 @@ export default function StreetViewExplorer({
             background: "#0a0a0a",
           }}
         >
-          <span style={{ fontSize: 48 }}>📍</span>
-          <p style={{ color: "#fbbf24", fontSize: 16, fontWeight: 600 }}>
-            Sin cobertura Street View
-          </p>
-          <p style={{ color: "rgba(255,255,255,0.3)", fontSize: 13 }}>
-            Esta ubicación no tiene imágenes de Street View disponibles.
-          </p>
+          {/* Satellite map iframe as fallback */}
+          <div style={{ width: "100%", height: "60%", position: "absolute", top: 0, left: 0, opacity: 0.5 }}>
+            <iframe
+              title="Satellite fallback"
+              width="100%"
+              height="100%"
+              style={{ border: 0 }}
+              loading="lazy"
+              src={`https://www.google.com/maps/embed/v1/view?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&center=${lat},${lng}&zoom=17&maptype=satellite`}
+            />
+            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, transparent 40%, #0a0a0a 100%)" }} />
+          </div>
+          <div style={{ position: "relative", zIndex: 2, display: "flex", flexDirection: "column", alignItems: "center", gap: 12, marginTop: 80 }}>
+            <span style={{ fontSize: 48 }}>📍</span>
+            <p style={{ color: "#fbbf24", fontSize: 16, fontWeight: 600 }}>
+              Sin cobertura Street View
+            </p>
+            <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 13, textAlign: "center", maxWidth: 300, lineHeight: 1.5 }}>
+              Esta ubicación no tiene imágenes de Street View. Puedes usar la vista satelital como referencia o saltar esta misión.
+            </p>
+          </div>
         </div>
       )}
     </div>

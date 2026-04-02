@@ -83,8 +83,9 @@ REGLAS CRÍTICAS:
 4. Las respuestas deben ser nombres de lugares, monumentos, calles, edificios o puntos de interés REALES
 5. Las pistas deben ser enigmas narrativos, NO preguntas directas
 6. Cada misión debe tener 2-3 señales de radar (pistas adicionales) progresivas
-7. Los puntos de interés deben existir y ser verificables en Google Street View
+7. IMPORTANTÍSIMO: Los puntos de interés DEBEN estar en CALLES PRINCIPALES con cobertura de Google Street View. Evita parques interiores, senderos, callejones, o zonas rurales sin cobertura. Usa avenidas principales, plazas centrales, y monumentos emblemáticos que tengan panoramas de Street View verificados.
 8. Las misiones deben formar un recorrido geográfico lógico por la ciudad
+9. Prefiere lugares turísticos emblemáticos, monumentos nacionales, plazas principales, catedrales, museos con fachada a la calle — estos SIEMPRE tienen cobertura Street View
 
 Responde EXCLUSIVAMENTE con un JSON válido (sin markdown, sin backticks, sin texto adicional) con esta estructura exacta:
 
