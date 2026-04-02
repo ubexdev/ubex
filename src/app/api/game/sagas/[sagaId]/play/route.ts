@@ -20,7 +20,11 @@ export async function GET(
       .single();
 
     if (sagaError || !saga) {
-      return NextResponse.json({ error: "Saga not found" }, { status: 404 });
+      console.error("Saga fetch error:", sagaId, sagaError?.message, sagaError?.code);
+      return NextResponse.json(
+        { error: "Saga no encontrada. Verifica que la saga tenga status 'active' o is_active=true en la base de datos." },
+        { status: 404 },
+      );
     }
 
     // Fetch levels WITH answers and target coordinates for gameplay

@@ -638,8 +638,11 @@ function PlayPageContent() {
     setSagaError(null);
 
     fetch(`/api/game/sagas/${sagaId}/play`)
-      .then((res) => {
-        if (!res.ok) throw new Error(res.status === 404 ? "Saga no encontrada" : `Error ${res.status}`);
+      .then(async (res) => {
+        if (!res.ok) {
+          const body = await res.json().catch(() => ({}));
+          throw new Error(body.error || (res.status === 404 ? "Saga no encontrada" : `Error ${res.status}`));
+        }
         return res.json();
       })
       .then((dbSaga: DbSaga) => {
