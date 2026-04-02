@@ -1,48 +1,48 @@
-# API Reference — UBEX
+# Referencia de API — UBEX
 
-> Planned REST API endpoints for UBEX. These endpoints will be implemented as Next.js API routes under `src/app/api/`.
+> Endpoints REST API planificados para UBEX. Estos endpoints se implementarán como rutas de API de Next.js en `src/app/api/`.
 
-**Base URL**: `https://ubex.app/api` (production) or `http://localhost:3000/api` (development)
+**URL base**: `https://ubex.app/api` (producción) o `http://localhost:3000/api` (desarrollo)
 
-**Authentication**: All authenticated endpoints require a Bearer token from Supabase Auth in the `Authorization` header.
+**Autenticación**: Todos los endpoints autenticados requieren un Bearer token de Supabase Auth en el Authorization header.
 
-**Status**: 📝 These endpoints are planned. The current demo runs entirely client-side.
+**Estado**: 📝 Estos endpoints están planificados. La demo actual funciona completamente del lado del cliente.
 
 ---
 
-## Table of Contents
+## Tabla de Contenidos
 
-- [Authentication](#authentication)
-- [Game Endpoints](#game-endpoints)
-  - [Start Game Session](#start-game-session)
-  - [Validate Answer](#validate-answer)
-  - [Get Session Status](#get-session-status)
-- [Saga Endpoints](#saga-endpoints)
-  - [List Sagas](#list-sagas)
-  - [Get Saga Details](#get-saga-details)
-- [Leaderboard](#leaderboard)
-  - [Get Leaderboard](#get-leaderboard)
-- [Admin Endpoints](#admin-endpoints)
-  - [Create Saga](#create-saga)
-  - [Update Levels](#update-levels)
-- [AI Endpoints](#ai-endpoints)
-  - [Generate Saga with AI](#generate-saga-with-ai)
-- [Common Patterns](#common-patterns)
-  - [Error Format](#error-format)
+- [Autenticación](#autenticación)
+- [Endpoints de Juego](#endpoints-de-juego)
+  - [Iniciar Sesión de Juego](#iniciar-sesión-de-juego)
+  - [Validar Respuesta](#validar-respuesta)
+  - [Obtener Estado de Sesión](#obtener-estado-de-sesión)
+- [Endpoints de Saga](#endpoints-de-saga)
+  - [Listar Sagas](#listar-sagas)
+  - [Obtener Detalles de Saga](#obtener-detalles-de-saga)
+- [Tabla de Clasificación](#tabla-de-clasificación)
+  - [Obtener Tabla de Clasificación](#obtener-tabla-de-clasificación)
+- [Endpoints de Administración](#endpoints-de-administración)
+  - [Crear Saga](#crear-saga)
+  - [Actualizar Niveles](#actualizar-niveles)
+- [Endpoints de IA](#endpoints-de-ia)
+  - [Generar Saga con IA](#generar-saga-con-ia)
+- [Patrones Comunes](#patrones-comunes)
+  - [Formato de Errores](#formato-de-errores)
   - [Pagination](#pagination)
   - [Rate Limiting](#rate-limiting)
 
 ---
 
-## Authentication
+## Autenticación
 
-All authenticated requests must include a Supabase access token:
+Todas las solicitudes autenticadas deben incluir un token de acceso de Supabase:
 
 ```
 Authorization: Bearer <supabase_access_token>
 ```
 
-You can obtain a token by signing in through Supabase Auth:
+Puedes obtener un token iniciando sesión a través de Supabase Auth:
 
 ```typescript
 const { data } = await supabase.auth.signInWithPassword({
@@ -53,27 +53,27 @@ const { data } = await supabase.auth.signInWithPassword({
 const token = data.session?.access_token;
 ```
 
-### Auth Levels
+### Niveles de Autenticación
 
-| Level | Description | Endpoints |
+| Nivel | Descripción | Endpoints |
 |-------|-------------|-----------|
-| **Public** | No authentication required | `GET /api/sagas`, `GET /api/leaderboard` |
-| **Player** | Authenticated user | `POST /api/game/*`, `GET /api/game/*` |
-| **Admin** | User with `admin` role | `POST /api/admin/*`, `PUT /api/admin/*`, `POST /api/ai/*` |
+| **Público** | No requiere autenticación | `GET /api/sagas`, `GET /api/leaderboard` |
+| **Jugador** | Usuario autenticado | `POST /api/game/*`, `GET /api/game/*` |
+| **Admin** | Usuario con rol `admin` | `POST /api/admin/*`, `PUT /api/admin/*`, `POST /api/ai/*` |
 
 ---
 
-## Game Endpoints
+## Endpoints de Juego
 
-### Start Game Session
+### Iniciar Sesión de Juego
 
-Creates a new game session for the authenticated player.
+Crea una nueva sesión de juego para el jugador autenticado.
 
 ```
 POST /api/game/start-session
 ```
 
-**Auth**: Required (Player)
+**Autenticación**: Requerida (Jugador)
 
 **Request Body**:
 
@@ -84,12 +84,12 @@ POST /api/game/start-session
 }
 ```
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `sagaId` | `string` | Yes | UUID of the saga to play |
-| `difficulty` | `string` | Yes | `"libre"` or `"explorador"` |
+| Campo | Tipo | Requerido | Descripción |
+|-------|------|-----------|-------------|
+| `sagaId` | `string` | Sí | UUID de la saga a jugar |
+| `difficulty` | `string` | Sí | `"libre"` o `"explorador"` |
 
-**Response** `201 Created`:
+**Response** `201 Creado`:
 
 ```json
 {
@@ -122,29 +122,29 @@ POST /api/game/start-session
 }
 ```
 
-> **Security note**: The response includes spawn coordinates and clue text but **never** includes `correctAnswers`, `targetLat`, or `targetLng`. Target coordinates and answers remain server-side only.
+> **Nota de seguridad**: La respuesta incluye coordenadas de inicio y texto de pista pero **nunca** incluye `correctAnswers`, `targetLat` o `targetLng`. Las coordenadas objetivo y las respuestas permanecen solo del lado del servidor.
 
-**Error Responses**:
+**Respuestas de Error**:
 
-| Status | Code | Description |
-|--------|------|-------------|
-| `400` | `SAGA_NOT_ACTIVE` | Saga is not currently active |
-| `400` | `INVALID_DIFFICULTY` | Difficulty must be `"libre"` or `"explorador"` |
-| `401` | `UNAUTHORIZED` | Missing or invalid auth token |
-| `403` | `MAX_PARTICIPANTS` | Saga has reached maximum participant limit |
-| `409` | `SESSION_EXISTS` | Player already has an active session for this saga |
+| Estado | Código | Descripción |
+|--------|--------|-------------|
+| `400` | `SAGA_NOT_ACTIVE` | La saga no está activa actualmente |
+| `400` | `INVALID_DIFFICULTY` | La dificultad debe ser `"libre"` o `"explorador"` |
+| `401` | `UNAUTHORIZED` | Token de autenticación faltante o inválido |
+| `403` | `MAX_PARTICIPANTS` | La saga alcanzó el límite máximo de participantes |
+| `409` | `SESSION_EXISTS` | El jugador ya tiene una sesión activa para esta saga |
 
 ---
 
-### Validate Answer
+### Validar Respuesta
 
-Submit an answer for the current level. Validation happens entirely server-side.
+Envía una respuesta para el nivel actual. La validación ocurre completamente del lado del servidor.
 
 ```
 POST /api/game/validate-answer
 ```
 
-**Auth**: Required (Player)
+**Autenticación**: Requerida (Jugador)
 
 **Request Body**:
 
@@ -160,14 +160,14 @@ POST /api/game/validate-answer
 }
 ```
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `sessionId` | `string` | Yes | Active game session ID |
-| `levelNumber` | `number` | Yes | Level being answered (1–12) |
-| `answer` | `string` | Yes | Player's answer text |
-| `playerPosition` | `object` | Conditional | Required for `explorador` mode. Player's current Street View `{ lat, lng }` |
+| Campo | Tipo | Requerido | Descripción |
+|-------|------|-----------|-------------|
+| `sessionId` | `string` | Sí | ID de sesión de juego activa |
+| `levelNumber` | `number` | Sí | Nivel que se está respondiendo (1–12) |
+| `answer` | `string` | Sí | Texto de respuesta del jugador |
+| `playerPosition` | `object` | Condicional | Requerido para el modo `explorador`. Posición actual del jugador en Street View `{ lat, lng }` |
 
-**Response** `200 OK` — Correct Answer:
+**Response** `200 OK` — Respuesta Correcta:
 
 ```json
 {
@@ -197,7 +197,7 @@ POST /api/game/validate-answer
 }
 ```
 
-**Response** `200 OK` — Incorrect Answer:
+**Response** `200 OK` — Respuesta Incorrecta:
 
 ```json
 {
@@ -206,7 +206,7 @@ POST /api/game/validate-answer
 }
 ```
 
-**Response** `200 OK` — Too Far (Explorer Mode):
+**Response** `200 OK` — Demasiado Lejos (Modo Explorador):
 
 ```json
 {
@@ -216,7 +216,7 @@ POST /api/game/validate-answer
 }
 ```
 
-**Response** `200 OK` — Final Level Completed (Winner):
+**Response** `200 OK` — Nivel Final Completado (Ganador):
 
 ```json
 {
@@ -233,21 +233,21 @@ POST /api/game/validate-answer
 }
 ```
 
-**Error Responses**:
+**Respuestas de Error**:
 
-| Status | Code | Description |
-|--------|------|-------------|
-| `400` | `INVALID_LEVEL` | Level number doesn't match session's current level |
-| `400` | `EMPTY_ANSWER` | Answer text is empty |
-| `400` | `MISSING_POSITION` | Player position required for explorer mode but not provided |
-| `401` | `UNAUTHORIZED` | Missing or invalid auth token |
-| `403` | `SESSION_NOT_OWNED` | Session does not belong to authenticated user |
-| `404` | `SESSION_NOT_FOUND` | Session ID not found |
-| `409` | `SESSION_COMPLETED` | Game session is already completed |
+| Estado | Código | Descripción |
+|--------|--------|-------------|
+| `400` | `INVALID_LEVEL` | El número de nivel no coincide con el nivel actual de la sesión |
+| `400` | `EMPTY_ANSWER` | El texto de respuesta está vacío |
+| `400` | `MISSING_POSITION` | La posición del jugador es requerida para el modo explorador pero no fue proporcionada |
+| `401` | `UNAUTHORIZED` | Token de autenticación faltante o inválido |
+| `403` | `SESSION_NOT_OWNED` | La sesión no pertenece al usuario autenticado |
+| `404` | `SESSION_NOT_FOUND` | ID de sesión no encontrado |
+| `409` | `SESSION_COMPLETED` | La sesión de juego ya fue completada |
 
-### Answer Validation Pipeline
+### Pipeline de Validación de Respuestas
 
-The server validates answers through a multi-step pipeline:
+El servidor valida las respuestas a través de un pipeline de múltiples pasos:
 
 ```
 1. Proximity check (explorer mode only)
@@ -269,21 +269,21 @@ The server validates answers through a multi-step pipeline:
 
 ---
 
-### Get Session Status
+### Obtener Estado de Sesión
 
-Retrieve the current state of a game session.
+Obtiene el estado actual de una sesión de juego.
 
 ```
 GET /api/game/session/{sessionId}
 ```
 
-**Auth**: Required (Player — must own the session)
+**Autenticación**: Requerida (Jugador — debe ser dueño de la sesión)
 
-**Path Parameters**:
+**Parámetros de Ruta**:
 
-| Parameter | Type | Description |
+| Parámetro | Tipo | Descripción |
 |-----------|------|-------------|
-| `sessionId` | `string` | Game session ID |
+| `sessionId` | `string` | ID de sesión de juego |
 
 **Response** `200 OK`:
 
@@ -323,35 +323,35 @@ GET /api/game/session/{sessionId}
 }
 ```
 
-**Error Responses**:
+**Respuestas de Error**:
 
-| Status | Code | Description |
-|--------|------|-------------|
-| `401` | `UNAUTHORIZED` | Missing or invalid auth token |
-| `403` | `SESSION_NOT_OWNED` | Session does not belong to authenticated user |
-| `404` | `SESSION_NOT_FOUND` | Session ID not found |
+| Estado | Código | Descripción |
+|--------|--------|-------------|
+| `401` | `UNAUTHORIZED` | Token de autenticación faltante o inválido |
+| `403` | `SESSION_NOT_OWNED` | La sesión no pertenece al usuario autenticado |
+| `404` | `SESSION_NOT_FOUND` | ID de sesión no encontrado |
 
 ---
 
-## Saga Endpoints
+## Endpoints de Saga
 
-### List Sagas
+### Listar Sagas
 
-Retrieve all available sagas. Public endpoint.
+Obtiene todas las sagas disponibles. Endpoint público.
 
 ```
 GET /api/sagas
 ```
 
-**Auth**: Not required
+**Autenticación**: No requerida
 
-**Query Parameters**:
+**Parámetros de Consulta**:
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `status` | `string` | `"active"` | Filter by status: `scheduled`, `active`, `completed`, `all` |
-| `limit` | `number` | `20` | Results per page (max 50) |
-| `offset` | `number` | `0` | Pagination offset |
+| Parámetro | Tipo | Por defecto | Descripción |
+|-----------|------|-------------|-------------|
+| `status` | `string` | `"active"` | Filtrar por estado: `scheduled`, `active`, `completed`, `all` |
+| `limit` | `number` | `20` | Resultados por página (máx. 50) |
+| `offset` | `number` | `0` | Desplazamiento de pagination |
 
 **Response** `200 OK`:
 
@@ -389,21 +389,21 @@ GET /api/sagas
 
 ---
 
-### Get Saga Details
+### Obtener Detalles de Saga
 
-Retrieve details for a specific saga, including level metadata (without answers).
+Obtiene los detalles de una saga específica, incluyendo metadatos de niveles (sin respuestas).
 
 ```
 GET /api/sagas/{sagaId}
 ```
 
-**Auth**: Not required
+**Autenticación**: No requerida
 
-**Path Parameters**:
+**Parámetros de Ruta**:
 
-| Parameter | Type | Description |
+| Parámetro | Tipo | Descripción |
 |-----------|------|-------------|
-| `sagaId` | `string` | Saga UUID |
+| `sagaId` | `string` | UUID de la saga |
 
 **Response** `200 OK`:
 
@@ -436,35 +436,35 @@ GET /api/sagas/{sagaId}
 }
 ```
 
-> **Security note**: The `levels` array contains only `levelNumber`, `title`, and `difficulty`. Clue text, spawn coordinates, target coordinates, and correct answers are **never** included in this response. They are delivered one-at-a-time during gameplay via the session endpoints.
+> **Nota de seguridad**: El arreglo `levels` contiene solo `levelNumber`, `title` y `difficulty`. El texto de las pistas, coordenadas de inicio, coordenadas objetivo y respuestas correctas **nunca** se incluyen en esta respuesta. Se entregan una a la vez durante el juego a través de los endpoints de sesión.
 
-**Error Responses**:
+**Respuestas de Error**:
 
-| Status | Code | Description |
-|--------|------|-------------|
-| `404` | `SAGA_NOT_FOUND` | Saga ID does not exist |
+| Estado | Código | Descripción |
+|--------|--------|-------------|
+| `404` | `SAGA_NOT_FOUND` | El ID de saga no existe |
 
 ---
 
-## Leaderboard
+## Tabla de Clasificación
 
-### Get Leaderboard
+### Obtener Tabla de Clasificación
 
-Retrieve rankings for a saga. Public endpoint.
+Obtiene las clasificaciones de una saga. Endpoint público.
 
 ```
 GET /api/leaderboard
 ```
 
-**Auth**: Not required
+**Autenticación**: No requerida
 
-**Query Parameters**:
+**Parámetros de Consulta**:
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `sagaId` | `string` | — | Required. Filter by saga |
-| `limit` | `number` | `50` | Results per page (max 100) |
-| `offset` | `number` | `0` | Pagination offset |
+| Parámetro | Tipo | Por defecto | Descripción |
+|-----------|------|-------------|-------------|
+| `sagaId` | `string` | — | Requerido. Filtrar por saga |
+| `limit` | `number` | `50` | Resultados por página (máx. 100) |
+| `offset` | `number` | `0` | Desplazamiento de pagination |
 
 **Response** `200 OK`:
 
@@ -511,24 +511,24 @@ GET /api/leaderboard
 }
 ```
 
-**Ranking criteria** (in order of priority):
-1. Players who completed all 12 levels first (by `completedAt`)
-2. Highest `totalScore`
-3. Fewest hints used
+**Criterios de clasificación** (en orden de prioridad):
+1. Jugadores que completaron los 12 niveles primero (por `completedAt`)
+2. Mayor `totalScore`
+3. Menos pistas utilizadas
 
 ---
 
-## Admin Endpoints
+## Endpoints de Administración
 
-### Create Saga
+### Crear Saga
 
-Create a new saga. Admin only.
+Crea una nueva saga. Solo administradores.
 
 ```
 POST /api/admin/sagas
 ```
 
-**Auth**: Required (Admin)
+**Autenticación**: Requerida (Admin)
 
 **Request Body**:
 
@@ -544,17 +544,17 @@ POST /api/admin/sagas
 }
 ```
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `title` | `string` | Yes | Saga name |
-| `subtitle` | `string` | Yes | Location subtitle |
-| `description` | `string` | Yes | Saga description |
-| `city` | `string` | Yes | City name |
-| `prizeAmount` | `number` | Yes | Prize in USD |
-| `maxParticipants` | `number` | Yes | Maximum players allowed |
-| `startsAt` | `string` | Yes | ISO 8601 start datetime |
+| Campo | Tipo | Requerido | Descripción |
+|-------|------|-----------|-------------|
+| `title` | `string` | Sí | Nombre de la saga |
+| `subtitle` | `string` | Sí | Subtítulo de ubicación |
+| `description` | `string` | Sí | Descripción de la saga |
+| `city` | `string` | Sí | Nombre de la ciudad |
+| `prizeAmount` | `number` | Sí | Premio en USD |
+| `maxParticipants` | `number` | Sí | Máximo de jugadores permitidos |
+| `startsAt` | `string` | Sí | Fecha y hora de inicio ISO 8601 |
 
-**Response** `201 Created`:
+**Response** `201 Creado`:
 
 ```json
 {
@@ -568,25 +568,25 @@ POST /api/admin/sagas
 }
 ```
 
-**Error Responses**:
+**Respuestas de Error**:
 
-| Status | Code | Description |
-|--------|------|-------------|
-| `400` | `VALIDATION_ERROR` | Missing or invalid fields |
-| `401` | `UNAUTHORIZED` | Missing or invalid auth token |
-| `403` | `FORBIDDEN` | User does not have admin role |
+| Estado | Código | Descripción |
+|--------|--------|-------------|
+| `400` | `VALIDATION_ERROR` | Campos faltantes o inválidos |
+| `401` | `UNAUTHORIZED` | Token de autenticación faltante o inválido |
+| `403` | `FORBIDDEN` | El usuario no tiene rol de administrador |
 
 ---
 
-### Update Levels
+### Actualizar Niveles
 
-Create or update all 12 levels for a saga. Admin only.
+Crea o actualiza los 12 niveles de una saga. Solo administradores.
 
 ```
 PUT /api/admin/sagas/{sagaId}/levels
 ```
 
-**Auth**: Required (Admin)
+**Autenticación**: Requerida (Admin)
 
 **Request Body**:
 
@@ -618,23 +618,23 @@ PUT /api/admin/sagas/{sagaId}/levels
 }
 ```
 
-**Level Object**:
+**Objeto de Nivel**:
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `levelNumber` | `number` | Yes | Level order (1–12) |
-| `title` | `string` | Yes | Level name |
-| `clue.text` | `string` | Yes | Riddle/clue text shown to player |
-| `clue.hint` | `string` | No | Optional hint (25% score penalty) |
-| `clue.difficulty` | `string` | Yes | `easy`, `medium`, `hard`, or `extreme` |
-| `spawn.lat` | `number` | Yes | Street View starting latitude |
-| `spawn.lng` | `number` | Yes | Street View starting longitude |
-| `spawn.heading` | `number` | No | Initial camera heading (0–360°) |
-| `spawn.pitch` | `number` | No | Initial camera pitch (-90 to 90°) |
-| `target.lat` | `number` | Yes | Target latitude (for proximity check) |
-| `target.lng` | `number` | Yes | Target longitude (for proximity check) |
-| `correctAnswers` | `string[]` | Yes | Accepted answers (include aliases and common variants) |
-| `explanation` | `string` | Yes | Educational context shown after correct answer |
+| Campo | Tipo | Requerido | Descripción |
+|-------|------|-----------|-------------|
+| `levelNumber` | `number` | Sí | Orden del nivel (1–12) |
+| `title` | `string` | Sí | Nombre del nivel |
+| `clue.text` | `string` | Sí | Texto del acertijo/pista mostrado al jugador |
+| `clue.hint` | `string` | No | Pista opcional (penalización del 25% en puntuación) |
+| `clue.difficulty` | `string` | Sí | `easy`, `medium`, `hard` o `extreme` |
+| `spawn.lat` | `number` | Sí | Latitud de inicio en Street View |
+| `spawn.lng` | `number` | Sí | Longitud de inicio en Street View |
+| `spawn.heading` | `number` | No | Dirección inicial de la cámara (0–360°) |
+| `spawn.pitch` | `number` | No | Inclinación inicial de la cámara (-90 a 90°) |
+| `target.lat` | `number` | Sí | Latitud objetivo (para verificación de proximidad) |
+| `target.lng` | `number` | Sí | Longitud objetivo (para verificación de proximidad) |
+| `correctAnswers` | `string[]` | Sí | Respuestas aceptadas (incluir alias y variantes comunes) |
+| `explanation` | `string` | Sí | Contexto educativo mostrado después de respuesta correcta |
 
 **Response** `200 OK`:
 
@@ -650,31 +650,31 @@ PUT /api/admin/sagas/{sagaId}/levels
 }
 ```
 
-**Error Responses**:
+**Respuestas de Error**:
 
-| Status | Code | Description |
-|--------|------|-------------|
-| `400` | `INVALID_LEVEL_COUNT` | Must provide exactly 12 levels |
-| `400` | `DUPLICATE_LEVEL_NUMBERS` | Level numbers must be unique and sequential (1–12) |
-| `400` | `MISSING_CORRECT_ANSWERS` | Each level must have at least one correct answer |
-| `400` | `NO_STREET_VIEW_COVERAGE` | Spawn coordinates have no Street View coverage (validated server-side) |
-| `401` | `UNAUTHORIZED` | Missing or invalid auth token |
-| `403` | `FORBIDDEN` | User does not have admin role |
-| `404` | `SAGA_NOT_FOUND` | Saga ID does not exist |
+| Estado | Código | Descripción |
+|--------|--------|-------------|
+| `400` | `INVALID_LEVEL_COUNT` | Se deben proporcionar exactamente 12 niveles |
+| `400` | `DUPLICATE_LEVEL_NUMBERS` | Los números de nivel deben ser únicos y secuenciales (1–12) |
+| `400` | `MISSING_CORRECT_ANSWERS` | Cada nivel debe tener al menos una respuesta correcta |
+| `400` | `NO_STREET_VIEW_COVERAGE` | Las coordenadas de inicio no tienen cobertura de Street View (validado del lado del servidor) |
+| `401` | `UNAUTHORIZED` | Token de autenticación faltante o inválido |
+| `403` | `FORBIDDEN` | El usuario no tiene rol de administrador |
+| `404` | `SAGA_NOT_FOUND` | El ID de saga no existe |
 
 ---
 
-## AI Endpoints
+## Endpoints de IA
 
-### Generate Saga with AI
+### Generar Saga con IA
 
-Use Google Gemini to generate a complete saga (12 levels with riddles, coordinates, and answers) from a topic description. Admin only.
+Usa Google Gemini para generar una saga completa (12 niveles con acertijos, coordenadas y respuestas) a partir de una descripción de tema. Solo administradores.
 
 ```
 POST /api/ai/generate-saga
 ```
 
-**Auth**: Required (Admin)
+**Autenticación**: Requerida (Admin)
 
 **Request Body**:
 
@@ -687,12 +687,12 @@ POST /api/ai/generate-saga
 }
 ```
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `topic` | `string` | Yes | Theme or topic for the saga |
-| `city` | `string` | Yes | City where levels are set |
-| `language` | `string` | No | Language for clues (`es` default, `en` available) |
-| `difficultyProgression` | `boolean` | No | If `true` (default), levels progress from easy → extreme |
+| Campo | Tipo | Requerido | Descripción |
+|-------|------|-----------|-------------|
+| `topic` | `string` | Sí | Tema o tópico para la saga |
+| `city` | `string` | Sí | Ciudad donde se ubican los niveles |
+| `language` | `string` | No | Idioma para las pistas (`es` por defecto, `en` disponible) |
+| `difficultyProgression` | `boolean` | No | Si es `true` (por defecto), los niveles progresan de easy → extreme |
 
 **Response** `200 OK`:
 
@@ -725,25 +725,25 @@ POST /api/ai/generate-saga
 }
 ```
 
-> **Important**: AI-generated sagas are created as **drafts** and require manual review before activation. Verify Street View coverage at all spawn and target coordinates.
+> **Importante**: Las sagas generadas por IA se crean como **borradores** y requieren revisión manual antes de su activación. Verifica la cobertura de Street View en todas las coordenadas de inicio y objetivo.
 
-**Error Responses**:
+**Respuestas de Error**:
 
-| Status | Code | Description |
-|--------|------|-------------|
-| `400` | `INVALID_TOPIC` | Topic is too vague or empty |
-| `401` | `UNAUTHORIZED` | Missing or invalid auth token |
-| `403` | `FORBIDDEN` | User does not have admin role |
-| `500` | `AI_GENERATION_FAILED` | Gemini API error or invalid response |
-| `503` | `AI_SERVICE_UNAVAILABLE` | Gemini API is temporarily unavailable |
+| Estado | Código | Descripción |
+|--------|--------|-------------|
+| `400` | `INVALID_TOPIC` | El tema es demasiado vago o está vacío |
+| `401` | `UNAUTHORIZED` | Token de autenticación faltante o inválido |
+| `403` | `FORBIDDEN` | El usuario no tiene rol de administrador |
+| `500` | `AI_GENERATION_FAILED` | Error de la API de Gemini o respuesta inválida |
+| `503` | `AI_SERVICE_UNAVAILABLE` | La API de Gemini no está disponible temporalmente |
 
 ---
 
-## Common Patterns
+## Patrones Comunes
 
-### Error Format
+### Formato de Errores
 
-All error responses follow a consistent format:
+Todas las respuestas de error siguen un formato consistente:
 
 ```json
 {
@@ -755,21 +755,21 @@ All error responses follow a consistent format:
 }
 ```
 
-| Field | Type | Description |
+| Campo | Tipo | Descripción |
 |-------|------|-------------|
-| `error.code` | `string` | Machine-readable error code (UPPER_SNAKE_CASE) |
-| `error.message` | `string` | Human-readable error description |
-| `error.status` | `number` | HTTP status code |
+| `error.code` | `string` | Código de error legible por máquina (UPPER_SNAKE_CASE) |
+| `error.message` | `string` | Descripción del error legible por humanos |
+| `error.status` | `number` | Código de estado HTTP |
 
 ### Pagination
 
-List endpoints use offset-based pagination:
+Los endpoints de listado usan pagination basada en offset:
 
 ```
 GET /api/sagas?limit=20&offset=40
 ```
 
-Response includes:
+La respuesta incluye:
 
 ```json
 {
@@ -784,14 +784,14 @@ Response includes:
 
 ### Rate Limiting
 
-| Endpoint Category | Rate Limit | Window |
-|-------------------|-----------|--------|
-| Public read (`GET /api/sagas`, `GET /api/leaderboard`) | 100 requests | per minute |
-| Game actions (`POST /api/game/*`) | 30 requests | per minute |
-| Admin actions (`POST /api/admin/*`) | 20 requests | per minute |
-| AI generation (`POST /api/ai/*`) | 5 requests | per minute |
+| Categoría de Endpoint | Límite | Ventana |
+|-----------------------|--------|---------|
+| Lectura pública (`GET /api/sagas`, `GET /api/leaderboard`) | 100 solicitudes | por minuto |
+| Acciones de juego (`POST /api/game/*`) | 30 solicitudes | por minuto |
+| Acciones de administración (`POST /api/admin/*`) | 20 solicitudes | por minuto |
+| Generación con IA (`POST /api/ai/*`) | 5 solicitudes | por minuto |
 
-Rate limit headers included in every response:
+Headers de rate limiting incluidos en cada respuesta:
 
 ```
 X-RateLimit-Limit: 100

@@ -1,5 +1,7 @@
 "use client";
 
+import { useLocale } from "@/i18n";
+
 interface LevelProgressProps {
   currentLevel: number;
   totalLevels: number;
@@ -11,6 +13,7 @@ export default function LevelProgress({
   totalLevels,
   completedLevels,
 }: LevelProgressProps) {
+  const { t } = useLocale();
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
       <div
@@ -22,7 +25,7 @@ export default function LevelProgress({
         }}
       >
         <span style={{ fontSize: 11, color: "rgba(255,255,255,0.3)", letterSpacing: "0.15em", textTransform: "uppercase", fontWeight: 600 }}>
-          PROGRESO
+          {t("game.progress")}
         </span>
         <span style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", fontWeight: 500 }}>
           {completedLevels.length}/{totalLevels}

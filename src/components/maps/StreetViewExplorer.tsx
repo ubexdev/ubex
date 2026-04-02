@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import { setOptions, importLibrary } from "@googlemaps/js-api-loader";
+import { useLocale } from "@/i18n";
 
 interface StreetViewExplorerProps {
   lat: number;
@@ -37,6 +38,7 @@ export default function StreetViewExplorer({
   onPositionChange,
   onNoCoverage,
 }: StreetViewExplorerProps) {
+  const { t } = useLocale();
   const containerRef = useRef<HTMLDivElement>(null);
   const panoRef = useRef<google.maps.StreetViewPanorama | null>(null);
   const [status, setStatus] = useState<"loading" | "ready" | "error" | "no-coverage">("loading");
@@ -213,7 +215,7 @@ export default function StreetViewExplorer({
             }}
           />
           <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 14 }}>
-            Cargando Google Street View...
+            {t("game.loadingSV")}
           </p>
           <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
         </div>
@@ -236,10 +238,10 @@ export default function StreetViewExplorer({
         >
           <span style={{ fontSize: 48 }}>🗺️</span>
           <p style={{ color: "#ef4444", fontSize: 16, fontWeight: 600 }}>
-            Error cargando Google Maps
+            {t("game.svLoadError")}
           </p>
           <p style={{ color: "rgba(255,255,255,0.3)", fontSize: 13, textAlign: "center", maxWidth: 300 }}>
-            Verifica tu API key de Google Maps o tu conexión a internet.
+            {t("game.svLoadErrorHint")}
           </p>
         </div>
       )}
@@ -273,10 +275,10 @@ export default function StreetViewExplorer({
           <div style={{ position: "relative", zIndex: 2, display: "flex", flexDirection: "column", alignItems: "center", gap: 12, marginTop: 80 }}>
             <span style={{ fontSize: 48 }}>📍</span>
             <p style={{ color: "#fbbf24", fontSize: 16, fontWeight: 600 }}>
-              Sin cobertura Street View
+              {t("game.noSVCoverage")}
             </p>
             <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 13, textAlign: "center", maxWidth: 300, lineHeight: 1.5 }}>
-              Esta ubicación no tiene imágenes de Street View. Puedes usar la vista satelital como referencia o saltar esta misión.
+              {t("game.noSVCoverageDesc")}
             </p>
           </div>
         </div>

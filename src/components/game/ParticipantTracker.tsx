@@ -1,5 +1,7 @@
 "use client";
 
+import { useLocale } from "@/i18n";
+
 interface ParticipantTrackerProps {
   totalParticipants: number;
   activeParticipants: number;
@@ -13,6 +15,7 @@ export default function ParticipantTracker({
   currentLevel,
   totalLevels,
 }: ParticipantTrackerProps) {
+  const { t } = useLocale();
   const eliminatedCount = totalParticipants - activeParticipants;
   const survivalRate =
     totalParticipants > 0
@@ -22,13 +25,13 @@ export default function ParticipantTracker({
   return (
     <div className="bg-black/60 border border-white/10 rounded-xl p-4 backdrop-blur-sm w-64">
       <h4 className="text-xs tracking-widest text-amber-400 font-semibold mb-3">
-        ESTADO DE LA BÚSQUEDA
+        {t("game.searchStatus")}
       </h4>
 
       <div className="space-y-3">
         {/* Active explorers */}
         <div className="flex justify-between items-center">
-          <span className="text-sm text-white/60">Exploradores activos</span>
+          <span className="text-sm text-white/60">{t("game.activeExplorers")}</span>
           <span className="text-lg font-mono font-bold text-green-400">
             {activeParticipants.toLocaleString()}
           </span>
@@ -36,7 +39,7 @@ export default function ParticipantTracker({
 
         {/* Eliminated */}
         <div className="flex justify-between items-center">
-          <span className="text-sm text-white/60">Eliminados</span>
+          <span className="text-sm text-white/60">{t("game.eliminated")}</span>
           <span className="text-lg font-mono font-bold text-red-400">
             {eliminatedCount.toLocaleString()}
           </span>
@@ -45,7 +48,7 @@ export default function ParticipantTracker({
         {/* Progress bar */}
         <div>
           <div className="flex justify-between text-xs text-white/40 mb-1">
-            <span>Supervivencia</span>
+            <span>{t("game.survival")}</span>
             <span>{survivalRate}%</span>
           </div>
           <div className="h-2 bg-white/10 rounded-full overflow-hidden">
@@ -58,7 +61,7 @@ export default function ParticipantTracker({
 
         {/* Level indicator */}
         <div className="flex justify-between items-center pt-2 border-t border-white/10">
-          <span className="text-sm text-white/60">Misión</span>
+          <span className="text-sm text-white/60">{t("game.missionLabel")}</span>
           <span className="text-sm font-bold text-amber-400">
             {currentLevel} / {totalLevels}
           </span>

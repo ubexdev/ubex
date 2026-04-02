@@ -301,6 +301,23 @@
     "fallbackHint1": "Weak signal detected. Explore the surroundings.",
     "fallbackHint2": "Partial data. The target is near a landmark.",
     "fallbackHint3": "Strong signal. Check visible names in your surroundings.",
-    "signalCount": "Signal {current}/3"
+    "signalCount": "Signal {current}/3",
+    "progress": "PROGRESS",
+    "loadingNextMission": "Loading next mission...",
+    "tryAgain": "Try again",
+    "backToHome": "Back to home",
+    "searchStatus": "SEARCH STATUS",
+    "activeExplorers": "Active explorers",
+    "eliminated": "Eliminated",
+    "survival": "Survival",
+    "missionLabel": "Mission",
+    "loadingSV": "Loading Google Street View...",
+    "svLoadError": "Error loading Google Maps",
+    "svLoadErrorHint": "Check your Google Maps API key or your internet connection.",
+    "noSVCoverage": "No Street View coverage",
+    "noSVCoverageDesc": "This location has no Street View images. You can use the satellite view as reference or skip this mission.",
+    "agent": "Agent",
+    "sagaNotFound": "Saga not found",
+    "unknownError": "Unknown error"
   }
 }

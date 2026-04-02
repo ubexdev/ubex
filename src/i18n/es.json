@@ -301,6 +301,23 @@
     "fallbackHint1": "Señal débil detectada. Explora los alrededores.",
     "fallbackHint2": "Datos parciales. El objetivo está cerca de un punto de referencia.",
     "fallbackHint3": "Señal fuerte. Revisa los nombres visibles en tu entorno.",
-    "signalCount": "Señal {current}/3"
+    "signalCount": "Señal {current}/3",
+    "progress": "PROGRESO",
+    "loadingNextMission": "Cargando siguiente misión...",
+    "tryAgain": "Intentar de nuevo",
+    "backToHome": "Volver al inicio",
+    "searchStatus": "ESTADO DE LA BÚSQUEDA",
+    "activeExplorers": "Exploradores activos",
+    "eliminated": "Eliminados",
+    "survival": "Supervivencia",
+    "missionLabel": "Misión",
+    "loadingSV": "Cargando Google Street View...",
+    "svLoadError": "Error cargando Google Maps",
+    "svLoadErrorHint": "Verifica tu API key de Google Maps o tu conexión a internet.",
+    "noSVCoverage": "Sin cobertura Street View",
+    "noSVCoverageDesc": "Esta ubicación no tiene imágenes de Street View. Puedes usar la vista satelital como referencia o saltar esta misión.",
+    "agent": "Agente",
+    "sagaNotFound": "Saga no encontrada",
+    "unknownError": "Error desconocido"
   }
 }

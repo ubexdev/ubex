@@ -1,134 +1,134 @@
-# Contributing to UBEX
+# Contribuir a UBEX
 
-> Everything you need to set up a local development environment, understand the codebase, and submit your first pull request.
-
----
-
-## Table of Contents
-
-1. [Quick Start](#quick-start)
-2. [Prerequisites](#prerequisites)
-3. [Local Development Setup](#local-development-setup)
-4. [Environment Variables](#environment-variables)
-5. [Project Structure](#project-structure)
-6. [How to Add a New Page](#how-to-add-a-new-page)
-7. [How to Add a New Component](#how-to-add-a-new-component)
-8. [Code Style](#code-style)
-9. [Git Workflow](#git-workflow)
-10. [Running Tests](#running-tests)
-11. [Common Tasks](#common-tasks)
-12. [Troubleshooting](#troubleshooting)
+> Todo lo que necesitas para configurar un entorno de desarrollo local, entender el código fuente y enviar tu primer pull request.
 
 ---
 
-## Quick Start
+## Tabla de Contenidos
+
+1. [Inicio Rápido](#inicio-rápido)
+2. [Requisitos Previos](#requisitos-previos)
+3. [Configuración del Entorno Local](#configuración-del-entorno-local)
+4. [Variables de Entorno](#variables-de-entorno)
+5. [Estructura del Proyecto](#estructura-del-proyecto)
+6. [Cómo Agregar una Nueva Página](#cómo-agregar-una-nueva-página)
+7. [Cómo Agregar un Nuevo Componente](#cómo-agregar-un-nuevo-componente)
+8. [Estilo de Código](#estilo-de-código)
+9. [Flujo de Trabajo con Git](#flujo-de-trabajo-con-git)
+10. [Ejecución de Pruebas](#ejecución-de-pruebas)
+11. [Tareas Comunes](#tareas-comunes)
+12. [Solución de Problemas](#solución-de-problemas)
+
+---
+
+## Inicio Rápido
 
 ```bash
-# 1. Clone the repository
+# 1. Clonar el repositorio
 git clone https://github.com/your-org/ubex-app.git
 cd ubex-app
 
-# 2. Install dependencies
+# 2. Instalar dependencias
 npm install
 
-# 3. Set up environment variables
+# 3. Configurar variables de entorno
 cp .env.example .env.local
-# Edit .env.local with your API keys (see Environment Variables section)
+# Editar .env.local con tus API keys (ver sección Variables de Entorno)
 
-# 4. Start the development server
+# 4. Iniciar el servidor de desarrollo
 npm run dev
 
-# 5. Open http://localhost:3000
+# 5. Abrir http://localhost:3000
 ```
 
 ---
 
-## Prerequisites
+## Requisitos Previos
 
-| Tool | Version | Check |
-|------|---------|-------|
+| Herramienta | Versión | Verificar |
+|-------------|---------|-----------|
 | **Node.js** | 18+ | `node --version` |
 | **npm** | 9+ | `npm --version` |
 | **Git** | 2.x+ | `git --version` |
 
-**Required API keys** (for full functionality):
+**API keys requeridas** (para funcionalidad completa):
 
-| Key | Required for | How to get |
-|-----|-------------|------------|
-| Google Maps API Key | Street View gameplay | [Google Cloud Console](https://console.cloud.google.com/) — enable Maps JavaScript API + Street View API |
-| Gemini API Key | AI features | [Google AI Studio](https://aistudio.google.com/) |
-| Supabase URL + Anon Key | Auth, database, realtime | [Supabase Dashboard](https://supabase.com/) — create a project |
+| Clave | Necesaria para | Cómo obtenerla |
+|-------|---------------|----------------|
+| Google Maps API Key | Jugabilidad con Street View | [Google Cloud Console](https://console.cloud.google.com/) — habilitar Maps JavaScript API + Street View API |
+| Gemini API Key | Funciones de IA | [Google AI Studio](https://aistudio.google.com/) |
+| Supabase URL + Anon Key | Auth, base de datos, realtime | [Supabase Dashboard](https://supabase.com/) — crear un proyecto |
 
-> **Tip**: The landing page (`/`) works without any API keys. The game page (`/play`) requires at minimum the Google Maps API key.
+> **Tip**: La página de inicio (`/`) funciona sin API keys. La página del juego (`/play`) requiere como mínimo la API key de Google Maps.
 
 ---
 
-## Local Development Setup
+## Configuración del Entorno Local
 
-### Step 1: Install Dependencies
+### Paso 1: Instalar Dependencias
 
 ```bash
 npm install
 ```
 
-This installs all runtime and dev dependencies including:
+Esto instala todas las dependencias de ejecución y desarrollo, incluyendo:
 - Next.js 16, React 19, TypeScript
-- Tailwind CSS v4 (via `@tailwindcss/postcss`)
+- Tailwind CSS v4 (vía `@tailwindcss/postcss`)
 - `@googlemaps/js-api-loader`, `@google/generative-ai`
 - `@supabase/ssr`, `@supabase/supabase-js`
 - Zustand, date-fns, Phosphor Icons
-- Three.js / React Three Fiber (planned globe feature)
+- Three.js / React Three Fiber (función del globo planificada)
 
-### Step 2: Configure Environment
+### Paso 2: Configurar Entorno
 
 ```bash
 cp .env.example .env.local
 ```
 
-Edit `.env.local` with your keys. See [Environment Variables](#environment-variables) for the complete list.
+Edita `.env.local` con tus claves. Consulta [Variables de Entorno](#variables-de-entorno) para la lista completa.
 
-### Step 3: Run Development Server
+### Paso 3: Iniciar el Servidor de Desarrollo
 
 ```bash
 npm run dev
 ```
 
-The app starts at `http://localhost:3000`. Next.js enables hot module replacement — changes to files in `src/` reflect instantly in the browser.
+La aplicación inicia en `http://localhost:3000`. Next.js habilita Hot Module Replacement — los cambios en archivos dentro de `src/` se reflejan instantáneamente en el navegador.
 
-### Step 4: Verify
+### Paso 4: Verificar
 
-- Visit `http://localhost:3000` — you should see the landing page
-- Visit `http://localhost:3000/play` — you should see the game intro screen
-- If you've set up your Google Maps key, clicking "Comenzar" should load Street View
+- Visita `http://localhost:3000` — deberías ver la página de inicio
+- Visita `http://localhost:3000/play` — deberías ver la pantalla de introducción del juego
+- Si configuraste tu clave de Google Maps, al hacer clic en "Comenzar" debería cargar Street View
 
 ---
 
-## Environment Variables
+## Variables de Entorno
 
-Create a `.env.local` file in the project root. The `.env.example` file lists all available variables:
+Crea un archivo `.env.local` en la raíz del proyecto. El archivo `.env.example` lista todas las variables disponibles:
 
-### Required for Core Gameplay
+### Requeridas para la Jugabilidad Principal
 
 ```bash
-# Google Maps — needed for Street View in /play
+# Google Maps — necesaria para Street View en /play
 NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_google_maps_api_key
 ```
 
-### Required for Production Features
+### Requeridas para Funciones de Producción
 
 ```bash
-# Supabase — database, auth, realtime
+# Supabase — base de datos, auth, realtime
 NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 
-# Gemini AI — server-side answer validation + saga generation
+# Gemini AI — validación de respuestas del lado del servidor + generación de sagas
 GEMINI_API_KEY=your_gemini_api_key
 ```
 
-### Optional
+### Opcionales
 
 ```bash
-# Firebase — alternative auth/realtime (legacy scaffolding)
+# Firebase — auth/realtime alternativo (scaffolding legacy)
 NEXT_PUBLIC_FIREBASE_API_KEY=
 NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
 NEXT_PUBLIC_FIREBASE_PROJECT_ID=
@@ -137,7 +137,7 @@ NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
 NEXT_PUBLIC_FIREBASE_APP_ID=
 NEXT_PUBLIC_FIREBASE_DATABASE_URL=
 
-# Payments
+# Pagos
 NEXT_PUBLIC_PAYPAL_CLIENT_ID=
 PAYPAL_CLIENT_SECRET=
 NEXT_PUBLIC_GOOGLE_PAY_MERCHANT_ID=
@@ -146,42 +146,42 @@ NEXT_PUBLIC_GOOGLE_PAY_MERCHANT_ID=
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
-### Key Naming Convention
+### Convención de Nombres de Variables
 
-| Prefix | Exposure | Use for |
-|--------|----------|---------|
-| `NEXT_PUBLIC_` | Client + server | Keys safe to expose (Maps, Supabase anon, Firebase config) |
-| No prefix | Server only | Secrets that must never reach the browser (Gemini, PayPal secret) |
+| Prefijo | Exposición | Usar para |
+|---------|-----------|-----------|
+| `NEXT_PUBLIC_` | Cliente + servidor | Claves seguras para exponer (Maps, Supabase anon, Firebase config) |
+| Sin prefijo | Solo servidor | Secretos que nunca deben llegar al navegador (Gemini, PayPal secret) |
 
 ---
 
-## Project Structure
+## Estructura del Proyecto
 
 ```
 ubex-app/
-├── docs/                    # Documentation (you are here)
-│   ├── README.md            # Docs index
-│   ├── architecture.md      # Technical architecture
-│   ├── api-reference.md     # API endpoint reference
-│   ├── game-design.md       # Game design document (Spanish)
-│   ├── guia-creadores.md    # Map creator guide (Spanish)
-│   └── contributing.md      # This file
-├── public/                  # Static assets
+├── docs/                    # Documentación (estás aquí)
+│   ├── README.md            # Índice de docs
+│   ├── architecture.md      # Arquitectura técnica
+│   ├── api-reference.md     # Referencia de endpoints de API
+│   ├── game-design.md       # Documento de diseño del juego (español)
+│   ├── guia-creadores.md    # Guía de creadores de mapas (español)
+│   └── contributing.md      # Este archivo
+├── public/                  # Recursos estáticos
 │   ├── file.svg
 │   ├── globe.svg
 │   ├── next.svg
 │   ├── vercel.svg
 │   └── window.svg
 ├── src/
-│   ├── app/                 # Next.js App Router pages
-│   │   ├── layout.tsx       # Root layout (fonts, metadata, dark theme)
-│   │   ├── page.tsx         # Landing page (/)
+│   ├── app/                 # Páginas del App Router de Next.js
+│   │   ├── layout.tsx       # Layout raíz (fuentes, metadata, tema oscuro)
+│   │   ├── page.tsx         # Página de inicio (/)
 │   │   ├── play/
-│   │   │   └── page.tsx     # Game page (/play)
-│   │   ├── globals.css      # Tailwind v4 imports + custom utilities
+│   │   │   └── page.tsx     # Página del juego (/play)
+│   │   ├── globals.css      # Imports de Tailwind v4 + utilidades custom
 │   │   └── favicon.ico
-│   ├── components/          # Reusable UI components
-│   │   ├── game/            # Game-specific components
+│   ├── components/          # Componentes de UI reutilizables
+│   │   ├── game/            # Componentes específicos del juego
 │   │   │   ├── AnswerInput.tsx
 │   │   │   ├── ClueCard.tsx
 │   │   │   ├── CountdownTimer.tsx
@@ -189,49 +189,49 @@ ubex-app/
 │   │   │   ├── LevelProgress.tsx
 │   │   │   ├── ParticipantTracker.tsx
 │   │   │   └── ResultOverlay.tsx
-│   │   └── maps/            # Map-related components
+│   │   └── maps/            # Componentes relacionados con mapas
 │   │       └── StreetViewExplorer.tsx
-│   ├── data/                # Static data
-│   │   └── demo-saga.ts     # Demo saga with 12 levels
-│   ├── hooks/               # Custom React hooks
+│   ├── data/                # Datos estáticos
+│   │   └── demo-saga.ts     # Saga demo con 12 niveles
+│   ├── hooks/               # React hooks personalizados
 │   │   ├── index.ts
 │   │   └── useCountdown.ts
-│   ├── lib/                 # Library integrations
-│   │   ├── firebase/        # Firebase client (auth, Firestore, RTDB)
-│   │   ├── gemini/          # Gemini AI client (validation, generation)
+│   ├── lib/                 # Integraciones de bibliotecas
+│   │   ├── firebase/        # Cliente Firebase (auth, Firestore, RTDB)
+│   │   ├── gemini/          # Cliente Gemini AI (validación, generación)
 │   │   ├── store/           # Zustand game store
-│   │   └── supabase/        # Supabase client, server, middleware
-│   ├── types/               # TypeScript type definitions
-│   │   ├── index.ts         # Domain types (Saga, Level, GameSession, etc.)
-│   │   └── database.ts      # Supabase DB types (scaffold)
-│   └── middleware.ts         # Next.js middleware (auth, /admin protection)
-├── .env.example             # Environment variable template
+│   │   └── supabase/        # Cliente Supabase, servidor, middleware
+│   ├── types/               # Definiciones de tipos TypeScript
+│   │   ├── index.ts         # Tipos del dominio (Saga, Level, GameSession, etc.)
+│   │   └── database.ts      # Tipos de la BD de Supabase (scaffold)
+│   └── middleware.ts         # Middleware de Next.js (auth, protección de /admin)
+├── .env.example             # Plantilla de variables de entorno
 ├── .github/
 │   └── workflows/
-│       └── deploy.yml       # CI/CD: build + deploy to GitHub Pages
-├── next.config.ts           # Next.js config (unoptimized images)
-├── tsconfig.json            # TypeScript config (strict, path aliases)
-├── postcss.config.mjs       # PostCSS with @tailwindcss/postcss
+│       └── deploy.yml       # CI/CD: build + deploy a GitHub Pages
+├── next.config.ts           # Configuración de Next.js (imágenes sin optimizar)
+├── tsconfig.json            # Configuración de TypeScript (strict, path aliases)
+├── postcss.config.mjs       # PostCSS con @tailwindcss/postcss
 ├── eslint.config.mjs        # ESLint (next core-web-vitals + TS)
-├── package.json             # Dependencies and scripts
-└── README.md                # Project README (Spanish)
+├── package.json             # Dependencias y scripts
+└── README.md                # README del proyecto (español)
 ```
 
 ---
 
-## How to Add a New Page
+## Cómo Agregar una Nueva Página
 
-UBEX uses the [Next.js App Router](https://nextjs.org/docs/app). Each page is a `page.tsx` file inside the `src/app/` directory.
+UBEX usa el [App Router de Next.js](https://nextjs.org/docs/app). Cada página es un archivo `page.tsx` dentro del directorio `src/app/`.
 
-### Example: Adding a `/sagas` Page
+### Ejemplo: Agregar una Página `/sagas`
 
-1. Create the directory and file:
+1. Crear el directorio y el archivo:
 
 ```
 src/app/sagas/page.tsx
 ```
 
-2. Write the page component:
+2. Escribir el componente de la página:
 
 ```typescript
 // src/app/sagas/page.tsx
@@ -249,7 +249,7 @@ export default function SagasPage() {
 }
 ```
 
-3. For client-side interactivity, add `'use client'` at the top:
+3. Para interactividad del lado del cliente, agregar `'use client'` al inicio:
 
 ```typescript
 'use client';
@@ -258,26 +258,26 @@ import { useState } from 'react';
 // ...
 ```
 
-### Key Conventions
+### Convenciones Clave
 
-- Pages that use React hooks, event handlers, or browser APIs must be `'use client'` components
-- Use the `section-inner` CSS class for consistent max-width and centering
-- Follow the dark theme: `bg-zinc-950` background, `text-zinc-100` text
-- Use the `--font-sans` (Outfit) font variable for headings
+- Las páginas que usen React hooks, manejadores de eventos o APIs del navegador deben ser componentes `'use client'`
+- Usar la clase CSS `section-inner` para ancho máximo y centrado consistente
+- Seguir el tema oscuro: fondo `bg-zinc-950`, texto `text-zinc-100`
+- Usar la variable de fuente `--font-sans` (Outfit) para los encabezados
 
 ---
 
-## How to Add a New Component
+## Cómo Agregar un Nuevo Componente
 
-### Component Location
+### Ubicación de Componentes
 
-| Type | Directory | Example |
+| Tipo | Directorio | Ejemplo |
 |------|-----------|---------|
-| Game-specific UI | `src/components/game/` | `ClueCard.tsx`, `LevelProgress.tsx` |
-| Map/geo components | `src/components/maps/` | `StreetViewExplorer.tsx` |
-| General UI (planned) | `src/components/ui/` | `Button.tsx`, `Card.tsx` |
+| UI específica del juego | `src/components/game/` | `ClueCard.tsx`, `LevelProgress.tsx` |
+| Componentes de mapa/geo | `src/components/maps/` | `StreetViewExplorer.tsx` |
+| UI general (planificado) | `src/components/ui/` | `Button.tsx`, `Card.tsx` |
 
-### Component Template
+### Plantilla de Componente
 
 ```typescript
 // src/components/game/NewComponent.tsx
@@ -318,40 +318,40 @@ export default function NewComponent({
 }
 ```
 
-### Component Guidelines
+### Guías para Componentes
 
-1. **One component per file** — named export matches filename
-2. **Props interface** — always define a TypeScript interface for props
-3. **Default exports** — use `export default function ComponentName`
-4. **Tailwind only** — no CSS modules, no styled-components
-5. **Dark theme** — use `zinc-950` / `zinc-900` backgrounds, `zinc-100` text, `amber-500` accents
+1. **Un componente por archivo** — el export nombrado coincide con el nombre del archivo
+2. **Interfaz de props** — siempre definir una interfaz TypeScript para los props
+3. **Exports por defecto** — usar `export default function ComponentName`
+4. **Solo Tailwind** — sin CSS modules, sin styled-components
+5. **Tema oscuro** — usar fondos `zinc-950` / `zinc-900`, texto `zinc-100`, acentos `amber-500`
 
 ---
 
-## Code Style
+## Estilo de Código
 
-### General Rules
+### Reglas Generales
 
-| Rule | Details |
-|------|---------|
-| **Language** | TypeScript (strict mode) — no `any` types |
-| **Styling** | Tailwind CSS v4 utility classes only |
-| **Icons** | Phosphor Icons (`@phosphor-icons/react`) — no emoji in code |
-| **Fonts** | Outfit (headings/body), JetBrains Mono (code) |
-| **Theme** | Dark-first — `zinc-950` base, `amber-500` accent |
-| **Path alias** | Use `@/` for imports from `src/` (e.g., `@/components/game/ClueCard`) |
+| Regla | Detalles |
+|-------|---------|
+| **Lenguaje** | TypeScript (modo strict) — sin tipos `any` |
+| **Estilos** | Solo clases utilitarias de Tailwind CSS v4 |
+| **Iconos** | Phosphor Icons (`@phosphor-icons/react`) — sin emoji en el código |
+| **Fuentes** | Outfit (encabezados/cuerpo), JetBrains Mono (código) |
+| **Tema** | Oscuro primero — base `zinc-950`, acento `amber-500` |
+| **Path alias** | Usar `@/` para imports desde `src/` (ej., `@/components/game/ClueCard`) |
 
-### Tailwind v4 Notes
+### Notas sobre Tailwind v4
 
-UBEX uses Tailwind CSS v4, which has some differences from v3:
+UBEX usa Tailwind CSS v4, que tiene algunas diferencias respecto a v3:
 
-- **No `tailwind.config.js`** — configuration happens in CSS via `@import "tailwindcss"` in `globals.css`
-- **PostCSS plugin** — uses `@tailwindcss/postcss` (not the old `tailwindcss` plugin)
-- **CSS-first config** — theme customizations go in `globals.css`, not a config file
+- **Sin `tailwind.config.js`** — la configuración se hace en CSS vía `@import "tailwindcss"` en `globals.css`
+- **Plugin de PostCSS** — usa `@tailwindcss/postcss` (no el antiguo plugin `tailwindcss`)
+- **Configuración CSS-first** — las personalizaciones del tema van en `globals.css`, no en un archivo de configuración
 
-### Import Order
+### Orden de Imports
 
-Follow this import order in all files:
+Seguir este orden de imports en todos los archivos:
 
 ```typescript
 // 1. React/Next.js
@@ -380,42 +380,42 @@ import { DEMO_SAGA, DEMO_LEVELS } from '@/data/demo-saga';
 
 ### ESLint
 
-The project uses Next.js recommended ESLint rules:
+El proyecto usa las reglas recomendadas de ESLint de Next.js:
 
 ```bash
 npm run lint
 ```
 
-Configuration in `eslint.config.mjs`:
-- Extends `next/core-web-vitals` and `next/typescript`
-- Ignores `.next/`, `out/`, `build/`, `next-env.d.ts`
+Configuración en `eslint.config.mjs`:
+- Extiende `next/core-web-vitals` y `next/typescript`
+- Ignora `.next/`, `out/`, `build/`, `next-env.d.ts`
 
-### Naming Conventions
+### Convenciones de Nombres
 
-| Element | Convention | Example |
-|---------|-----------|---------|
-| Components | PascalCase | `ClueCard.tsx`, `StreetViewExplorer.tsx` |
-| Hooks | camelCase with `use` prefix | `useCountdown.ts` |
-| Utilities | camelCase | `haversineMeters()`, `normalize()` |
-| Types/Interfaces | PascalCase | `GameSession`, `PlayerProgress` |
-| Constants | UPPER_SNAKE_CASE | `PROXIMITY_RADIUS_M`, `DEMO_LEVELS` |
-| Files (non-component) | kebab-case | `demo-saga.ts`, `game-store.ts` |
-| CSS classes | kebab-case (Tailwind) | `section-inner`, `fade-in-d2` |
+| Elemento | Convención | Ejemplo |
+|----------|-----------|---------|
+| Componentes | PascalCase | `ClueCard.tsx`, `StreetViewExplorer.tsx` |
+| Hooks | camelCase con prefijo `use` | `useCountdown.ts` |
+| Utilidades | camelCase | `haversineMeters()`, `normalize()` |
+| Tipos/Interfaces | PascalCase | `GameSession`, `PlayerProgress` |
+| Constantes | UPPER_SNAKE_CASE | `PROXIMITY_RADIUS_M`, `DEMO_LEVELS` |
+| Archivos (no-componente) | kebab-case | `demo-saga.ts`, `game-store.ts` |
+| Clases CSS | kebab-case (Tailwind) | `section-inner`, `fade-in-d2` |
 
 ---
 
-## Git Workflow
+## Flujo de Trabajo con Git
 
-### Branch Naming
+### Nombres de Ramas
 
 ```
-feature/description    → New features
-fix/description        → Bug fixes
-docs/description       → Documentation changes
-refactor/description   → Code restructuring
+feature/descripcion    → Nuevas funcionalidades
+fix/descripcion        → Corrección de errores
+docs/descripcion       → Cambios en documentación
+refactor/descripcion   → Reestructuración de código
 ```
 
-Examples:
+Ejemplos:
 ```
 feature/admin-panel
 fix/street-view-loading
@@ -423,9 +423,9 @@ docs/api-reference
 refactor/game-state-zustand
 ```
 
-### Commit Messages
+### Mensajes de Commit
 
-Follow [Conventional Commits](https://www.conventionalcommits.org/):
+Seguir [Conventional Commits](https://www.conventionalcommits.org/):
 
 ```
 feat: add leaderboard page with real-time updates
@@ -436,111 +436,111 @@ style: apply consistent dark theme to admin panel
 chore: update dependencies to latest versions
 ```
 
-### Pull Request Flow
+### Flujo de Pull Request
 
 ```
-1. Create a feature branch from main
-   git checkout -b feature/your-feature
+1. Crear una rama feature desde main
+   git checkout -b feature/tu-feature
 
-2. Make your changes
+2. Realizar tus cambios
    git add .
-   git commit -m "feat: your description"
+   git commit -m "feat: tu descripción"
 
-3. Push and open a PR
-   git push origin feature/your-feature
-   → Open PR on GitHub targeting main
+3. Subir y abrir un PR
+   git push origin feature/tu-feature
+   → Abrir PR en GitHub apuntando a main
 
-4. PR requirements:
-   ✅ Passes lint (npm run lint)
-   ✅ Passes build (npm run build)
-   ✅ Has a clear description of changes
-   ✅ Screenshots for UI changes
-   ✅ Docs updated if behavior changed
+4. Requisitos del PR:
+   ✅ Pasa lint (npm run lint)
+   ✅ Pasa build (npm run build)
+   ✅ Tiene una descripción clara de los cambios
+   ✅ Capturas de pantalla para cambios de UI
+   ✅ Documentación actualizada si el comportamiento cambió
 
-5. Review and merge
-   → At least 1 approval required
-   → Squash merge into main
+5. Revisión y merge
+   → Al menos 1 aprobación requerida
+   → Squash merge a main
 ```
 
-### PR Description Template
+### Plantilla de Descripción del PR
 
 ```markdown
-## What
+## Qué
 
-Brief description of the change.
+Descripción breve del cambio.
 
-## Why
+## Por qué
 
-Link to issue or explanation of motivation.
+Enlace al issue o explicación de la motivación.
 
-## How
+## Cómo
 
-Technical approach taken.
+Enfoque técnico utilizado.
 
-## Screenshots
+## Capturas de Pantalla
 
-(For UI changes)
+(Para cambios de UI)
 
-## Testing
+## Pruebas
 
-How to test this change manually.
+Cómo probar este cambio manualmente.
 ```
 
 ---
 
-## Running Tests
+## Ejecución de Pruebas
 
-> **Note**: The test suite is not yet configured. This section describes the planned testing approach.
+> **Nota**: El conjunto de pruebas aún no está configurado. Esta sección describe el enfoque de pruebas planificado.
 
-### Planned Test Setup
+### Configuración de Pruebas Planificada
 
 ```bash
-# Unit tests (planned)
+# Pruebas unitarias (planificado)
 npm run test
 
-# Watch mode (planned)
+# Modo watch (planificado)
 npm run test:watch
 
-# Coverage (planned)
+# Cobertura (planificado)
 npm run test:coverage
 ```
 
-### What to Test
+### Qué Probar
 
-| Category | What to Test | Priority |
-|----------|-------------|----------|
-| **Answer validation** | `normalize()`, `checkAnswer()` | High |
-| **Haversine distance** | `haversineMeters()` | High |
-| **Game state transitions** | Phase changes (intro → playing → completed) | High |
-| **Components** | ClueCard renders clue/hint, LevelProgress shows dots | Medium |
-| **API routes** | Request validation, error responses | High (when implemented) |
+| Categoría | Qué Probar | Prioridad |
+|-----------|-----------|-----------|
+| **Validación de respuestas** | `normalize()`, `checkAnswer()` | Alta |
+| **Distancia Haversine** | `haversineMeters()` | Alta |
+| **Transiciones de estado del juego** | Cambios de fase (intro → playing → completed) | Alta |
+| **Componentes** | ClueCard renderiza pista/hint, LevelProgress muestra puntos | Media |
+| **Rutas de API** | Validación de solicitudes, respuestas de error | Alta (cuando se implemente) |
 
-### Manual Testing Checklist
+### Lista de Verificación de Pruebas Manuales
 
-When testing the game locally:
+Al probar el juego localmente:
 
-- [ ] Landing page loads without errors
-- [ ] Countdown timer displays correctly
-- [ ] Clicking "Explorar" navigates to `/play`
-- [ ] Intro screen shows both difficulty options
-- [ ] Selecting a difficulty starts the game
-- [ ] Street View loads at the correct spawn point
-- [ ] Clue card displays the riddle
-- [ ] Hint button reveals the hint
-- [ ] Correct answer shows green overlay and advances
-- [ ] Incorrect answer shakes the input
-- [ ] Explorer mode blocks submission when too far
-- [ ] All 12 levels complete in sequence
-- [ ] Winner screen shows total time
-- [ ] "Volver al inicio" navigates home
+- [ ] La página de inicio carga sin errores
+- [ ] El temporizador de cuenta regresiva se muestra correctamente
+- [ ] Hacer clic en "Explorar" navega a `/play`
+- [ ] La pantalla de introducción muestra ambas opciones de dificultad
+- [ ] Seleccionar una dificultad inicia el juego
+- [ ] Street View carga en el punto de inicio correcto
+- [ ] La tarjeta de pista muestra el acertijo
+- [ ] El botón de pista revela la ayuda
+- [ ] Una respuesta correcta muestra la superposición verde y avanza
+- [ ] Una respuesta incorrecta sacude el campo de entrada
+- [ ] El modo Explorador bloquea el envío cuando estás muy lejos
+- [ ] Los 12 niveles se completan en secuencia
+- [ ] La pantalla de ganador muestra el tiempo total
+- [ ] "Volver al inicio" navega al inicio
 
 ---
 
-## Common Tasks
+## Tareas Comunes
 
-### Adding a New Demo Saga
+### Agregar una Nueva Saga Demo
 
-Edit `src/data/demo-saga.ts`:
+Editar `src/data/demo-saga.ts`:
 
 ```typescript
 export const NEW_SAGA: DemoSaga = {
@@ -571,9 +571,9 @@ export const NEW_LEVELS: DemoLevel[] = [
 ];
 ```
 
-### Adding a New Icon
+### Agregar un Nuevo Icono
 
-UBEX uses [Phosphor Icons](https://phosphoricons.com/). Browse the icon catalog, then import:
+UBEX usa [Phosphor Icons](https://phosphoricons.com/). Explora el catálogo de iconos, luego importa:
 
 ```typescript
 import { NewIcon } from '@phosphor-icons/react';
@@ -582,11 +582,11 @@ import { NewIcon } from '@phosphor-icons/react';
 <NewIcon size={24} weight="bold" className="text-amber-500" />
 ```
 
-Available weights: `thin`, `light`, `regular`, `bold`, `fill`, `duotone`.
+Pesos disponibles: `thin`, `light`, `regular`, `bold`, `fill`, `duotone`.
 
-### Adding a New Type
+### Agregar un Nuevo Tipo
 
-Add types to `src/types/index.ts`:
+Agregar tipos en `src/types/index.ts`:
 
 ```typescript
 export interface NewFeature {
@@ -598,35 +598,35 @@ export interface NewFeature {
 
 ---
 
-## Troubleshooting
+## Solución de Problemas
 
-### Street View Shows "Sin cobertura" or Errors
+### Street View Muestra "Sin cobertura" o Errores
 
-- Verify `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` is set in `.env.local`
-- Ensure the Maps JavaScript API and Street View Static API are enabled in Google Cloud Console
-- Check the browser console for API key errors
-- The spawn coordinates may not have Street View coverage — try nearby coordinates
+- Verificar que `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` esté configurada en `.env.local`
+- Asegurarse de que Maps JavaScript API y Street View Static API estén habilitadas en Google Cloud Console
+- Revisar la consola del navegador en busca de errores de API key
+- Las coordenadas de inicio pueden no tener cobertura de Street View — intentar con coordenadas cercanas
 
-### `Module not found` Errors
+### Errores de `Module not found`
 
-- Run `npm install` to ensure all dependencies are installed
-- Verify the import path uses `@/` prefix (e.g., `@/components/game/ClueCard`)
-- Check `tsconfig.json` has the path alias: `"@/*": ["./src/*"]`
+- Ejecutar `npm install` para asegurar que todas las dependencias estén instaladas
+- Verificar que la ruta de importación use el prefijo `@/` (ej., `@/components/game/ClueCard`)
+- Comprobar que `tsconfig.json` tenga el path alias: `"@/*": ["./src/*"]`
 
-### Tailwind Classes Not Applying
+### Las Clases de Tailwind No Se Aplican
 
-- Tailwind v4 does not use `tailwind.config.js` — configuration is in `globals.css`
-- Ensure `postcss.config.mjs` has `@tailwindcss/postcss` plugin
-- Restart the dev server after changing `globals.css`
+- Tailwind v4 no usa `tailwind.config.js` — la configuración está en `globals.css`
+- Asegurar que `postcss.config.mjs` tenga el plugin `@tailwindcss/postcss`
+- Reiniciar el servidor de desarrollo después de cambiar `globals.css`
 
-### Build Fails on GitHub Actions
+### El Build Falla en GitHub Actions
 
-- The CI uses `next build` with static export (`output: 'export'` in `next.config.ts`)
-- Ensure `images.unoptimized` is `true` in `next.config.ts` (required for static export)
-- Check that `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` is set as a GitHub secret
+- El CI usa `next build` con export estático (`output: 'export'` en `next.config.ts`)
+- Asegurar que `images.unoptimized` sea `true` en `next.config.ts` (requerido para export estático)
+- Verificar que `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` esté configurada como secreto en GitHub
 
-### TypeScript Errors with Google Maps
+### Errores de TypeScript con Google Maps
 
-- The `@types/google.maps` package provides type definitions
-- If `google.maps` types aren't resolving, restart your IDE / TypeScript server
-- The `StreetViewExplorer` component handles all Google Maps API interactions — prefer extending it over creating new Maps components
+- El paquete `@types/google.maps` proporciona las definiciones de tipos
+- Si los tipos de `google.maps` no se resuelven, reiniciar tu IDE / servidor de TypeScript
+- El componente `StreetViewExplorer` maneja todas las interacciones con la API de Google Maps — es preferible extenderlo en lugar de crear nuevos componentes de Maps

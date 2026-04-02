@@ -1,26 +1,26 @@
-# Architecture — UBEX
+# Arquitectura — UBEX
 
-> Technical architecture documentation for UBEX, the geo-exploration treasure hunt platform.
-
----
-
-## Table of Contents
-
-1. [System Overview](#system-overview)
-2. [Frontend Architecture](#frontend-architecture)
-3. [Backend Architecture](#backend-architecture)
-4. [Database Schema](#database-schema)
-5. [Authentication Flow](#authentication-flow)
-6. [Real-Time Features](#real-time-features)
-7. [Google Maps Integration](#google-maps-integration)
-8. [AI Integration — Gemini](#ai-integration--gemini)
-9. [State Management](#state-management)
-10. [Security Considerations](#security-considerations)
-11. [Deployment Architecture](#deployment-architecture)
+> Documentación de arquitectura técnica para UBEX, la plataforma de búsqueda de tesoros y geo-exploración.
 
 ---
 
-## System Overview
+## Tabla de Contenidos
+
+1. [Visión General del Sistema](#visión-general-del-sistema)
+2. [Arquitectura del Frontend](#arquitectura-del-frontend)
+3. [Arquitectura del Backend](#arquitectura-del-backend)
+4. [Esquema de Base de Datos](#esquema-de-base-de-datos)
+5. [Flujo de Autenticación](#flujo-de-autenticación)
+6. [Funcionalidades en Tiempo Real](#funcionalidades-en-tiempo-real)
+7. [Integración con Google Maps](#integración-con-google-maps)
+8. [Integración con IA — Gemini](#integración-con-ia--gemini)
+9. [Gestión de Estado](#gestión-de-estado)
+10. [Consideraciones de Seguridad](#consideraciones-de-seguridad)
+11. [Arquitectura de Despliegue](#arquitectura-de-despliegue)
+
+---
+
+## Visión General del Sistema
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
@@ -55,29 +55,29 @@
                                                       └──────────────┘
 ```
 
-### Technology Stack
+### Stack Tecnológico
 
-| Layer | Technology | Version | Purpose |
-|-------|-----------|---------|---------|
+| Capa | Tecnología | Versión | Propósito |
+|------|-----------|---------|-----------|
 | **Framework** | Next.js | 16.2.1 | App Router, SSR, API routes |
-| **UI Library** | React | 19.2.4 | Component rendering |
-| **Language** | TypeScript | 5.x | Type safety |
-| **Styling** | Tailwind CSS | 4.x | Utility-first CSS (via PostCSS) |
-| **Icons** | Phosphor Icons | Latest | `@phosphor-icons/react` |
-| **State** | Zustand | Latest | Client-side game state |
-| **Database** | Supabase (PostgreSQL) | Latest | Data persistence, auth, realtime |
-| **Maps** | Google Maps JS API | weekly | Street View, panorama service |
-| **Maps Loader** | @googlemaps/js-api-loader | 2.x | Lazy API loading |
-| **AI** | Google Gemini | gemini-pro | Answer validation, saga generation |
-| **Payments** | PayPal | Latest | `@paypal/react-paypal-js` |
-| **3D** | Three.js / R3F | Latest | Globe visualization (planned) |
-| **Hosting** | Vercel | — | Serverless deployment |
+| **Librería UI** | React | 19.2.4 | Renderizado de componentes |
+| **Lenguaje** | TypeScript | 5.x | Seguridad de tipos |
+| **Estilos** | Tailwind CSS | 4.x | CSS utility-first (vía PostCSS) |
+| **Íconos** | Phosphor Icons | Latest | `@phosphor-icons/react` |
+| **Estado** | Zustand | Latest | Estado del juego en el cliente |
+| **Base de Datos** | Supabase (PostgreSQL) | Latest | Persistencia de datos, auth, realtime |
+| **Mapas** | Google Maps JS API | weekly | Street View, servicio de panorama |
+| **Cargador de Mapas** | @googlemaps/js-api-loader | 2.x | Carga diferida de la API |
+| **IA** | Google Gemini | gemini-pro | Validación de respuestas, generación de sagas |
+| **Pagos** | PayPal | Latest | `@paypal/react-paypal-js` |
+| **3D** | Three.js / R3F | Latest | Visualización de globo (planificado) |
+| **Hosting** | Vercel | — | Despliegue serverless |
 
 ---
 
-## Frontend Architecture
+## Arquitectura del Frontend
 
-### App Router Structure
+### Estructura del App Router
 
 ```
 src/
@@ -115,7 +115,7 @@ src/
 └── middleware.ts             ← Auth session refresh + /admin protection
 ```
 
-### Component Tree (Game Page)
+### Árbol de Componentes (Página de Juego)
 
 ```mermaid
 graph TD
@@ -135,18 +135,18 @@ graph TD
     Sidebar --> LevelProgress["LevelProgress<br/>12 dots + progress bar"]
 ```
 
-### Root Layout
+### Layout Raíz
 
-The root layout (`src/app/layout.tsx`) sets up:
+El layout raíz (`src/app/layout.tsx`) configura:
 
-- **Fonts**: Outfit (sans-serif, `--font-sans`) and JetBrains Mono (monospace, `--font-mono`)
-- **Language**: `<html lang="es">` — Spanish as primary language
-- **Theme**: Dark theme via `zinc-950` background with antialiased text
-- **Metadata**: Title "UBEX — Arqueología Digital" with SEO keywords
+- **Fuentes**: Outfit (sans-serif, `--font-sans`) y JetBrains Mono (monospace, `--font-mono`)
+- **Idioma**: `<html lang="es">` — español como idioma principal
+- **Tema**: Tema oscuro mediante fondo `zinc-950` con texto suavizado (antialiased)
+- **Metadatos**: Título "UBEX — Arqueología Digital" con palabras clave SEO
 
-### Styling Architecture
+### Arquitectura de Estilos
 
-UBEX uses **Tailwind CSS v4** configured through PostCSS (no `tailwind.config` file):
+UBEX utiliza **Tailwind CSS v4** configurado a través de PostCSS (sin archivo `tailwind.config`):
 
 ```
 postcss.config.mjs
@@ -168,13 +168,13 @@ src/app/globals.css
 
 ---
 
-## Backend Architecture
+## Arquitectura del Backend
 
-### Current State (Demo)
+### Estado Actual (Demo)
 
-The demo runs **entirely client-side**. All game logic, answer validation, and state management happen in the browser. This is intentional for the MVP/demo phase.
+El demo se ejecuta **completamente en el cliente**. Toda la lógica del juego, la validación de respuestas y la gestión de estado ocurren en el navegador. Esto es intencional para la fase de MVP/demo.
 
-### Planned Architecture (Production)
+### Arquitectura Planificada (Producción)
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
@@ -207,20 +207,20 @@ The demo runs **entirely client-side**. All game logic, answer validation, and s
                    └──────────────┘      └──────────────┘
 ```
 
-### API Route Design Principles
+### Principios de Diseño de API Routes
 
-1. **Answer validation is server-side** — correct answers are never sent to the client
-2. **Saga data is filtered** — `GET /api/sagas/[id]` strips `correctAnswers`, `targetLat`, `targetLng` from the response
-3. **AI calls are server-side only** — `GEMINI_API_KEY` is a server-only env variable (no `NEXT_PUBLIC_` prefix)
-4. **Admin routes are protected** — middleware redirects unauthenticated users from `/admin` to `/login`
+1. **La validación de respuestas es server-side** — las respuestas correctas nunca se envían al cliente
+2. **Los datos de sagas se filtran** — `GET /api/sagas/[id]` elimina `correctAnswers`, `targetLat`, `targetLng` de la respuesta
+3. **Las llamadas a IA son server-side únicamente** — `GEMINI_API_KEY` es una variable de entorno solo del servidor (sin prefijo `NEXT_PUBLIC_`)
+4. **Las rutas de admin están protegidas** — el middleware redirige a usuarios no autenticados de `/admin` a `/login`
 
 ---
 
-## Database Schema
+## Esquema de Base de Datos
 
-The database schema is defined in `src/types/database.ts` (Supabase-generated type scaffold). The planned tables are:
+El esquema de base de datos está definido en `src/types/database.ts` (scaffold de tipos generado por Supabase). Las tablas planificadas son:
 
-### Entity Relationship Diagram
+### Diagrama de Entidad-Relación
 
 ```mermaid
 erDiagram
@@ -303,9 +303,9 @@ erDiagram
     game_sessions ||--o{ level_attempts : "records"
 ```
 
-### Leaderboard View
+### Vista de Tabla de Posiciones
 
-A database view (`leaderboard`) aggregates session data for ranking:
+Una vista de base de datos (`leaderboard`) agrega datos de sesión para el ranking:
 
 ```sql
 -- Planned leaderboard view
@@ -326,10 +326,10 @@ WHERE gs.status = 'completed'
 ORDER BY gs.completed_at ASC, gs.score DESC;
 ```
 
-### Database Enums
+### Enums de Base de Datos
 
-| Enum | Values |
-|------|--------|
+| Enum | Valores |
+|------|---------|
 | `user_role` | `player`, `creator`, `admin` |
 | `saga_status` | `draft`, `scheduled`, `active`, `completed` |
 | `difficulty_mode` | `libre`, `explorador` |
@@ -338,11 +338,11 @@ ORDER BY gs.completed_at ASC, gs.score DESC;
 
 ---
 
-## Authentication Flow
+## Flujo de Autenticación
 
-UBEX uses **Supabase Auth** for authentication, with Next.js middleware for session management.
+UBEX utiliza **Supabase Auth** para la autenticación, con middleware de Next.js para la gestión de sesiones.
 
-### Flow Diagram
+### Diagrama de Flujo
 
 ```mermaid
 sequenceDiagram
@@ -368,30 +368,30 @@ sequenceDiagram
     end
 ```
 
-### Implementation Details
+### Detalles de Implementación
 
 **Middleware** (`src/middleware.ts`):
-- Runs on every request (excluding static assets, images, favicon)
-- Delegates to `updateSession()` from `src/lib/supabase/middleware.ts`
-- Protects `/admin` routes — redirects unauthenticated users to `/login`
+- Se ejecuta en cada solicitud (excluyendo activos estáticos, imágenes, favicon)
+- Delega a `updateSession()` de `src/lib/supabase/middleware.ts`
+- Protege las rutas `/admin` — redirige a usuarios no autenticados a `/login`
 
-**Browser Client** (`src/lib/supabase/client.ts`):
-- Singleton pattern via `getSupabaseBrowser()`
-- Uses `createBrowserClient<Database>()` from `@supabase/ssr`
-- Reads `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+**Cliente del Navegador** (`src/lib/supabase/client.ts`):
+- Patrón singleton mediante `getSupabaseBrowser()`
+- Usa `createBrowserClient<Database>()` de `@supabase/ssr`
+- Lee `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 
-**Server Client** (`src/lib/supabase/server.ts`):
-- Async function `getSupabaseServer()`
-- Uses `cookies()` from `next/headers` for cookie-based auth
-- Handles cookie set errors gracefully when called from Server Components
+**Cliente del Servidor** (`src/lib/supabase/server.ts`):
+- Función asíncrona `getSupabaseServer()`
+- Usa `cookies()` de `next/headers` para autenticación basada en cookies
+- Maneja errores de configuración de cookies de forma elegante cuando se llama desde Server Components
 
 ---
 
-## Real-Time Features
+## Funcionalidades en Tiempo Real
 
-### Supabase Realtime (Planned)
+### Supabase Realtime (Planificado)
 
-UBEX will use Supabase Realtime for live game features:
+UBEX utilizará Supabase Realtime para funcionalidades de juego en vivo:
 
 ```
 ┌─────────────────────────────────────────────────────┐
@@ -408,9 +408,9 @@ UBEX will use Supabase Realtime for live game features:
 └─────────────────────────────────────────────────────┘
 ```
 
-### LiveGameEvent Type
+### Tipo LiveGameEvent
 
-Defined in `src/types/index.ts`:
+Definido en `src/types/index.ts`:
 
 ```typescript
 interface LiveGameEvent {
@@ -423,9 +423,9 @@ interface LiveGameEvent {
 }
 ```
 
-### Demo: Simulated Participants
+### Demo: Participantes Simulados
 
-In the current demo, participant counts are simulated client-side:
+En el demo actual, los conteos de participantes se simulan en el cliente:
 
 ```
 Base: 4,832 participants
@@ -437,13 +437,13 @@ Floor: minimum 200 (display), minimum 100 (jitter)
 
 ---
 
-## Google Maps Integration
+## Integración con Google Maps
 
-### Street View Architecture
+### Arquitectura de Street View
 
-The `StreetViewExplorer` component (`src/components/maps/StreetViewExplorer.tsx`) manages all Google Maps interactions.
+El componente `StreetViewExplorer` (`src/components/maps/StreetViewExplorer.tsx`) gestiona todas las interacciones con Google Maps.
 
-### API Loading Strategy
+### Estrategia de Carga de la API
 
 ```
 ┌──────────────────────────────────────────────────────────┐
@@ -464,9 +464,9 @@ The `StreetViewExplorer` component (`src/components/maps/StreetViewExplorer.tsx`
 └──────────────────────────────────────────────────────────┘
 ```
 
-### Panorama Finding
+### Búsqueda de Panorama
 
-When a level loads, the component searches for the nearest Street View panorama:
+Cuando se carga un nivel, el componente busca el panorama de Street View más cercano:
 
 ```typescript
 const service = new google.maps.StreetViewService();
@@ -479,17 +479,17 @@ const response = await service.getPanorama({
 });
 ```
 
-**Key parameters**:
+**Parámetros clave**:
 
-| Parameter | Value | Why |
-|-----------|-------|-----|
-| `radius` | `200` meters | Wide enough to find coverage, narrow enough to stay near the target |
-| `preference` | `NEAREST` | Get the closest panorama to spawn point |
-| `source` | `OUTDOOR` | Exclude indoor panoramas (museums, shops) |
+| Parámetro | Valor | Razón |
+|-----------|-------|-------|
+| `radius` | `200` metros | Suficientemente amplio para encontrar cobertura, suficientemente estrecho para mantenerse cerca del objetivo |
+| `preference` | `NEAREST` | Obtener el panorama más cercano al punto de inicio |
+| `source` | `OUTDOOR` | Excluir panoramas interiores (museos, tiendas) |
 
-### Position Tracking
+### Seguimiento de Posición
 
-The component listens for player movement and reports coordinates:
+El componente escucha el movimiento del jugador y reporta coordenadas:
 
 ```
 Player drags/clicks in Street View
@@ -511,36 +511,36 @@ Used for Haversine distance calculation
 (mode explorador only)
 ```
 
-### Component States
+### Estados del Componente
 
-| State | Meaning | Display |
-|-------|---------|---------|
-| `loading` | API or panorama loading | Spinner + "Cargando Street View..." |
-| `ready` | Panorama rendered, interactive | Full Street View |
-| `error` | API key missing or load failure | Error message |
-| `no-coverage` | No panorama found within 200m | "Sin cobertura" message |
+| Estado | Significado | Visualización |
+|--------|-------------|---------------|
+| `loading` | Cargando API o panorama | Spinner + "Cargando Street View..." |
+| `ready` | Panorama renderizado, interactivo | Street View completo |
+| `error` | API key faltante o error de carga | Mensaje de error |
+| `no-coverage` | No se encontró panorama en 200m | Mensaje "Sin cobertura" |
 
-### Environment Variable
+### Variable de Entorno
 
 ```
 NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_api_key_here
 ```
 
-This is the **only** Maps-related env variable. It's `NEXT_PUBLIC_` because the Google Maps JS API loads client-side.
+Esta es la **única** variable de entorno relacionada con Maps. Lleva el prefijo `NEXT_PUBLIC_` porque la API de Google Maps JS se carga en el cliente.
 
 ---
 
-## AI Integration — Gemini
+## Integración con IA — Gemini
 
-### Client Setup
+### Configuración del Cliente
 
-Defined in `src/lib/gemini/client.ts`. Uses `@google/generative-ai` package with model `gemini-pro`.
+Definido en `src/lib/gemini/client.ts`. Usa el paquete `@google/generative-ai` con el modelo `gemini-pro`.
 
 ```
 Environment variable: GEMINI_API_KEY (server-side only — no NEXT_PUBLIC_ prefix)
 ```
 
-### Answer Validation with AI
+### Validación de Respuestas con IA
 
 ```mermaid
 sequenceDiagram
@@ -565,7 +565,7 @@ sequenceDiagram
     end
 ```
 
-**Prompt structure** (answer validation):
+**Estructura del prompt** (validación de respuestas):
 
 ```
 Given this riddle: "{clueContext}"
@@ -580,7 +580,7 @@ Determine if the player's answer is correct. Consider:
 Return JSON: { isCorrect: boolean, confidence: number, reasoning: string }
 ```
 
-### Saga Generation with AI
+### Generación de Sagas con IA
 
 ```
 generateRiddle(locationDescription, difficulty)
@@ -601,17 +601,17 @@ generateRiddle(locationDescription, difficulty)
     Return structured riddle data
 ```
 
-### Current Status
+### Estado Actual
 
-> **Important**: The demo page (`/play`) does **not** call Gemini. It uses local fuzzy matching against `DEMO_LEVELS[].correctAnswers[]`. Gemini integration is scaffolded and ready for production use via API routes.
+> **Importante**: La página de demo (`/play`) **no** llama a Gemini. Utiliza coincidencia difusa local contra `DEMO_LEVELS[].correctAnswers[]`. La integración con Gemini está preparada (scaffold) y lista para uso en producción a través de API routes.
 
 ---
 
-## State Management
+## Gestión de Estado
 
 ### Zustand Game Store
 
-Defined in `src/lib/store/game-store.ts`:
+Definido en `src/lib/store/game-store.ts`:
 
 ```typescript
 interface GameStore {
@@ -632,40 +632,40 @@ interface GameStore {
 }
 ```
 
-### Demo State (Play Page)
+### Estado del Demo (Página de Juego)
 
-The current demo uses local React state instead of the Zustand store:
+El demo actual usa estado local de React en lugar del store de Zustand:
 
-| State Variable | Type | Purpose |
-|---------------|------|---------|
-| `phase` | `'intro' \| 'playing' \| 'completed'` | Current game phase |
-| `difficulty` | `'libre' \| 'explorador'` | Chosen difficulty mode |
-| `levelIndex` | `number` | Current level (0-indexed) |
-| `completedLevels` | `Set<number>` | Completed level indices |
-| `answer` | `string` | Current answer input |
-| `feedback` | `object \| null` | `{ type, message }` for correct/incorrect/too-far |
-| `submitting` | `boolean` | Loading state during validation |
-| `shakeInput` | `boolean` | Trigger input shake animation |
-| `playerPos` | `{ lat, lng } \| null` | Player's current Street View position |
-| `startTime` | `number \| null` | `Date.now()` when saga started |
-| `sidebarOpen` | `boolean` | Mobile sidebar visibility |
+| Variable de Estado | Tipo | Propósito |
+|-------------------|------|-----------|
+| `phase` | `'intro' \| 'playing' \| 'completed'` | Fase actual del juego |
+| `difficulty` | `'libre' \| 'explorador'` | Modo de dificultad elegido |
+| `levelIndex` | `number` | Nivel actual (indexado desde 0) |
+| `completedLevels` | `Set<number>` | Índices de niveles completados |
+| `answer` | `string` | Entrada de respuesta actual |
+| `feedback` | `object \| null` | `{ type, message }` para correcto/incorrecto/muy-lejos |
+| `submitting` | `boolean` | Estado de carga durante validación |
+| `shakeInput` | `boolean` | Activar animación de sacudida del input |
+| `playerPos` | `{ lat, lng } \| null` | Posición actual del jugador en Street View |
+| `startTime` | `number \| null` | `Date.now()` al iniciar la saga |
+| `sidebarOpen` | `boolean` | Visibilidad del sidebar en móvil |
 
 ---
 
-## Security Considerations
+## Consideraciones de Seguridad
 
-### Answer Protection
+### Protección de Respuestas
 
-| Concern | Current (Demo) | Planned (Production) |
-|---------|----------------|---------------------|
-| **Answer storage** | Client-side in `demo-saga.ts` | Server-side only (Supabase, never sent to client) |
-| **Answer validation** | Client-side fuzzy match | Server-side via API route + optional Gemini |
-| **Target coordinates** | Client-side in demo data | Stripped from client responses; server-side proximity validation |
-| **Score calculation** | Not yet implemented | Server-side only |
+| Aspecto | Actual (Demo) | Planificado (Producción) |
+|---------|---------------|--------------------------|
+| **Almacenamiento de respuestas** | En el cliente en `demo-saga.ts` | Solo server-side (Supabase, nunca se envía al cliente) |
+| **Validación de respuestas** | Coincidencia difusa en el cliente | Server-side vía API route + Gemini opcional |
+| **Coordenadas objetivo** | En el cliente en datos del demo | Se eliminan de las respuestas al cliente; validación de proximidad server-side |
+| **Cálculo de puntaje** | Aún no implementado | Solo server-side |
 
 ### Supabase Row Level Security (RLS)
 
-Planned RLS policies:
+Políticas de RLS planificadas:
 
 ```sql
 -- Players can only read their own sessions
@@ -693,18 +693,18 @@ USING (
 -- (filtered out in API response, RLS allows read for server role)
 ```
 
-### API Key Security
+### Seguridad de API Keys
 
-| Key | Exposure | Rationale |
-|-----|----------|-----------|
-| `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` | Client-side | Required for Maps JS API; restricted by HTTP referrer in Google Cloud Console |
-| `NEXT_PUBLIC_SUPABASE_URL` | Client-side | Safe with RLS enabled; Supabase designed for this |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Client-side | Limited by RLS policies; no direct DB access |
-| `GEMINI_API_KEY` | Server-side only | Never exposed to client; used in API routes only |
-| `PAYPAL_CLIENT_SECRET` | Server-side only | Payment processing; never in browser |
-| `NEXT_PUBLIC_FIREBASE_*` | Client-side | Firebase config is safe to expose; security via Firebase Rules |
+| Clave | Exposición | Justificación |
+|-------|------------|---------------|
+| `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` | Cliente | Requerida para la API JS de Maps; restringida por HTTP referrer en Google Cloud Console |
+| `NEXT_PUBLIC_SUPABASE_URL` | Cliente | Segura con RLS habilitado; Supabase está diseñado para esto |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Cliente | Limitada por políticas de RLS; sin acceso directo a la BD |
+| `GEMINI_API_KEY` | Solo servidor | Nunca se expone al cliente; se usa solo en API routes |
+| `PAYPAL_CLIENT_SECRET` | Solo servidor | Procesamiento de pagos; nunca en el navegador |
+| `NEXT_PUBLIC_FIREBASE_*` | Cliente | La configuración de Firebase es segura de exponer; seguridad vía Firebase Rules |
 
-### Middleware Protection
+### Protección del Middleware
 
 ```typescript
 // src/lib/supabase/middleware.ts
@@ -719,9 +719,9 @@ if (request.nextUrl.pathname.startsWith('/admin')) {
 
 ---
 
-## Deployment Architecture
+## Arquitectura de Despliegue
 
-### Current Deployment
+### Despliegue Actual
 
 ```
 ┌──────────────┐     ┌──────────────────┐     ┌──────────────┐
@@ -733,13 +733,13 @@ if (request.nextUrl.pathname.startsWith('/admin')) {
 └──────────────┘     └──────────────────┘     └──────────────┘
 ```
 
-**Current CI/CD** (`.github/workflows/deploy.yml`):
-- Triggers on push to `main`
-- Runs `next build` with `output: 'export'` (static HTML)
-- Deploys `./out/` directory to GitHub Pages
-- Passes `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` as build-time env variable
+**CI/CD Actual** (`.github/workflows/deploy.yml`):
+- Se activa con push a `main`
+- Ejecuta `next build` con `output: 'export'` (HTML estático)
+- Despliega el directorio `./out/` en GitHub Pages
+- Pasa `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` como variable de entorno en tiempo de build
 
-### Planned Production Deployment
+### Despliegue de Producción Planificado
 
 ```
 ┌──────────────┐     ┌──────────────────┐     ┌──────────────┐
@@ -767,32 +767,32 @@ if (request.nextUrl.pathname.startsWith('/admin')) {
            └──────────────┘    └──────────────┘
 ```
 
-### Configuration Files
+### Archivos de Configuración
 
-| File | Purpose |
-|------|---------|
-| `next.config.ts` | `images.unoptimized = true` (for static export compatibility) |
-| `tsconfig.json` | Strict mode, bundler module resolution, `@/*` → `./src/*` path alias |
-| `postcss.config.mjs` | `@tailwindcss/postcss` plugin (Tailwind v4) |
-| `eslint.config.mjs` | Next.js core-web-vitals + TypeScript rules |
-| `.github/workflows/deploy.yml` | CI/CD: build + deploy to GitHub Pages |
+| Archivo | Propósito |
+|---------|-----------|
+| `next.config.ts` | `images.unoptimized = true` (para compatibilidad con exportación estática) |
+| `tsconfig.json` | Modo estricto, resolución de módulos bundler, alias de ruta `@/*` → `./src/*` |
+| `postcss.config.mjs` | Plugin `@tailwindcss/postcss` (Tailwind v4) |
+| `eslint.config.mjs` | Reglas de Next.js core-web-vitals + TypeScript |
+| `.github/workflows/deploy.yml` | CI/CD: build + despliegue en GitHub Pages |
 
-### Environment Variables Summary
+### Resumen de Variables de Entorno
 
-| Variable | Context | Required |
-|----------|---------|----------|
-| `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` | Client + Build | Yes (for Street View) |
-| `NEXT_PUBLIC_SUPABASE_URL` | Client | Yes (production) |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Client | Yes (production) |
-| `GEMINI_API_KEY` | Server only | Yes (for AI features) |
-| `NEXT_PUBLIC_FIREBASE_API_KEY` | Client | Optional (Firebase features) |
-| `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN` | Client | Optional |
-| `NEXT_PUBLIC_FIREBASE_PROJECT_ID` | Client | Optional |
-| `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET` | Client | Optional |
-| `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID` | Client | Optional |
-| `NEXT_PUBLIC_FIREBASE_APP_ID` | Client | Optional |
-| `NEXT_PUBLIC_FIREBASE_DATABASE_URL` | Client | Optional |
-| `NEXT_PUBLIC_PAYPAL_CLIENT_ID` | Client | Optional (payments) |
-| `PAYPAL_CLIENT_SECRET` | Server only | Optional (payments) |
-| `NEXT_PUBLIC_GOOGLE_PAY_MERCHANT_ID` | Client | Optional (payments) |
-| `NEXT_PUBLIC_APP_URL` | Client | Optional (defaults to `http://localhost:3000`) |
+| Variable | Contexto | Requerida |
+|----------|----------|-----------|
+| `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` | Cliente + Build | Sí (para Street View) |
+| `NEXT_PUBLIC_SUPABASE_URL` | Cliente | Sí (producción) |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Cliente | Sí (producción) |
+| `GEMINI_API_KEY` | Solo servidor | Sí (para funcionalidades de IA) |
+| `NEXT_PUBLIC_FIREBASE_API_KEY` | Cliente | Opcional (funcionalidades de Firebase) |
+| `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN` | Cliente | Opcional |
+| `NEXT_PUBLIC_FIREBASE_PROJECT_ID` | Cliente | Opcional |
+| `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET` | Cliente | Opcional |
+| `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID` | Cliente | Opcional |
+| `NEXT_PUBLIC_FIREBASE_APP_ID` | Cliente | Opcional |
+| `NEXT_PUBLIC_FIREBASE_DATABASE_URL` | Cliente | Opcional |
+| `NEXT_PUBLIC_PAYPAL_CLIENT_ID` | Cliente | Opcional (pagos) |
+| `PAYPAL_CLIENT_SECRET` | Solo servidor | Opcional (pagos) |
+| `NEXT_PUBLIC_GOOGLE_PAY_MERCHANT_ID` | Cliente | Opcional (pagos) |
+| `NEXT_PUBLIC_APP_URL` | Cliente | Opcional (por defecto `http://localhost:3000`) |

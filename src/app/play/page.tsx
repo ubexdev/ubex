@@ -11,6 +11,7 @@ import GameHeader from "@/components/game/GameHeader";
 import ResultOverlay from "@/components/game/ResultOverlay";
 import HudBootSequence from "@/components/game/HudBootSequence";
 import HudSystemMessage from "@/components/game/HudSystemMessage";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { useLocale } from "@/i18n";
 
 type GamePhase = "boot" | "intro" | "playing" | "completed";
@@ -645,7 +646,7 @@ function PlayPageContent() {
       .then(async (res) => {
         if (!res.ok) {
           const body = await res.json().catch(() => ({}));
-          throw new Error(body.error || (res.status === 404 ? "Saga no encontrada" : `Error ${res.status}`));
+          throw new Error(body.error || (res.status === 404 ? t("game.sagaNotFound") : `Error ${res.status}`));
         }
         return res.json();
       })
@@ -658,7 +659,7 @@ function PlayPageContent() {
       })
       .catch((err) => {
         if (cancelled) return;
-        setSagaError(err instanceof Error ? err.message : "Error desconocido");
+        setSagaError(err instanceof Error ? err.message : t("game.unknownError"));
         setSagaLoading(false);
       });
 
@@ -775,19 +776,21 @@ function PlayPageContent() {
   /* ── Render: Loading ── */
   if (sagaLoading && phase === "boot") {
     return (
-      <div
-        style={{
-          background: "#09090b",
-          color: "#ededed",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          position: "fixed",
-          inset: 0,
-          zIndex: 50,
-        }}
-      >
+      <>
+        <div style={{ position: "fixed", top: 12, right: 12, zIndex: 50 }}><LanguageSwitcher /></div>
+        <div
+          style={{
+            background: "#09090b",
+            color: "#ededed",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            position: "fixed",
+            inset: 0,
+            zIndex: 50,
+          }}
+        >
         <div
           style={{
             fontSize: 16,
@@ -806,13 +809,16 @@ function PlayPageContent() {
           }
         `}</style>
       </div>
+      </>
     );
   }
 
   /* ── Render: Error ── */
   if (sagaError) {
     return (
-      <div
+      <>
+        <div style={{ position: "fixed", top: 12, right: 12, zIndex: 51 }}><LanguageSwitcher /></div>
+        <div
         style={{
           background: "#09090b",
           color: "#ededed",
@@ -851,32 +857,47 @@ function PlayPageContent() {
           {t("play.backHome")}
         </Link>
       </div>
+      </>
     );
   }
 
   /* ── Render: Boot ── */
   if (phase === "boot") {
     return (
-      <HudBootSequence
-        explorerName="Agente"
-        onComplete={() => setPhase("intro")}
-      />
+      <>
+        <div style={{ position: "fixed", top: 12, right: 12, zIndex: 51 }}><LanguageSwitcher /></div>
+        <HudBootSequence
+          explorerName={t("game.agent")}
+          onComplete={() => setPhase("intro")}
+        />
+      </>
     );
   }
 
   /* ── Render: Intro ── */
   if (phase === "intro") {
-    return <IntroScreen onStart={(diff) => { setDifficulty(diff); setPhase("playing"); }} saga={activeSaga} totalLevels={activeLevels.length} />;
+    return (
+      <>
+        <div style={{ position: "fixed", top: 12, right: 12, zIndex: 51 }}><LanguageSwitcher /></div>
+        <IntroScreen onStart={(diff) => { setDifficulty(diff); setPhase("playing"); }} saga={activeSaga} totalLevels={activeLevels.length} />
+      </>
+    );
   }
 
   /* ── Render: Winner ── */
   if (phase === "completed") {
-    return <WinnerScreen totalTime={Date.now() - startTime} saga={activeSaga} totalLevels={activeLevels.length} />;
+    return (
+      <>
+        <div style={{ position: "fixed", top: 12, right: 12, zIndex: 51 }}><LanguageSwitcher /></div>
+        <WinnerScreen totalTime={Date.now() - startTime} saga={activeSaga} totalLevels={activeLevels.length} />
+      </>
+    );
   }
 
   /* ── Render: Game ── */
   return (
     <div className="play-game" style={{ display: "flex", flexDirection: "column", background: "#000", color: "#ededed" }}>
+      <div style={{ position: "fixed", top: 12, right: 12, zIndex: 51 }}><LanguageSwitcher /></div>
       {hudMessage && (
         <HudSystemMessage
           key={`${hudMessage.type}-${hudMessage.message}`}

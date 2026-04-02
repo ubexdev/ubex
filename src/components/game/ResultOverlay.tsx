@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useLocale } from "@/i18n";
 
 interface ResultOverlayProps {
   type: "correct" | "incorrect" | "winner";
@@ -15,6 +16,7 @@ export default function ResultOverlay({
   explanation,
   onDismiss,
 }: ResultOverlayProps) {
+  const { t } = useLocale();
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -100,7 +102,7 @@ export default function ResultOverlay({
 
         {type === "correct" && (
           <p style={{ fontSize: 13, color: "rgba(255,255,255,0.3)" }}>
-            Cargando siguiente misión...
+            {t("game.loadingNextMission")}
           </p>
         )}
 
@@ -120,7 +122,7 @@ export default function ResultOverlay({
               transition: "all 0.2s",
             }}
           >
-            Intentar de nuevo
+            {t("game.tryAgain")}
           </button>
         )}
 
@@ -140,7 +142,7 @@ export default function ResultOverlay({
                 textDecoration: "none",
               }}
             >
-              Volver al inicio
+              {t("game.backToHome")}
             </a>
           </div>
         )}
