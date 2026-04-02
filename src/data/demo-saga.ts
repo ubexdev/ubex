@@ -165,8 +165,8 @@ export const DEMO_LEVELS: DemoLevel[] = [
     number: 6,
     title: "El Panteón",
     clue: {
-      text: "En el antiguo templo de los jesuitas, convertido en santuario de los héroes nacionales, un objeto peculiar cuelga del centro de la nave. ¿Qué es?",
-      hint: "Es un obsequio del gobierno de España, y nunca deja de arder.",
+      text: "Este imponente edificio neoclásico en la Calle Las Damas fue originalmente un templo jesuita antes de convertirse en santuario de héroes nacionales. ¿Cómo se llama este monumento visible desde la calle?",
+      hint: "Su fachada de piedra tiene columnas clásicas y el nombre está grabado sobre la entrada.",
       difficulty: "medium",
     },
     // Spawn: near Fortaleza Ozama, heading north-west toward Panteón
@@ -178,15 +178,15 @@ export const DEMO_LEVELS: DemoLevel[] = [
     targetLat: 18.47513,
     targetLng: -69.88316,
     correctAnswers: [
-      "lampara",
-      "lámpara",
-      "llama eterna",
-      "llama",
-      "lampara eterna",
-      "lámpara eterna",
+      "panteon nacional",
+      "panteón nacional",
+      "panteon",
+      "panteón",
+      "el panteon",
+      "el panteón",
     ],
     explanation:
-      "En el centro del Panteón Nacional cuelga una lámpara/llama eterna, donada por el gobierno español, como símbolo de los héroes dominicanos.",
+      "El Panteón Nacional, visible desde la Calle Las Damas, fue construido como iglesia jesuita en 1747 y convertido en mausoleo nacional en 1958.",
   },
   {
     id: "level-7",
@@ -219,8 +219,8 @@ export const DEMO_LEVELS: DemoLevel[] = [
     number: 8,
     title: "Las Casas del Rey",
     clue: {
-      text: "Este edificio albergaba la Real Audiencia y la Capitanía General. Hoy es un museo. En su patio hay un instrumento astronómico que marcaba las horas con la sombra del sol. ¿Qué tipo de instrumento es?",
-      hint: "Los romanos ya los usaban. No tiene engranajes ni agujas.",
+      text: "Este edificio de dos plantas con fachada de piedra blanca albergaba la Real Audiencia y la Capitanía General. Su nombre describe a quién pertenecían estos muros. ¿Cómo se llama el museo que hoy ocupa este edificio?",
+      hint: "Está en la Calle Las Damas, frente a la Plaza. El nombre aparece sobre su entrada principal.",
       difficulty: "hard",
     },
     // Spawn: on Calle El Conde heading east toward Casas Reales
@@ -232,13 +232,13 @@ export const DEMO_LEVELS: DemoLevel[] = [
     targetLat: 18.47580,
     targetLng: -69.88316,
     correctAnswers: [
-      "reloj de sol",
-      "reloj solar",
-      "sundial",
-      "gnomon",
+      "museo de las casas reales",
+      "casas reales",
+      "las casas reales",
+      "museo casas reales",
     ],
     explanation:
-      "El Museo de las Casas Reales conserva un reloj de sol en su patio central, herencia de la administración colonial española.",
+      "El Museo de las Casas Reales, sobre la Calle Las Damas, fue la sede de la Real Audiencia colonial. Su nombre es visible en la fachada principal.",
   },
   {
     id: "level-9",
@@ -320,8 +320,8 @@ export const DEMO_LEVELS: DemoLevel[] = [
     number: 12,
     title: "El Tesoro Final",
     clue: {
-      text: "Has recorrido la ciudad más antigua del Nuevo Mundo. Para reclamar el tesoro, responde: ¿en qué año fue fundada la ciudad de Santo Domingo por Bartolomé Colón?",
-      hint: "Fue antes de 1500, durante el segundo viaje de los Colón.",
+      text: "Has recorrido la ciudad más antigua del Nuevo Mundo. De vuelta en el Parque Colón, observa la base del monumento al Almirante. ¿Cuántas figuras femeninas rodean el pedestal de la estatua?",
+      hint: "Mira alrededor de la base — son figuras alegóricas de tamaño real.",
       difficulty: "extreme",
     },
     // Spawn: Plaza España, heading south toward Parque Colón (full circle)
@@ -332,8 +332,8 @@ export const DEMO_LEVELS: DemoLevel[] = [
     // Target: Parque Colón — Columbus statue (verified, full circle)
     targetLat: 18.47348,
     targetLng: -69.88399,
-    correctAnswers: ["1498", "1496"],
+    correctAnswers: ["4", "cuatro", "four"],
     explanation:
-      "Santo Domingo fue fundada en 1498 (algunos historiadores dicen 1496) por Bartolomé Colón, convirtiéndola en el primer asentamiento europeo permanente de América.",
+      "La estatua de Cristóbal Colón en el Parque Colón está rodeada por 4 figuras femeninas alegóricas visibles desde la plaza, que representan las virtudes del descubrimiento.",
   },
 ];
