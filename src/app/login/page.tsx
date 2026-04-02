@@ -4,8 +4,11 @@ import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import { SignIn, Compass, CircleNotch } from "@phosphor-icons/react";
 import { getSupabaseBrowser } from "@/lib/supabase/client";
+import { useLocale } from "@/i18n";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 export default function LoginPage() {
+  const { t } = useLocale();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -17,7 +20,7 @@ export default function LoginPage() {
 
     const supabase = getSupabaseBrowser();
     if (!supabase) {
-      setError("El servicio de autenticacion no esta disponible.");
+      setError(t("auth.serviceUnavailable"));
       return;
     }
 
@@ -32,9 +35,9 @@ export default function LoginPage() {
       if (authError) {
         setLoading(false);
         if (authError.message === "Invalid login credentials") {
-          setError("Credenciales incorrectas. Verifica tu email y contrasena.");
+          setError(t("auth.invalidCredentials"));
         } else if (authError.message === "Email not confirmed") {
-          setError("Tu email no ha sido confirmado. Revisa tu bandeja de entrada.");
+          setError(t("auth.emailNotConfirmed"));
         } else {
           setError(authError.message);
         }
@@ -58,7 +61,7 @@ export default function LoginPage() {
       }
     } catch (err) {
       console.error("signIn error:", err);
-      setError("Error de conexion. Verifica tu internet e intenta de nuevo.");
+      setError(t("auth.connectionError"));
     }
 
     setLoading(false);
@@ -71,8 +74,12 @@ export default function LoginPage() {
         display: "flex",
         alignItems: "center",
         background: "#09090b",
+        position: "relative",
       }}
     >
+      <div style={{ position: "absolute", top: 16, right: 16, zIndex: 10 }}>
+        <LanguageSwitcher />
+      </div>
       <div
         style={{
           display: "grid",
@@ -124,12 +131,10 @@ export default function LoginPage() {
               marginBottom: 16,
             }}
           >
-            Bienvenido
-            <br />
-            de vuelta
+            {t("auth.welcomeBack")}
           </h1>
           <p style={{ fontSize: 16, color: "rgba(255,255,255,0.45)", lineHeight: 1.6 }}>
-            Inicia sesion para continuar tu aventura de arqueologia digital.
+            {t("auth.welcomeBackDesc")}
           </p>
         </div>
 
@@ -145,10 +150,10 @@ export default function LoginPage() {
         >
           <div style={{ marginBottom: 28 }}>
             <h2 style={{ fontSize: 22, fontWeight: 600, color: "#fafafa", marginBottom: 6 }}>
-              Iniciar Sesion
+              {t("auth.loginTitle")}
             </h2>
             <p style={{ fontSize: 14, color: "rgba(255,255,255,0.4)" }}>
-              Ingresa tus credenciales para acceder
+              {t("auth.loginSubtitle")}
             </p>
           </div>
 
@@ -158,7 +163,7 @@ export default function LoginPage() {
                 htmlFor="email"
                 style={{ display: "block", fontSize: 13, fontWeight: 500, color: "#a1a1aa", marginBottom: 6 }}
               >
-                Email
+                {t("auth.email")}
               </label>
               <input
                 id="email"
@@ -166,7 +171,7 @@ export default function LoginPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="tu@email.com"
+                placeholder={t("auth.emailPlaceholder")}
                 style={{
                   width: "100%",
                   padding: "11px 14px",
@@ -189,13 +194,13 @@ export default function LoginPage() {
                   htmlFor="password"
                   style={{ fontSize: 13, fontWeight: 500, color: "#a1a1aa" }}
                 >
-                  Contrasena
+                  {t("auth.password")}
                 </label>
                 <Link
                   href="/forgot-password"
                   style={{ fontSize: 12, color: "#d97706", textDecoration: "none" }}
                 >
-                  Olvidaste tu contrasena?
+                  {t("auth.forgotPassword")}
                 </Link>
               </div>
               <input
@@ -204,7 +209,7 @@ export default function LoginPage() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Tu contrasena"
+                placeholder={t("auth.passwordPlaceholder")}
                 style={{
                   width: "100%",
                   padding: "11px 14px",
@@ -263,19 +268,19 @@ export default function LoginPage() {
               ) : (
                 <SignIn size={20} weight="bold" />
               )}
-              {loading ? "Ingresando..." : "Iniciar Sesion"}
+              {loading ? t("auth.loggingIn") : t("auth.loginButton")}
             </button>
           </form>
 
           <div style={{ textAlign: "center", marginTop: 24 }}>
             <span style={{ fontSize: 14, color: "rgba(255,255,255,0.4)" }}>
-              No tienes cuenta?{" "}
+              {t("auth.noAccount")}{" "}
             </span>
             <Link
               href="/register"
               style={{ fontSize: 14, color: "#d97706", fontWeight: 600, textDecoration: "none" }}
             >
-              Registrate
+              {t("auth.registerButton")}
             </Link>
           </div>
         </div>

@@ -15,6 +15,7 @@ import {
 } from "@phosphor-icons/react";
 import { getSupabaseBrowser } from "@/lib/supabase/client";
 import { useAuth } from "@/components/auth/AuthProvider";
+import { useLocale } from "@/i18n";
 
 type TabId = "global" | "saga" | "weekly";
 
@@ -104,6 +105,7 @@ function TopThreeCard({
   position: 1 | 2 | 3;
   isCurrentUser: boolean;
 }) {
+  const { t } = useLocale();
   const borderColor =
     position === 1 ? "#d97706" : position === 2 ? "#a1a1aa" : "#92400e";
   const bgGlow =
@@ -160,7 +162,7 @@ function TopThreeCard({
             marginBottom: 4,
           }}
         >
-          {entry.display_name ?? "Anónimo"}
+          {entry.display_name ?? t("leaderboard.anonymous")}
         </div>
         <div
           className="tabular-nums"
@@ -169,7 +171,7 @@ function TopThreeCard({
           {formatScore(entry.total_score)}
         </div>
         <div style={{ fontSize: 11, color: "#71717a", marginTop: 4 }}>
-          {entry.sagas_completed} sagas completadas
+          {entry.sagas_completed} {t("leaderboard.sagasCompletedCount")}
         </div>
       </div>
     </div>
@@ -178,6 +180,7 @@ function TopThreeCard({
 
 export default function LeaderboardPage() {
   const { user } = useAuth();
+  const { t } = useLocale();
   const supabase = getSupabaseBrowser();
 
   const [activeTab, setActiveTab] = useState<TabId>("global");
@@ -317,9 +320,9 @@ export default function LeaderboardPage() {
   const tableEntries = showTopThree ? entries.slice(3) : entries;
 
   const tabs: { id: TabId; label: string; icon: typeof Trophy }[] = [
-    { id: "global", label: "Global", icon: Trophy },
-    { id: "saga", label: "Por Saga", icon: MapPin },
-    { id: "weekly", label: "Semanal", icon: CalendarBlank },
+    { id: "global", label: t("leaderboard.tabGlobal"), icon: Trophy },
+    { id: "saga", label: t("leaderboard.tabSaga"), icon: MapPin },
+    { id: "weekly", label: t("leaderboard.tabWeekly"), icon: CalendarBlank },
   ];
 
   return (
@@ -473,7 +476,7 @@ export default function LeaderboardPage() {
             <CaretLeft size={18} weight="bold" color="#a1a1aa" />
             <Trophy size={22} weight="bold" color="#d97706" />
             <span style={{ fontSize: 18, fontWeight: 700, letterSpacing: "-0.03em" }}>
-              Tabla de Clasificación
+              {t("leaderboard.headerTitle")}
             </span>
           </Link>
           <Link
@@ -489,7 +492,7 @@ export default function LeaderboardPage() {
               textDecoration: "none",
             }}
           >
-            Explorar
+            {t("leaderboard.explore")}
           </Link>
         </div>
       </header>
@@ -546,11 +549,11 @@ export default function LeaderboardPage() {
             {sagasLoading ? (
               <div style={{ display: "flex", alignItems: "center", gap: 8, color: "#71717a" }}>
                 <SpinnerGap size={16} className="compass-rotate" />
-                <span style={{ fontSize: 13 }}>Cargando sagas...</span>
+                <span style={{ fontSize: 13 }}>{t("leaderboard.loadingSagas")}</span>
               </div>
             ) : sagas.length === 0 ? (
               <p style={{ fontSize: 13, color: "#71717a" }}>
-                No hay sagas activas disponibles.
+                {t("leaderboard.noActiveSagas")}
               </p>
             ) : (
               <div className="lb-saga-wrap" style={{ position: "relative", width: "fit-content" }}>
@@ -613,7 +616,7 @@ export default function LeaderboardPage() {
               className="compass-rotate"
             />
             <span style={{ fontSize: 14, color: "#71717a" }}>
-              Cargando clasificación...
+              {t("leaderboard.loading")}
             </span>
           </div>
         )}
@@ -633,10 +636,10 @@ export default function LeaderboardPage() {
             <UsersThree size={48} weight="thin" color="#52525b" />
             <p style={{ fontSize: 15, color: "#71717a", textAlign: "center" }}>
               {activeTab === "weekly"
-                ? "Aún no hay puntuaciones esta semana."
+                ? t("leaderboard.noWeeklyScores")
                 : activeTab === "saga"
-                  ? "No hay resultados para esta saga."
-                  : "Aún no hay exploradores en la clasificación."}
+                  ? t("leaderboard.noSagaResults")
+                  : t("leaderboard.noExplorers")}
             </p>
             <Link
               href="/play"
@@ -656,7 +659,7 @@ export default function LeaderboardPage() {
               }}
             >
               <GameController size={18} weight="bold" />
-              Explorar ahora
+              {t("leaderboard.exploreNow")}
             </Link>
           </div>
         )}
@@ -714,9 +717,9 @@ export default function LeaderboardPage() {
               }}
             >
               <span>#</span>
-              <span>Explorador</span>
-              <span style={{ textAlign: "right" }}>XP de Datos</span>
-              <span style={{ textAlign: "right" }}>Partidas</span>
+              <span>{t("leaderboard.explorer")}</span>
+              <span style={{ textAlign: "right" }}>{t("leaderboard.xp")}</span>
+              <span style={{ textAlign: "right" }}>{t("leaderboard.games")}</span>
             </div>
 
             {tableEntries.map((entry) => {
@@ -758,7 +761,7 @@ export default function LeaderboardPage() {
                           color: isCurrentUser ? "#fafafa" : "#e4e4e7",
                         }}
                       >
-                        {entry.display_name ?? "Anónimo"}
+                        {entry.display_name ?? t("leaderboard.anonymous")}
                         {isCurrentUser && (
                           <span
                             style={{
@@ -773,7 +776,7 @@ export default function LeaderboardPage() {
                               textTransform: "uppercase",
                             }}
                           >
-                            Tú
+                            {t("leaderboard.you")}
                           </span>
                         )}
                       </div>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { CaretDoubleRight } from "@phosphor-icons/react";
+import { useLocale } from "@/i18n";
 
 /* ─────────────────────────────────────────────────────────────
    HudBootSequence
@@ -39,6 +40,7 @@ export default function HudBootSequence({
   explorerName,
   onComplete,
 }: HudBootSequenceProps) {
+  const { t } = useLocale();
   /* ── visual state ── */
   const [completedLines, setCompletedLines] = useState<CompletedLine[]>([]);
   const [typingText, setTypingText] = useState("");
@@ -50,10 +52,15 @@ export default function HudBootSequence({
   const cancelledRef = useRef(false);
   const onCompleteRef = useRef(onComplete);
   const nameRef = useRef(explorerName);
+  const tRef = useRef(t);
 
   useEffect(() => {
     onCompleteRef.current = onComplete;
   }, [onComplete]);
+
+  useEffect(() => {
+    tRef.current = t;
+  }, [t]);
 
   /* ── main sequence ── */
   useEffect(() => {
@@ -61,19 +68,20 @@ export default function HudBootSequence({
       new Promise<void>((resolve) => setTimeout(resolve, ms));
 
     const name = nameRef.current;
+    const tr = tRef.current;
 
     const lines = [
       {
-        text: "SISTEMA: Iniciando protocolo UBEX v2.6...",
-        badge: "[OK]",
+        text: `${tr("hud.system")}: ${tr("hud.bootLine1")}`,
+        badge: `[${tr("hud.bootOk")}]`,
       },
       {
-        text: "SISTEMA: Enlazando con constelación de satélites Google Maps...",
-        badge: "[OK]",
+        text: `${tr("hud.system")}: ${tr("hud.bootLine2")}`,
+        badge: `[${tr("hud.bootOk")}]`,
       },
       {
-        text: `SISTEMA: Localizando coordenadas de Explorador: ${name}...`,
-        badge: "[ESTADO: ACTIVO]",
+        text: `${tr("hud.system")}: ${tr("hud.bootLine3")} ${name}...`,
+        badge: `[${tr("hud.bootActive")}]`,
       },
     ];
 
@@ -147,7 +155,7 @@ export default function HudBootSequence({
         transition: `opacity ${FADE_MS}ms ease-out`,
       }}
       role="status"
-      aria-label="Secuencia de inicio del sistema UBEX"
+      aria-label={t("hud.bootSequenceLabel")}
     >
       {/* ── scanline overlay ── */}
       <div
@@ -180,7 +188,7 @@ export default function HudBootSequence({
           className="mb-8 font-mono text-zinc-600"
           style={{ fontSize: "11px", letterSpacing: "0.2em" }}
         >
-          ━━━ UBEX SISTEMA SATELITAL v2.6 ━━━
+          ━━━ {t("hud.systemHeader")} ━━━
         </div>
 
         {/* completed lines */}
@@ -252,18 +260,17 @@ export default function HudBootSequence({
               className="mb-2 font-mono text-amber-600"
               style={{ fontSize: "10px", letterSpacing: "0.2em" }}
             >
-              HUD — TRANSMISIÓN ACTIVA
+              {t("hud.transmissionActive")}
             </div>
             <p
               className="font-mono leading-relaxed text-amber-600"
               style={{ fontSize: "15px" }}
             >
-              &ldquo;Bienvenido al tablero global,{" "}
+              &ldquo;{t("hud.bootWelcome")}{" "}
               <span className="font-bold text-amber-500">
                 {explorerName}
               </span>
-              . El mundo es una base de datos. Tu misión es
-              descifrarla.&rdquo;
+              . {t("hud.bootWelcomeMsg")}&rdquo;
             </p>
           </div>
         )}
@@ -280,9 +287,9 @@ export default function HudBootSequence({
           letterSpacing: "0.1em",
           backdropFilter: "blur(8px)",
         }}
-        aria-label="Saltar secuencia de inicio"
+        aria-label={t("hud.skipBootSequence")}
       >
-        SALTAR
+        {t("hud.skip")}
         <CaretDoubleRight size={14} weight="bold" />
       </button>
 

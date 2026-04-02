@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Broadcast, CircleNotch } from "@phosphor-icons/react";
+import { useLocale } from "@/i18n";
 
 interface ClueCardProps {
   levelNumber: number;
@@ -16,11 +17,18 @@ interface ClueCardProps {
   onHintUsed?: () => void;
 }
 
-const difficultyConfig = {
-  easy: { label: "FÁCIL", color: "#22c55e", bg: "rgba(34,197,94,0.1)" },
-  medium: { label: "MEDIO", color: "#f59e0b", bg: "rgba(245,158,11,0.1)" },
-  hard: { label: "DIFÍCIL", color: "#ef4444", bg: "rgba(239,68,68,0.1)" },
-  extreme: { label: "EXTREMO", color: "#a855f7", bg: "rgba(168,85,247,0.1)" },
+const difficultyKeys: Record<string, string> = {
+  easy: "game.easy",
+  medium: "game.medium",
+  hard: "game.hard",
+  extreme: "game.extreme",
+};
+
+const difficultyColors: Record<string, { color: string; bg: string }> = {
+  easy: { color: "#22c55e", bg: "rgba(34,197,94,0.1)" },
+  medium: { color: "#f59e0b", bg: "rgba(245,158,11,0.1)" },
+  hard: { color: "#ef4444", bg: "rgba(239,68,68,0.1)" },
+  extreme: { color: "#a855f7", bg: "rgba(168,85,247,0.1)" },
 };
 
 const HINT_BORDER_COLORS = [
@@ -29,10 +37,10 @@ const HINT_BORDER_COLORS = [
   "#fcd34d", // amber-300 — level 3
 ];
 
-const FALLBACK_HINTS = [
-  "Señal débil detectada. Explora los alrededores.",
-  "Datos parciales. El objetivo está cerca de un punto de referencia.",
-  "Señal fuerte. Revisa los nombres visibles en tu entorno.",
+const FALLBACK_HINT_KEYS = [
+  "game.fallbackHint1",
+  "game.fallbackHint2",
+  "game.fallbackHint3",
 ];
 
 export default function ClueCard({
@@ -47,10 +55,11 @@ export default function ClueCard({
   country,
   onHintUsed,
 }: ClueCardProps) {
+  const { t } = useLocale();
   const [hints, setHints] = useState<string[]>([]);
   const [hintLevel, setHintLevel] = useState(0);
   const [loadingHint, setLoadingHint] = useState(false);
-  const diff = difficultyConfig[difficulty];
+  const diff = difficultyColors[difficulty];
 
   // Reset hints when the level changes
   useEffect(() => {
@@ -91,7 +100,7 @@ export default function ClueCard({
         onHintUsed?.();
       }
     } catch {
-      setHints((prev) => [...prev, FALLBACK_HINTS[nextLevel - 1]]);
+      setHints((prev) => [...prev, t(FALLBACK_HINT_KEYS[nextLevel - 1])]);
       setHintLevel(nextLevel);
     } finally {
       setLoadingHint(false);
@@ -100,10 +109,10 @@ export default function ClueCard({
 
   /* ── Radar button label ── */
   const getButtonLabel = (): string => {
-    if (hintLevel === 0) return "Activar Radar (Señal 1/3)";
-    if (hintLevel === 1) return "Amplificar Señal (2/3)";
-    if (hintLevel === 2) return "Señal Máxima (3/3)";
-    return "Radar agotado";
+    if (hintLevel === 0) return `${t("hud.activateRadar")} (${t("game.signalCount", { current: "1" })})`;
+    if (hintLevel === 1) return `${t("hud.amplifySignal")} (${t("game.signalCount", { current: "2" })})`;
+    if (hintLevel === 2) return `${t("hud.maxSignal")} (${t("game.signalCount", { current: "3" })})`;
+    return t("hud.radarExhausted");
   };
 
   const isExhausted = hintLevel >= 3;
@@ -135,7 +144,7 @@ export default function ClueCard({
               fontFamily: "var(--font-sans), Outfit, sans-serif",
             }}
           >
-            MISIÓN {levelNumber}/{totalLevels}
+            {t("hud.missionLabel")} {levelNumber}/{totalLevels}
           </span>
         </div>
         <span
@@ -149,7 +158,7 @@ export default function ClueCard({
             letterSpacing: "0.1em",
           }}
         >
-          {diff.label}
+          {t(difficultyKeys[difficulty])}
         </span>
       </div>
 
@@ -214,7 +223,7 @@ export default function ClueCard({
                   fontFamily: "var(--font-mono), monospace",
                 }}
               >
-                [SEÑAL {i + 1}]
+                [{t("hud.signal")} {i + 1}]
               </span>
               <p
                 style={{
@@ -257,7 +266,7 @@ export default function ClueCard({
                   fontFamily: "var(--font-sans), Outfit, sans-serif",
                 }}
               >
-                Calibrando señal…
+                {t("hud.calibrating")}
               </span>
             </div>
           )}

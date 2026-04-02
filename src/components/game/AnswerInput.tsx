@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useLocale } from "@/i18n";
 
 interface AnswerInputProps {
   levelNumber: number;
@@ -13,6 +14,7 @@ export default function AnswerInput({
   isLocked,
   onSubmit,
 }: AnswerInputProps) {
+  const { t } = useLocale();
   const [answer, setAnswer] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [feedback, setFeedback] = useState<{
@@ -31,7 +33,7 @@ export default function AnswerInput({
       await onSubmit(answer.trim());
       setFeedback({
         type: "success",
-        message: "[SINCRONIZACIÓN EXITOSA] Avanzas a la siguiente misión.",
+        message: t("game.syncSuccessMsg"),
       });
       setAnswer("");
     } catch (err) {
@@ -40,7 +42,7 @@ export default function AnswerInput({
         message:
           err instanceof Error
             ? err.message
-            : "Respuesta incorrecta. Has sido eliminado.",
+            : t("game.incorrectEliminated"),
       });
     } finally {
       setSubmitting(false);
@@ -50,7 +52,7 @@ export default function AnswerInput({
   return (
     <div className="w-full max-w-md mx-auto">
       <h3 className="text-lg font-bold text-white mb-3">
-        Misión {levelNumber} — Ingresa el dato
+        {t("game.missionEntry", { number: String(levelNumber) })}
       </h3>
 
       <form onSubmit={handleSubmit} className="flex gap-2">
@@ -58,7 +60,7 @@ export default function AnswerInput({
           type="text"
           value={answer}
           onChange={(e) => setAnswer(e.target.value)}
-          placeholder="Ingresa el dato exacto..."
+          placeholder={t("game.enterExactData")}
           disabled={isLocked || submitting}
           className="flex-1 px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-amber-500 disabled:opacity-50"
         />
@@ -67,7 +69,7 @@ export default function AnswerInput({
           disabled={isLocked || submitting || !answer.trim()}
           className="px-6 py-3 bg-amber-500 hover:bg-amber-600 text-black font-bold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {submitting ? "..." : "ENVIAR"}
+          {submitting ? "..." : t("game.submitButton")}
         </button>
       </form>
 

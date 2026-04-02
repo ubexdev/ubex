@@ -4,8 +4,11 @@ import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import { UserPlus, Compass, CircleNotch, CheckCircle } from "@phosphor-icons/react";
 import { getSupabaseBrowser } from "@/lib/supabase/client";
+import { useLocale } from "@/i18n";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 export default function RegisterPage() {
+  const { t } = useLocale();
   const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -16,13 +19,13 @@ export default function RegisterPage() {
 
   function validate(): string | null {
     if (displayName.trim().length < 2) {
-      return "El nombre debe tener al menos 2 caracteres.";
+      return t("auth.nameMinError");
     }
     if (password.length < 8) {
-      return "La contrasena debe tener al menos 8 caracteres.";
+      return t("auth.passwordMinError");
     }
     if (password !== confirmPassword) {
-      return "Las contrasenas no coinciden.";
+      return t("auth.passwordMismatchError");
     }
     return null;
   }
@@ -39,7 +42,7 @@ export default function RegisterPage() {
 
     const supabase = getSupabaseBrowser();
     if (!supabase) {
-      setError("El servicio de autenticacion no esta disponible.");
+      setError(t("auth.serviceUnavailable"));
       return;
     }
 
@@ -56,7 +59,7 @@ export default function RegisterPage() {
 
       if (authError) {
         if (authError.message.includes("already registered")) {
-          setError("Este email ya esta registrado. Intenta iniciar sesion.");
+          setError(t("auth.alreadyRegisteredError"));
         } else {
           setError(authError.message);
         }
@@ -64,7 +67,7 @@ export default function RegisterPage() {
         return;
       }
     } catch (err) {
-      setError("Error de conexion. Verifica tu internet e intenta de nuevo.");
+      setError(t("auth.connectionError"));
       console.error("signUp error:", err);
       setLoading(false);
       return;
@@ -115,10 +118,10 @@ export default function RegisterPage() {
             <CheckCircle size={28} weight="fill" color="#22c55e" />
           </div>
           <h2 style={{ fontSize: 22, fontWeight: 600, color: "#fafafa", marginBottom: 10 }}>
-            Cuenta creada
+            {t("auth.accountCreated")}
           </h2>
           <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.6, marginBottom: 28 }}>
-            Revisa tu email para confirmar tu cuenta. Puede tardar unos minutos en llegar.
+            {t("auth.checkEmail")}
           </p>
           <Link
             href="/login"
@@ -136,7 +139,7 @@ export default function RegisterPage() {
               textDecoration: "none",
             }}
           >
-            Ir a Iniciar Sesion
+            {t("auth.goToLogin")}
           </Link>
         </div>
       </div>
@@ -170,8 +173,12 @@ export default function RegisterPage() {
         display: "flex",
         alignItems: "center",
         background: "#09090b",
+        position: "relative",
       }}
     >
+      <div style={{ position: "absolute", top: 16, right: 16, zIndex: 10 }}>
+        <LanguageSwitcher />
+      </div>
       <div
         style={{
           display: "grid",
@@ -223,12 +230,10 @@ export default function RegisterPage() {
               marginBottom: 16,
             }}
           >
-            Unete a la
-            <br />
-            expedicion
+            {t("auth.joinExpedition")}
           </h1>
           <p style={{ fontSize: 16, color: "rgba(255,255,255,0.45)", lineHeight: 1.6 }}>
-            Crea tu cuenta y comienza a explorar calles reales, resolver acertijos y reclamar tesoros.
+            {t("auth.joinExpeditionDesc")}
           </p>
         </div>
 
@@ -244,17 +249,17 @@ export default function RegisterPage() {
         >
           <div style={{ marginBottom: 28 }}>
             <h2 style={{ fontSize: 22, fontWeight: 600, color: "#fafafa", marginBottom: 6 }}>
-              Crear Cuenta
+              {t("auth.createAccountTitle")}
             </h2>
             <p style={{ fontSize: 14, color: "rgba(255,255,255,0.4)" }}>
-              Completa los datos para registrarte
+              {t("auth.createAccountSubtitle")}
             </p>
           </div>
 
           <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             <div>
               <label htmlFor="displayName" style={labelStyle}>
-                Nombre
+                {t("auth.displayName")}
               </label>
               <input
                 id="displayName"
@@ -262,7 +267,7 @@ export default function RegisterPage() {
                 required
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
-                placeholder="Tu nombre de explorador"
+                placeholder={t("auth.namePlaceholder")}
                 style={inputStyle}
                 onFocus={(e) => (e.currentTarget.style.borderColor = "#d97706")}
                 onBlur={(e) => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)")}
@@ -271,7 +276,7 @@ export default function RegisterPage() {
 
             <div>
               <label htmlFor="email" style={labelStyle}>
-                Email
+                {t("auth.email")}
               </label>
               <input
                 id="email"
@@ -288,7 +293,7 @@ export default function RegisterPage() {
 
             <div>
               <label htmlFor="password" style={labelStyle}>
-                Contrasena
+                {t("auth.password")}
               </label>
               <input
                 id="password"
@@ -296,7 +301,7 @@ export default function RegisterPage() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Minimo 8 caracteres"
+                placeholder={t("auth.passwordMin")}
                 style={inputStyle}
                 onFocus={(e) => (e.currentTarget.style.borderColor = "#d97706")}
                 onBlur={(e) => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)")}
@@ -305,7 +310,7 @@ export default function RegisterPage() {
 
             <div>
               <label htmlFor="confirmPassword" style={labelStyle}>
-                Confirmar Contrasena
+                {t("auth.confirmPassword")}
               </label>
               <input
                 id="confirmPassword"
@@ -313,7 +318,7 @@ export default function RegisterPage() {
                 required
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Repite tu contrasena"
+                placeholder={t("auth.confirmPasswordPlaceholder")}
                 style={inputStyle}
                 onFocus={(e) => (e.currentTarget.style.borderColor = "#d97706")}
                 onBlur={(e) => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)")}
@@ -362,19 +367,19 @@ export default function RegisterPage() {
               ) : (
                 <UserPlus size={20} weight="bold" />
               )}
-              {loading ? "Creando cuenta..." : "Crear Cuenta"}
+              {loading ? t("auth.creatingAccount") : t("auth.createAccountTitle")}
             </button>
           </form>
 
           <div style={{ textAlign: "center", marginTop: 24 }}>
             <span style={{ fontSize: 14, color: "rgba(255,255,255,0.4)" }}>
-              Ya tienes cuenta?{" "}
+              {t("auth.hasAccount")}{" "}
             </span>
             <Link
               href="/login"
               style={{ fontSize: 14, color: "#d97706", fontWeight: 600, textDecoration: "none" }}
             >
-              Iniciar Sesion
+              {t("auth.loginButton")}
             </Link>
           </div>
         </div>

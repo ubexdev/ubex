@@ -4,8 +4,10 @@ import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import { Compass, Envelope, CircleNotch, CheckCircle, ArrowLeft } from "@phosphor-icons/react";
 import { getSupabaseBrowser } from "@/lib/supabase/client";
+import { useLocale } from "@/i18n";
 
 export default function ForgotPasswordPage() {
+  const { t } = useLocale();
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
@@ -17,7 +19,7 @@ export default function ForgotPasswordPage() {
 
     const supabase = getSupabaseBrowser();
     if (!supabase) {
-      setError("El servicio de autenticacion no esta disponible.");
+      setError(t("auth.serviceUnavailable"));
       return;
     }
 
@@ -35,7 +37,7 @@ export default function ForgotPasswordPage() {
         return;
       }
     } catch {
-      setError("Error de conexion. Verifica tu internet e intenta de nuevo.");
+      setError(t("auth.connectionError"));
       setLoading(false);
       return;
     }
@@ -96,10 +98,10 @@ export default function ForgotPasswordPage() {
             <CheckCircle size={28} weight="fill" color="#22c55e" />
           </div>
           <h2 style={{ fontSize: 22, fontWeight: 600, color: "#fafafa", marginBottom: 10 }}>
-            Email enviado
+            {t("auth.emailSent")}
           </h2>
           <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.6, marginBottom: 28 }}>
-            Si existe una cuenta con <strong style={{ color: "#e4e4e7" }}>{email}</strong>, recibiras un enlace para restablecer tu contrasena.
+            {t("auth.resetEmailMessage", { email })}
           </p>
           <Link
             href="/login"
@@ -117,7 +119,7 @@ export default function ForgotPasswordPage() {
               textDecoration: "none",
             }}
           >
-            Volver a Iniciar Sesion
+            {t("auth.backToLogin")}
           </Link>
         </div>
       </div>
@@ -159,7 +161,7 @@ export default function ForgotPasswordPage() {
           }}
         >
           <ArrowLeft size={16} weight="bold" />
-          Volver
+          {t("common.back")}
         </Link>
 
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 28 }}>
@@ -178,10 +180,10 @@ export default function ForgotPasswordPage() {
           </div>
           <div>
             <h2 style={{ fontSize: 22, fontWeight: 600, color: "#fafafa", marginBottom: 2 }}>
-              Recuperar Contrasena
+              {t("auth.forgotPasswordTitle")}
             </h2>
             <p style={{ fontSize: 14, color: "rgba(255,255,255,0.4)" }}>
-              Ingresa tu email para recibir un enlace
+              {t("auth.forgotPasswordSubtitle")}
             </p>
           </div>
         </div>
@@ -192,7 +194,7 @@ export default function ForgotPasswordPage() {
               htmlFor="email"
               style={{ display: "block", fontSize: 13, fontWeight: 500, color: "#a1a1aa", marginBottom: 6 }}
             >
-              Email
+              {t("auth.email")}
             </label>
             <input
               id="email"
@@ -200,7 +202,7 @@ export default function ForgotPasswordPage() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="tu@email.com"
+              placeholder={t("auth.emailPlaceholder")}
               style={inputStyle}
               onFocus={(e) => (e.currentTarget.style.borderColor = "#d97706")}
               onBlur={(e) => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)")}
@@ -249,7 +251,7 @@ export default function ForgotPasswordPage() {
             ) : (
               <Envelope size={20} weight="bold" />
             )}
-            {loading ? "Enviando..." : "Enviar Enlace"}
+            {loading ? t("auth.sending") : t("auth.sendLink")}
           </button>
         </form>
       </div>

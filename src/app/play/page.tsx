@@ -11,6 +11,7 @@ import GameHeader from "@/components/game/GameHeader";
 import ResultOverlay from "@/components/game/ResultOverlay";
 import HudBootSequence from "@/components/game/HudBootSequence";
 import HudSystemMessage from "@/components/game/HudSystemMessage";
+import { useLocale } from "@/i18n";
 
 type GamePhase = "boot" | "intro" | "playing" | "completed";
 type Feedback = { type: "correct" | "incorrect" | "too-far"; levelIndex: number } | null;
@@ -164,19 +165,20 @@ function useSimulatedParticipants(currentLevel: number) {
    ═══════════════════════════════════════════ */
 function IntroScreen({ onStart, saga, totalLevels }: { onStart: (difficulty: Difficulty) => void; saga: typeof DEMO_SAGA; totalLevels: number }) {
   const [selectedDiff, setSelectedDiff] = useState<Difficulty>("libre");
+  const { t } = useLocale();
 
   const difficulties: { id: Difficulty; icon: string; label: string; desc: string }[] = [
     {
       id: "libre",
       icon: "🟢",
-      label: "Libre",
-      desc: "Responde desde cualquier posición. Solo necesitas el dato exacto.",
+      label: t("play.diffFree"),
+      desc: t("play.diffFreeDesc"),
     },
     {
       id: "explorador",
       icon: "🟠",
-      label: "Explorador",
-      desc: `Debes estar a menos de ${PROXIMITY_RADIUS_M}m del lugar de la señal para poder responder. ¡Navega hasta el sitio!`,
+      label: t("play.diffExplorer"),
+      desc: t("play.diffExplorerDesc", { radius: String(PROXIMITY_RADIUS_M) }),
     },
   ];
 
@@ -225,7 +227,7 @@ function IntroScreen({ onStart, saga, totalLevels }: { onStart: (difficulty: Dif
           gap: 6,
         }}
       >
-        ← Volver
+        {t("play.back")}
       </Link>
 
       <div className="play-intro-content" style={{ position: "relative", zIndex: 10 }}>
@@ -279,10 +281,10 @@ function IntroScreen({ onStart, saga, totalLevels }: { onStart: (difficulty: Dif
           }}
         >
           {[
-            { icon: "🗺️", value: String(totalLevels), label: "Misiones" },
-            { icon: "🏆", value: "$1,000", label: "Premio USD" },
-            { icon: "👥", value: "5,000", label: "Exploradores" },
-            { icon: "📍", value: "RD", label: "Santo Domingo" },
+            { icon: "🗺️", value: String(totalLevels), label: t("play.missions") },
+            { icon: "🏆", value: "$1,000", label: t("play.prize") },
+            { icon: "👥", value: "5,000", label: t("play.explorers") },
+            { icon: "📍", value: "RD", label: t("play.location") },
           ].map((s) => (
             <div key={s.label} style={{ textAlign: "center" }}>
               <span style={{ fontSize: 24, display: "block", marginBottom: 4 }}>{s.icon}</span>
@@ -308,14 +310,14 @@ function IntroScreen({ onStart, saga, totalLevels }: { onStart: (difficulty: Dif
           }}
         >
           <h3 style={{ fontSize: 14, fontWeight: 700, color: "#fbbf24", marginBottom: 16, letterSpacing: "0.1em", textTransform: "uppercase" }}>
-            Protocolo de exploración
+            {t("play.protocol")}
           </h3>
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             {[
-              "Explora las calles de la Zona Colonial usando Google Street View",
-              "Lee cada señal de radar con atención — la respuesta está en lo que ves",
-              "Ingresa el dato exacto para avanzar a la siguiente misión",
-              `Completa las ${totalLevels} misiones para reclamar el tesoro`,
+              t("play.rule1"),
+              t("play.rule2"),
+              t("play.rule3"),
+              t("play.rule4", { count: String(totalLevels) }),
             ].map((rule, i) => (
               <div key={i} style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
                 <span
@@ -365,7 +367,7 @@ function IntroScreen({ onStart, saga, totalLevels }: { onStart: (difficulty: Dif
               textAlign: "center",
             }}
           >
-            Elige tu dificultad
+            {t("play.chooseDifficulty")}
           </h3>
           {difficulties.map((d) => {
             const isSelected = selectedDiff === d.id;
@@ -454,12 +456,12 @@ function IntroScreen({ onStart, saga, totalLevels }: { onStart: (difficulty: Dif
             e.currentTarget.style.transform = "translateY(0)";
           }}
         >
-          COMENZAR EXPLORACIÓN
+          {t("play.startExploration")}
           <span style={{ fontSize: 20 }}>🧭</span>
         </button>
 
         <p style={{ marginTop: 16, fontSize: 12, color: "rgba(255,255,255,0.2)" }}>
-          {`Demo gratuito — ${totalLevels} misiones explorables`}
+          {`${t("play.demoNote")} — ${totalLevels} ${t("play.missionsExplorable")}`}
         </p>
       </div>
 
@@ -471,6 +473,7 @@ function IntroScreen({ onStart, saga, totalLevels }: { onStart: (difficulty: Dif
    WINNER SCREEN
    ═══════════════════════════════════════════ */
 function WinnerScreen({ totalTime, saga, totalLevels }: { totalTime: number; saga: typeof DEMO_SAGA; totalLevels: number }) {
+  const { t } = useLocale();
   const minutes = Math.floor(totalTime / 60000);
   const seconds = Math.floor((totalTime % 60000) / 1000);
 
@@ -514,12 +517,12 @@ function WinnerScreen({ totalTime, saga, totalLevels }: { totalTime: number; sag
             marginBottom: 12,
           }}
         >
-          <span style={{ color: "#fbbf24" }}>¡TESORO</span>{" "}
-          <span style={{ color: "#fff" }}>ENCONTRADO!</span>
+          <span style={{ color: "#fbbf24" }}>{t("play.treasureWord")}</span>{" "}
+          <span style={{ color: "#fff" }}>{t("play.foundWord")}</span>
         </h1>
 
         <p style={{ fontSize: 17, color: "rgba(255,255,255,0.4)", lineHeight: 1.7, marginBottom: 32 }}>
-          {`Has completado las ${totalLevels} misiones de la ${saga.title} y recorrido ${saga.city} como un verdadero arqueólogo digital.`}
+          {t("play.completionDesc", { count: String(totalLevels), saga: saga.title, city: saga.city })}
         </p>
 
         <div
@@ -537,7 +540,7 @@ function WinnerScreen({ totalTime, saga, totalLevels }: { totalTime: number; sag
               {`${totalLevels}/${totalLevels}`}
             </span>
             <span style={{ fontSize: 11, color: "rgba(255,255,255,0.3)", textTransform: "uppercase", letterSpacing: "0.1em" }}>
-              Misiones
+              {t("play.missions")}
             </span>
           </div>
           <div style={{ width: 1, background: "rgba(255,255,255,0.1)" }} />
@@ -546,7 +549,7 @@ function WinnerScreen({ totalTime, saga, totalLevels }: { totalTime: number; sag
               {minutes}:{String(seconds).padStart(2, "0")}
             </span>
             <span style={{ fontSize: 11, color: "rgba(255,255,255,0.3)", textTransform: "uppercase", letterSpacing: "0.1em" }}>
-              Tiempo total
+              {t("play.totalTime")}
             </span>
           </div>
           <div style={{ width: 1, background: "rgba(255,255,255,0.1)" }} />
@@ -555,7 +558,7 @@ function WinnerScreen({ totalTime, saga, totalLevels }: { totalTime: number; sag
               $1,000
             </span>
             <span style={{ fontSize: 11, color: "rgba(255,255,255,0.3)", textTransform: "uppercase", letterSpacing: "0.1em" }}>
-              Premio USD
+              {t("play.prize")}
             </span>
           </div>
         </div>
@@ -575,7 +578,7 @@ function WinnerScreen({ totalTime, saga, totalLevels }: { totalTime: number; sag
               transition: "all 0.2s",
             }}
           >
-            Volver al inicio
+            {t("play.backHome")}
           </Link>
           <button
             onClick={() => window.location.reload()}
@@ -590,7 +593,7 @@ function WinnerScreen({ totalTime, saga, totalLevels }: { totalTime: number; sag
               cursor: "pointer",
             }}
           >
-            Explorar de nuevo
+            {t("play.exploreAgain")}
           </button>
         </div>
       </div>
@@ -604,6 +607,7 @@ function WinnerScreen({ totalTime, saga, totalLevels }: { totalTime: number; sag
 function PlayPageContent() {
   const searchParams = useSearchParams();
   const sagaId = searchParams.get("saga");
+  const { t } = useLocale();
 
   const [sagaData, setSagaData] = useState<{ saga: typeof DEMO_SAGA; levels: DemoLevel[] } | null>(null);
   const [sagaLoading, setSagaLoading] = useState(true);
@@ -701,14 +705,14 @@ function PlayPageContent() {
     setNoCoverage(false);
     setAnswer("");
     setFeedback(null);
-    setHudMessage({ type: "info", message: "[SALTO] Misión sin cobertura — avanzando" });
+    setHudMessage({ type: "info", message: t("play.skipMessage") });
     if (levelIndex < activeLevels.length - 1) {
       setLevelIndex((i) => i + 1);
     } else {
       setPhase("completed");
     }
     setTimeout(() => setHudMessage(null), 2500);
-  }, [levelIndex, activeLevels.length]);
+  }, [levelIndex, activeLevels.length, t]);
 
   const handleSubmit = useCallback(
     (e: React.FormEvent) => {
@@ -718,7 +722,7 @@ function PlayPageContent() {
       // Block if explorador mode and too far
       if (proximityBlocked) {
         setFeedback({ type: "too-far", levelIndex });
-        setHudMessage({ type: "info", message: "Acércate a las coordenadas objetivo para validar datos" });
+        setHudMessage({ type: "info", message: t("play.tooFar") });
         setShakeInput(true);
         setTimeout(() => setShakeInput(false), 600);
         setTimeout(() => { setFeedback(null); setHudMessage(null); }, 3000);
@@ -734,7 +738,7 @@ function PlayPageContent() {
 
         if (isCorrect) {
           setFeedback({ type: "correct", levelIndex });
-          setHudMessage({ type: "success", message: "[DATA LOCK] Coordenadas verificadas — avanzando a siguiente misión" });
+          setHudMessage({ type: "success", message: t("play.dataLockVerified") });
           const newCompleted = [...completedLevels, level.number];
           setCompletedLevels(newCompleted);
 
@@ -752,14 +756,14 @@ function PlayPageContent() {
           }, 2500);
         } else {
           setFeedback({ type: "incorrect", levelIndex });
-          setHudMessage({ type: "error", message: "[DATO IMPRECISO] Respuesta incorrecta — intenta de nuevo" });
+          setHudMessage({ type: "error", message: t("play.dataErrorMsg") });
           setShakeInput(true);
           setTimeout(() => setShakeInput(false), 600);
           setTimeout(() => { setFeedback(null); setHudMessage(null); }, 2000);
         }
       }, 600);
     },
-    [answer, submitting, level, levelIndex, completedLevels, proximityBlocked]
+    [answer, submitting, level, levelIndex, completedLevels, proximityBlocked, activeLevels.length, t]
   );
 
   const dismissFeedback = useCallback(() => {
@@ -793,7 +797,7 @@ function PlayPageContent() {
             animation: "pulse 1.5s ease-in-out infinite",
           }}
         >
-          CARGANDO MISIÓN...
+          {t("play.loadingMission")}
         </div>
         <style>{`
           @keyframes pulse {
@@ -826,7 +830,7 @@ function PlayPageContent() {
       >
         <span style={{ fontSize: 48 }}>⚠️</span>
         <h1 style={{ fontSize: 24, fontWeight: 700, color: "#ef4444" }}>
-          Error al cargar la saga
+          {t("play.errorTitle")}
         </h1>
         <p style={{ fontSize: 15, color: "rgba(255,255,255,0.4)", maxWidth: 400 }}>
           {sagaError}
@@ -844,7 +848,7 @@ function PlayPageContent() {
             textDecoration: "none",
           }}
         >
-          Volver al inicio
+          {t("play.backHome")}
         </Link>
       </div>
     );
@@ -927,7 +931,7 @@ function PlayPageContent() {
             onMouseEnter={(e) => { e.currentTarget.style.opacity = "1"; }}
             onMouseLeave={(e) => { if (!noCoverage) e.currentTarget.style.opacity = "0.7"; }}
           >
-            {noCoverage ? "Saltar misión →" : "Saltar →"}
+            {noCoverage ? t("play.skipMission") : t("play.skipShort")}
           </button>
 
           {/* Toggle sidebar button */}
@@ -1051,16 +1055,16 @@ function PlayPageContent() {
                     }}
                   >
                     {isCloseEnough
-                      ? "📍 En zona de respuesta"
-                      : "📍 Fuera de rango"}
+                      ? t("play.inRange")
+                      : t("play.outOfRange")}
                   </span>
                   <span style={{ fontSize: 11, color: "rgba(255,255,255,0.3)" }}>
                     {distanceToTarget !== null
                       ? distanceToTarget < 1000
-                        ? `${Math.round(distanceToTarget)}m del objetivo`
-                        : `${(distanceToTarget / 1000).toFixed(1)}km del objetivo`
-                      : "Calculando posición..."}
-                    {!isCloseEnough && ` · Necesitas ≤${PROXIMITY_RADIUS_M}m`}
+                        ? t("play.distanceMeters", { distance: String(Math.round(distanceToTarget)) })
+                        : t("play.distanceKm", { distance: (distanceToTarget / 1000).toFixed(1) })
+                      : t("play.calculatingPosition")}
+                    {!isCloseEnough && ` · ${t("play.needWithin", { radius: String(PROXIMITY_RADIUS_M) })}`}
                   </span>
                 </div>
               </div>
@@ -1080,7 +1084,7 @@ function PlayPageContent() {
                   textTransform: "uppercase",
                 }}
               >
-                TU RESPUESTA
+                {t("play.yourAnswerLabel")}
               </label>
               <div
                 style={{
@@ -1095,8 +1099,8 @@ function PlayPageContent() {
                   onChange={(e) => setAnswer(e.target.value)}
                   placeholder={
                     proximityBlocked
-                      ? "Acércate al lugar para responder..."
-                      : "Escribe lo que encontraste..."
+                      ? t("play.approachPlaceholder")
+                      : t("play.answerPlaceholder")
                   }
                   disabled={submitting || feedback?.type === "correct"}
                   autoFocus
@@ -1152,24 +1156,24 @@ function PlayPageContent() {
                     whiteSpace: "nowrap",
                   }}
                 >
-                  {submitting ? "⏳" : proximityBlocked ? "🔒" : "ENVIAR →"}
+                  {submitting ? "⏳" : proximityBlocked ? "🔒" : t("play.submitAnswer")}
                 </button>
               </div>
 
               {/* Inline feedback */}
               {feedback?.type === "too-far" && (
                 <p style={{ fontSize: 13, color: "#f59e0b", fontWeight: 500 }}>
-                  📍 ¡Estás demasiado lejos! Navega hasta las coordenadas de la señal ({Math.round(distanceToTarget || 0)}m)
+                  {t("play.tooFarFeedback", { distance: String(Math.round(distanceToTarget || 0)) })}
                 </p>
               )}
               {feedback?.type === "incorrect" && (
                 <p style={{ fontSize: 13, color: "#ef4444", fontWeight: 500 }}>
-                  ❌ Respuesta incorrecta — sigue explorando
+                  {t("play.incorrectFeedback")}
                 </p>
               )}
               {feedback?.type === "correct" && (
                 <p style={{ fontSize: 13, color: "#22c55e", fontWeight: 500 }}>
-                  ✅ [DATA LOCK] ¡Dato validado! Avanzando...
+                  ✅ {t("play.dataValidated")}
                 </p>
               )}
             </form>
@@ -1195,7 +1199,7 @@ function PlayPageContent() {
               }}
             >
               <p style={{ fontSize: 11, color: "rgba(255,255,255,0.25)", lineHeight: 1.6 }}>
-                💡 <strong style={{ color: "rgba(255,255,255,0.35)" }}>Consejo:</strong> Navega con el mouse por Street View. Haz clic en las flechas del suelo para moverte. Busca señales, placas y detalles arquitectónicos.
+                💡 <strong style={{ color: "rgba(255,255,255,0.35)" }}>{t("play.tipLabel")}</strong> {t("play.tipText")}
               </p>
             </div>
           </div>
@@ -1206,7 +1210,7 @@ function PlayPageContent() {
       {feedback?.type === "correct" && (
         <ResultOverlay
           type="correct"
-          message="[DATA LOCK] ¡Misión completada!"
+          message={t("play.missionCompleted")}
           explanation={activeLevels[feedback.levelIndex].explanation}
         />
       )}
@@ -1231,40 +1235,43 @@ function PlayPageContent() {
 /* ═══════════════════════════════════════════
    PAGE WRAPPER WITH SUSPENSE
    ═══════════════════════════════════════════ */
+function SuspenseLoading() {
+  const { t } = useLocale();
+  return (
+    <div
+      style={{
+        background: "#09090b",
+        position: "fixed",
+        inset: 0,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <div
+        style={{
+          fontSize: 16,
+          fontFamily: "monospace",
+          color: "#d97706",
+          letterSpacing: "0.15em",
+          animation: "pulse 1.5s ease-in-out infinite",
+        }}
+      >
+        {t("play.loadingMission")}
+      </div>
+      <style>{`
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.4; }
+        }
+      `}</style>
+    </div>
+  );
+}
+
 export default function PlayPage() {
   return (
-    <Suspense
-      fallback={
-        <div
-          style={{
-            background: "#09090b",
-            position: "fixed",
-            inset: 0,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <div
-            style={{
-              fontSize: 16,
-              fontFamily: "monospace",
-              color: "#d97706",
-              letterSpacing: "0.15em",
-              animation: "pulse 1.5s ease-in-out infinite",
-            }}
-          >
-            CARGANDO MISIÓN...
-          </div>
-          <style>{`
-            @keyframes pulse {
-              0%, 100% { opacity: 1; }
-              50% { opacity: 0.4; }
-            }
-          `}</style>
-        </div>
-      }
-    >
+    <Suspense fallback={<SuspenseLoading />}>
       <PlayPageContent />
     </Suspense>
   );

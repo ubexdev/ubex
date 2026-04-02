@@ -15,9 +15,11 @@ import {
 } from "@phosphor-icons/react";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { getSupabaseBrowser } from "@/lib/supabase/client";
+import { useLocale } from "@/i18n";
 
 export default function ProfilePage() {
   const { user, profile, loading, signOut, refreshProfile } = useAuth();
+  const { t } = useLocale();
   const router = useRouter();
 
   const [editing, setEditing] = useState(false);
@@ -82,7 +84,7 @@ export default function ProfilePage() {
     profile?.display_name ||
     user.user_metadata?.full_name ||
     user.email?.split("@")[0] ||
-    "Usuario";
+    t("profile.user");
 
   const initials = name
     .split(" ")
@@ -94,12 +96,12 @@ export default function ProfilePage() {
   const statCards = [
     {
       icon: <Trophy size={22} weight="fill" color="#fbbf24" />,
-      label: "Puntuacion Total",
+      label: t("profile.totalScore"),
       value: profile?.total_score?.toLocaleString() ?? "0",
     },
     {
       icon: <MapTrifold size={22} weight="fill" color="#fbbf24" />,
-      label: "Sagas Completadas",
+      label: t("profile.sagasCompleted"),
       value: profile?.sagas_completed?.toString() ?? "0",
     },
   ];
@@ -154,7 +156,7 @@ export default function ProfilePage() {
           }}
         >
           <SignOut size={18} weight="regular" />
-          Cerrar Sesion
+          {t("profile.signOut")}
         </button>
       </header>
 
@@ -237,7 +239,7 @@ export default function ProfilePage() {
             }}
           >
             <CheckCircle size={18} weight="fill" />
-            Perfil actualizado correctamente.
+            {t("profile.profileUpdated")}
           </div>
         )}
 
@@ -256,7 +258,7 @@ export default function ProfilePage() {
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <User size={20} weight="regular" color="#a1a1aa" />
               <span style={{ fontSize: 15, fontWeight: 600, color: "#e4e4e7" }}>
-                Informacion Personal
+                {t("profile.personalInfo")}
               </span>
             </div>
             {!editing && (
@@ -276,7 +278,7 @@ export default function ProfilePage() {
                 }}
               >
                 <PencilSimple size={14} weight="regular" />
-                Editar
+                {t("profile.edit")}
               </button>
             )}
           </div>
@@ -288,7 +290,7 @@ export default function ProfilePage() {
                   htmlFor="editName"
                   style={{ display: "block", fontSize: 13, fontWeight: 500, color: "#a1a1aa", marginBottom: 6 }}
                 >
-                  Nombre
+                  {t("profile.name")}
                 </label>
                 <input
                   id="editName"
@@ -330,7 +332,7 @@ export default function ProfilePage() {
                   }}
                 >
                   {saving && <CircleNotch size={16} weight="bold" className="compass-rotate" />}
-                  Guardar
+                  {t("profile.save")}
                 </button>
                 <button
                   type="button"
@@ -348,22 +350,22 @@ export default function ProfilePage() {
                     cursor: "pointer",
                   }}
                 >
-                  Cancelar
+                  {t("profile.cancel")}
                 </button>
               </div>
             </form>
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <span style={{ fontSize: 13, color: "rgba(255,255,255,0.4)" }}>Nombre</span>
+                <span style={{ fontSize: 13, color: "rgba(255,255,255,0.4)" }}>{t("profile.name")}</span>
                 <span style={{ fontSize: 14, color: "#e4e4e7" }}>{name}</span>
               </div>
               <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <span style={{ fontSize: 13, color: "rgba(255,255,255,0.4)" }}>Email</span>
+                <span style={{ fontSize: 13, color: "rgba(255,255,255,0.4)" }}>{t("profile.email")}</span>
                 <span style={{ fontSize: 14, color: "#e4e4e7" }}>{user.email}</span>
               </div>
               <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <span style={{ fontSize: 13, color: "rgba(255,255,255,0.4)" }}>Rol</span>
+                <span style={{ fontSize: 13, color: "rgba(255,255,255,0.4)" }}>{t("profile.role")}</span>
                 <span style={{ fontSize: 14, color: "#e4e4e7", textTransform: "capitalize" }}>
                   {profile?.role ?? "player"}
                 </span>
@@ -439,7 +441,7 @@ export default function ProfilePage() {
             }}
           >
             <Compass size={20} weight="bold" />
-            Explorar
+            {t("profile.explore")}
           </Link>
           {profile?.role === "admin" && (
             <Link
@@ -461,7 +463,7 @@ export default function ProfilePage() {
                 textDecoration: "none",
               }}
             >
-              Panel Admin
+              {t("profile.adminPanel")}
             </Link>
           )}
         </div>

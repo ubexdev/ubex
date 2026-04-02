@@ -16,6 +16,8 @@ import {
   List,
   X,
 } from "@phosphor-icons/react";
+import { useLocale } from "@/i18n";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 import UserMenu from "@/components/auth/UserMenu";
 import CountdownTimer from "@/components/game/CountdownTimer";
 import LeaderboardWidget from "@/components/game/LeaderboardWidget";
@@ -41,6 +43,7 @@ export default function Home() {
     []
   );
 
+  const { t } = useLocale();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const [sagas, setSagas] = useState<LandingSaga[]>([]);
@@ -143,7 +146,7 @@ export default function Home() {
                 borderRadius: 8,
               }}
             >
-              Cómo funciona
+              {t("landing.nav.howItWorks")}
             </a>
             <Link
               href="/leaderboard"
@@ -160,7 +163,7 @@ export default function Home() {
               }}
             >
               <Trophy size={14} weight="bold" color="#d97706" />
-              Clasificación
+              {t("landing.nav.leaderboard")}
             </Link>
             <a
               href="#misiones"
@@ -175,8 +178,9 @@ export default function Home() {
                 textDecoration: "none",
               }}
             >
-              Iniciar exploración
+              {t("landing.startExploring")}
             </a>
+            <LanguageSwitcher />
             <div style={{ marginLeft: 6 }}>
               <UserMenu />
             </div>
@@ -186,7 +190,7 @@ export default function Home() {
             <button
               className="hamburger-btn"
               onClick={() => setMobileMenuOpen((prev) => !prev)}
-              aria-label={mobileMenuOpen ? "Cerrar menú" : "Abrir menú"}
+              aria-label={mobileMenuOpen ? t("landing.nav.closeMenu") : t("landing.nav.openMenu")}
             >
               {mobileMenuOpen ? (
                 <X size={24} weight="bold" />
@@ -207,7 +211,7 @@ export default function Home() {
             onClick={() => setMobileMenuOpen(false)}
           >
             <Compass size={20} weight="regular" color="#d97706" />
-            Cómo funciona
+            {t("landing.nav.howItWorks")}
           </a>
           <Link
             href="/leaderboard"
@@ -215,15 +219,16 @@ export default function Home() {
             onClick={() => setMobileMenuOpen(false)}
           >
             <Trophy size={20} weight="regular" color="#d97706" />
-            Clasificación
+            {t("landing.nav.leaderboard")}
           </Link>
+          <LanguageSwitcher />
           <div style={{ height: 8 }} />
           <a
             href="#misiones"
             className="mobile-menu-cta"
             onClick={() => setMobileMenuOpen(false)}
           >
-            Iniciar exploración
+            {t("landing.startExploring")}
             <ArrowRight size={16} weight="bold" />
           </a>
         </div>
@@ -263,7 +268,7 @@ export default function Home() {
                   textTransform: "uppercase",
                 }}
               >
-                Arqueología digital
+                {t("landing.digitalArchaeology")}
               </span>
             </div>
 
@@ -278,9 +283,9 @@ export default function Home() {
                 marginBottom: 20,
               }}
             >
-              Explora calles reales.
+              {t("landing.heroTitleLine1")}
               <br />
-              <span style={{ color: "#d97706" }}>Encuentra el tesoro.</span>
+              <span style={{ color: "#d97706" }}>{t("landing.heroTitleLine2")}</span>
             </h1>
 
             <p
@@ -293,9 +298,8 @@ export default function Home() {
                 marginBottom: 36,
               }}
             >
-              Navega Google Street View, resuelve acertijos históricos y compite
-              contra miles de exploradores. El primero en completar todas las misiones
-              gana <span style={{ color: "#e4e4e7", fontWeight: 600 }}>$1,000 USD</span>.
+              {t("landing.heroDescPrefix")}{" "}
+              <span style={{ color: "#e4e4e7", fontWeight: 600 }}>$1,000 USD</span>.
             </p>
 
             <div
@@ -318,7 +322,7 @@ export default function Home() {
                   textDecoration: "none",
                 }}
               >
-                Explorar ahora
+                {t("landing.exploreNow")}
                 <ArrowRight size={16} weight="bold" />
               </Link>
               <a
@@ -336,7 +340,7 @@ export default function Home() {
                   textDecoration: "none",
                 }}
               >
-                Ver misiones
+                {t("landing.viewMissions")}
               </a>
             </div>
           </div>
@@ -408,10 +412,10 @@ export default function Home() {
       >
         <div className="section-inner stats-grid">
           {[
-            { icon: Users, value: "5,000+", label: "Exploradores" },
-            { icon: MapTrifold, value: "12+", label: "Misiones por saga" },
-            { icon: Trophy, value: "$1,000", label: "Premio USD" },
-            { icon: Compass, value: "∞", label: "Ciudades" },
+            { icon: Users, value: "5,000+", label: t("landing.explorers") },
+            { icon: MapTrifold, value: "12+", label: t("landing.missions") },
+            { icon: Trophy, value: "$1,000", label: t("landing.prize") },
+            { icon: Compass, value: "∞", label: t("landing.cities") },
           ].map((stat) => (
             <div key={stat.label}>
               <stat.icon
@@ -458,7 +462,7 @@ export default function Home() {
         <div className="section-narrow">
           <CountdownTimer
             targetDate={sagaStart}
-            label="SAGA DE COLÓN — ZONA COLONIAL, SANTO DOMINGO"
+            label={t("landing.countdownLabel")}
           />
         </div>
       </section>
@@ -497,7 +501,7 @@ export default function Home() {
               marginBottom: 12,
             }}
           >
-            Elige tu aventura
+            {t("landing.chooseAdventure")}
           </p>
           <h2
             style={{
@@ -508,7 +512,7 @@ export default function Home() {
               marginBottom: 8,
             }}
           >
-            📡 MISIONES DISPONIBLES
+            {t("landing.availableMissions")}
           </h2>
           <p
             style={{
@@ -519,7 +523,7 @@ export default function Home() {
               maxWidth: "52ch",
             }}
           >
-            Selecciona una saga y comienza tu exploración
+            {t("landing.selectSagaDesc")}
           </p>
 
           {loadingSagas ? (
@@ -737,7 +741,7 @@ export default function Home() {
                               fontWeight: 500,
                             }}
                           >
-                            {saga.total_levels} misiones
+                            {saga.total_levels} {t("landing.missionsLabel")}
                           </span>
                         )}
                         {diffLabel && (
@@ -784,7 +788,7 @@ export default function Home() {
                     fontStyle: "italic",
                   }}
                 >
-                  Más misiones próximamente
+                  {t("landing.moreMissionsSoon")}
                 </p>
               )}
             </>
@@ -813,7 +817,7 @@ export default function Home() {
               marginBottom: 12,
             }}
           >
-            Protocolo de misión
+            {t("landing.howItWorks")}
           </p>
           <h2
             style={{
@@ -824,7 +828,7 @@ export default function Home() {
               marginBottom: 56,
             }}
           >
-            Cuatro pasos al tesoro
+            {t("landing.fourStepsTitle")}
           </h2>
 
           <div className="steps-grid">
@@ -832,26 +836,26 @@ export default function Home() {
               {
                 Icon: Lock,
                 num: "01",
-                title: "Suscríbete",
-                desc: "Elige tu plan, paga con PayPal y recibe tu membresía con credenciales por email.",
+                title: t("landing.step1Title"),
+                desc: t("landing.step1Desc"),
               },
               {
                 Icon: Timer,
                 num: "02",
-                title: "Espera la señal",
-                desc: "El temporizador global sincronizado marca cuándo se revelan las señales de radar. Todos arrancan al mismo tiempo.",
+                title: t("landing.step2Title"),
+                desc: t("landing.step2Desc"),
               },
               {
                 Icon: Eye,
                 num: "03",
-                title: "Explora",
-                desc: "Recorre calles reales en Google Street View. Encuentra el dato exacto que pide cada señal de radar.",
+                title: t("landing.step3Title"),
+                desc: t("landing.step3Desc"),
               },
               {
                 Icon: Trophy,
                 num: "04",
-                title: "Gana el tesoro",
-                desc: "El primer explorador en completar todas las misiones se lleva $1,000 USD. Solo uno gana.",
+                title: t("landing.step4Title"),
+                desc: t("landing.step4Desc"),
               },
             ].map((step) => (
               <div
@@ -947,7 +951,7 @@ export default function Home() {
                 marginBottom: 12,
               }}
             >
-              Primera misión
+              {t("landing.firstMission")}
             </p>
             <h2
               style={{
@@ -958,7 +962,7 @@ export default function Home() {
                 marginBottom: 16,
               }}
             >
-              Zona Colonial, Santo Domingo
+              {t("landing.firstMissionLocation")}
             </h2>
             <p
               style={{
@@ -968,9 +972,7 @@ export default function Home() {
                 marginBottom: 32,
               }}
             >
-              Elegida por su densidad histórica y detalles visuales únicos
-              capturados por Street View. Una narrativa inmersiva que te desafía a
-              encontrar datos exactos en edificios coloniales reales.
+              {t("landing.firstMissionDesc")}
             </p>
 
             {/* Tags */}
@@ -983,11 +985,11 @@ export default function Home() {
               }}
             >
               {[
-                { Icon: Lightning, text: "IA Gemini valida respuestas" },
-                { Icon: MapTrifold, text: "Google Maps + Street View" },
-                { Icon: Users, text: "5,000 exploradores simultáneos" },
-                { Icon: Trophy, text: "$1,000 USD de premio" },
-                { Icon: Crosshair, text: "Eliminación progresiva" },
+                { Icon: Lightning, text: t("landing.tagGemini") },
+                { Icon: MapTrifold, text: t("landing.tagMaps") },
+                { Icon: Users, text: t("landing.tagExplorers") },
+                { Icon: Trophy, text: t("landing.tagPrize") },
+                { Icon: Crosshair, text: t("landing.tagElimination") },
               ].map((tag) => (
                 <span
                   key={tag.text}
@@ -1026,7 +1028,7 @@ export default function Home() {
                 textDecoration: "none",
               }}
             >
-              Iniciar exploración
+              {t("landing.startExploring")}
               <ArrowRight size={16} weight="bold" />
             </Link>
           </div>
@@ -1061,8 +1063,7 @@ export default function Home() {
             </span>
           </div>
           <p style={{ fontSize: 12, color: "#3f3f46" }}>
-            © {new Date().getFullYear()} UBEX · Impulsada por Google Gemini
-            &amp; Maps Platform
+            © {new Date().getFullYear()} {t("landing.footerCopyright")}
           </p>
         </div>
       </footer>

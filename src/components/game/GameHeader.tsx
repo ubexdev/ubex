@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useLocale } from "@/i18n";
 
 interface GameHeaderProps {
   sagaTitle: string;
@@ -17,6 +18,7 @@ export default function GameHeader({
   activeParticipants,
   onExit,
 }: GameHeaderProps) {
+  const { t } = useLocale();
   return (
     <header
       className="game-header"
@@ -69,7 +71,7 @@ export default function GameHeader({
           </span>
           <span className="gh-saga-title" style={{ color: "rgba(255,255,255,0.15)" }}>|</span>
           <span style={{ fontSize: 13, fontWeight: 700, color: "#fbbf24" }}>
-            Misión {currentLevel}/{totalLevels}
+            {t("hud.missionLabel")} {currentLevel}/{totalLevels}
           </span>
         </div>
       </div>
@@ -91,7 +93,7 @@ export default function GameHeader({
             <span style={{ fontWeight: 700, color: "#fff", fontVariantNumeric: "tabular-nums" }}>
               {activeParticipants.toLocaleString()}
             </span>
-            <span className="gh-explorers-text">{" "}exploradores</span>
+            <span className="gh-explorers-text">{" "}{t("game.explorers")}</span>
           </span>
         </div>
 

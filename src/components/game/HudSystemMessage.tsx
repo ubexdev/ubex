@@ -7,6 +7,7 @@ import {
   WarningOctagon,
   Info,
 } from "@phosphor-icons/react";
+import { useLocale } from "@/i18n";
 
 /* ─────────────────────────────────────────────────────────────
    HudSystemMessage
@@ -24,7 +25,8 @@ interface HudSystemMessageProps {
 
 const TYPE_CONFIG = {
   success: {
-    label: "DATA LOCK: SINCRONIZACIÓN EXITOSA",
+    labelKey: "hud.syncSuccess",
+    labelPrefix: "DATA LOCK: ",
     Icon: CheckCircle,
     color: "#10b981",
     borderColor: "rgba(16,185,129,0.35)",
@@ -35,7 +37,8 @@ const TYPE_CONFIG = {
       "0 0 28px rgba(16,185,129,0.25), 0 0 8px rgba(16,185,129,0.15), 0 4px 12px rgba(0,0,0,0.4)",
   },
   error: {
-    label: "ERROR: DATO IMPRECISO",
+    labelKey: "hud.dataError",
+    labelPrefix: "ERROR: ",
     Icon: WarningOctagon,
     color: "#ef4444",
     borderColor: "rgba(239,68,68,0.35)",
@@ -46,7 +49,8 @@ const TYPE_CONFIG = {
       "0 0 28px rgba(239,68,68,0.25), 0 0 8px rgba(239,68,68,0.15), 0 4px 12px rgba(0,0,0,0.4)",
   },
   info: {
-    label: "SISTEMA",
+    labelKey: "hud.system",
+    labelPrefix: "",
     Icon: Info,
     color: "#d97706",
     borderColor: "rgba(217,119,6,0.35)",
@@ -66,6 +70,7 @@ export default function HudSystemMessage({
   message,
   onDismiss,
 }: HudSystemMessageProps) {
+  const { t } = useLocale();
   const [visible, setVisible] = useState(true);
   const [exiting, setExiting] = useState(false);
 
@@ -152,7 +157,7 @@ export default function HudSystemMessage({
                 marginBottom: "4px",
               }}
             >
-              [{config.label}]
+              [{config.labelPrefix}{t(config.labelKey)}]
             </div>
             <p className={`text-sm leading-snug ${config.textColor}`}>
               {message}
@@ -168,7 +173,7 @@ export default function HudSystemMessage({
               height: "44px",
               margin: "-8px -8px -8px 0",
             }}
-            aria-label="Cerrar mensaje del sistema"
+            aria-label={t("hud.closeMessage")}
           >
             <X size={14} weight="bold" />
           </button>

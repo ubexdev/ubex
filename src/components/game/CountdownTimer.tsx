@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { differenceInSeconds } from "date-fns";
+import { useLocale } from "@/i18n";
 
 interface CountdownTimerProps {
   targetDate: Date;
@@ -12,8 +13,10 @@ interface CountdownTimerProps {
 export default function CountdownTimer({
   targetDate,
   onComplete,
-  label = "PRÓXIMA SEÑAL EN",
+  label,
 }: CountdownTimerProps) {
+  const { t } = useLocale();
+  const resolvedLabel = label ?? t("game.nextSignalIn");
   const [timeLeft, setTimeLeft] = useState({ d: 0, h: 0, m: 0, s: 0 });
   const [isComplete, setIsComplete] = useState(false);
   const onCompleteRef = useRef(onComplete);
@@ -68,7 +71,7 @@ export default function CountdownTimer({
             }}
           />
           <span style={{ fontSize: 14, fontWeight: 700, color: "#22c55e" }}>
-            La búsqueda ha comenzado
+            {t("game.searchStarted")}
           </span>
         </div>
         <style>{`@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }`}</style>
@@ -77,10 +80,10 @@ export default function CountdownTimer({
   }
 
   const segments = [
-    { value: timeLeft.d, label: "DÍAS" },
-    { value: timeLeft.h, label: "HRS" },
-    { value: timeLeft.m, label: "MIN" },
-    { value: timeLeft.s, label: "SEG" },
+    { value: timeLeft.d, label: t("game.days") },
+    { value: timeLeft.h, label: t("game.hours") },
+    { value: timeLeft.m, label: t("game.minutes") },
+    { value: timeLeft.s, label: t("game.seconds") },
   ];
 
   return (
@@ -95,7 +98,7 @@ export default function CountdownTimer({
           textTransform: "uppercase",
         }}
       >
-        {label}
+        {resolvedLabel}
       </p>
       <div style={{ display: "flex", justifyContent: "center", gap: 12 }}>
         {segments.map(({ value, label: segLabel }, i) => (
